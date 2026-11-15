@@ -51,6 +51,13 @@ Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen –
 
 Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein paarmal antippen: er kichert – öfter: er lacht laut – ganz oft: er kugelt sich vor Lachen auf dem Boden), freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
 
+<details>
+<summary><b>🤫 Psst … ein Geheimnis</b></summary>
+
+Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei seiner **geheimen Muffin-Party**: Muffins antippen, sie fliegen in Fips’ Maul, und er wird mit jedem Muffin runder – bis ihm nach sechs Muffins der Bauch grummelt, er rot anläuft und einen riesigen Feuerstrahl rauslässt. Danach ist er wieder ganz der Alte.
+
+</details>
+
 ## 🖼️ 83 gezeichnete Wörter
 
 40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen.
@@ -90,6 +97,7 @@ src/                    alles, was veröffentlicht wird
   js/sound.js           Aufnahmen abspielen, Geräusche und Fanfare
   js/game.js            Spiellogik und Feiern
   js/finale.js          Abschluss-Animationen (5 Stufen, 10 von 10 als Geschichte)
+  js/egg.js             Easter Egg: Fips’ geheime Muffin-Party
   js/recorder.js        Aufnahme-Studio
   js/app.js             Navigation und Start
 docs/                   Screenshots für diese README

@@ -411,7 +411,8 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
   .panel-parents h2{text-align:left;margin-right:46px}
   .panel-parents .tips-title{margin:0 0 12px !important}
   .panel-parents #diag{text-align:left}
-  .panel-parents .menu{margin-top:41px}
+  .panel-parents .parents-grid .menu{margin-top:41px}
+  .panel-parents .menu-cta{margin-bottom:18px}
 }
 
 @media (min-width:900px) and (min-height:560px){
@@ -662,3 +663,57 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 @media (prefers-reduced-motion: reduce){
   .finale *, .finale *::before, .finale *::after{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important}
 }
+
+/* ================= Easter Egg: Fips' geheime Muffin-Party ================= */
+.overlay.egg{background:radial-gradient(ellipse at 50% 40%,#fffaf0,#ffe1ec 70%,#ffd3e2);backdrop-filter:none;overflow:hidden;flex-direction:column}
+.overlay.egg .close-x{position:fixed;top:14px;right:14px}
+.egg-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:440px}
+.egg-title{margin:0;font-size:26px;font-weight:900;color:var(--pink-dark);text-shadow:0 3px 0 #fff}
+.egg-bubble{position:relative;background:#fff;border-radius:22px;padding:10px 18px;font-size:20px;font-weight:900;box-shadow:0 5px 0 rgba(59,44,90,.12);animation:pop .35s;text-align:center;min-height:48px;display:flex;align-items:center}
+.egg-bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
+.egg-stage{position:relative;width:min(270px,64vw);aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center}
+.egg-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:4px;height:14px;border-radius:50%;background:rgba(43,74,64,.15);z-index:-1}
+.egg-fips{width:100%;--fat:0;transform-origin:50% 95%}
+/* immer dicker: Körper wird breiter (Kopf bleibt fast gleich), mit federndem Übergang */
+.egg-fips .fin-svg .jump > g:first-child{transform-origin:200px 362px;transform:scale(calc(1 + var(--fat) * .14),calc(1 + var(--fat) * .06));transition:transform .6s cubic-bezier(.3,1.7,.5,1)}
+.egg-fips .fin-svg .tilt{transform-origin:200px 258px;transform:translateY(calc(var(--fat) * -2.5px)) scale(calc(1 + var(--fat) * .03),calc(1 + var(--fat) * .012));transition:transform .6s cubic-bezier(.3,1.7,.5,1)}
+.egg-fips img.fin-svg{transform-origin:50% 95%;transform:scale(calc(1 + var(--fat) * .08),calc(1 + var(--fat) * .04));transition:transform .6s cubic-bezier(.3,1.7,.5,1)}
+.egg-fips .fin-svg .wingL{animation:fcFlapL .9s ease-in-out infinite alternate}
+.egg-fips .fin-svg .wingR{animation:fcFlapR .9s ease-in-out infinite alternate}
+.egg-fips .fin-svg .tail{animation:fcWag .9s ease-in-out infinite alternate}
+.egg-fips.nom{animation:eggNom .45s ease-out}
+@keyframes eggNom{0%{transform:scale(1)}30%{transform:scale(1.07,.9)}60%{transform:scale(.97,1.05)}100%{transform:scale(1)}}
+.egg-fips.full .fin-svg{transform-origin:50% 95%;animation:eggWobble .5s ease-in-out infinite}
+@keyframes eggWobble{0%,100%{transform:rotate(-2deg) scale(1.01,.99)}50%{transform:rotate(2deg) scale(.99,1.01)}}
+.egg-fips.rumble .fin-svg{transform-origin:50% 95%;animation:eggRumble .07s linear infinite;filter:hue-rotate(-145deg) saturate(1.6)}
+@keyframes eggRumble{0%{transform:translate(-2px,0)}50%{transform:translate(2px,-1px)}100%{transform:translate(-1px,1px)}}
+.egg-fips.fire .fin-svg{transform-origin:50% 95%;animation:eggRecoil .2s ease-out 6}
+@keyframes eggRecoil{0%,100%{transform:translate(0,0)}50%{transform:translate(-5px,3px) rotate(-2deg)}}
+.egg-meter{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:900;color:var(--muted)}
+#eggMeter{display:flex;gap:5px}
+#eggMeter i{width:16px;height:16px;border-radius:50%;background:#f1e6ee;box-shadow:inset 0 2px 0 rgba(0,0,0,.06);transition:background .3s,transform .3s}
+#eggMeter i.on{background:var(--pink);transform:scale(1.15)}
+.egg-tray{display:flex;gap:4px;justify-content:center;background:#fff;border-radius:999px;padding:8px 14px;box-shadow:0 7px 0 rgba(59,44,90,.1)}
+.egg-muffin{border:0;background:none;width:58px;height:58px;padding:0;cursor:pointer;transition:transform .25s,opacity .25s}
+.egg-muffin svg{width:100%;height:100%;display:block}
+.egg-muffin:active{transform:scale(.9)}
+.egg-muffin.gone{transform:scale(0);opacity:0;pointer-events:none}
+.egg-hint{margin:0;font-size:14px;font-weight:800;color:var(--muted)}
+.egg-fly{position:fixed;z-index:40;pointer-events:none;border:0;background:none;padding:0}
+.egg-fly svg{width:100%;height:100%;display:block}
+.egg-crumb{position:fixed;z-index:41;width:6px;height:6px;border-radius:2px;pointer-events:none;animation:eggCrumb .8s ease-out forwards}
+@keyframes eggCrumb{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(200deg);opacity:0}}
+
+/* Elternbereich: „Wörter aufnehmen“ als großer, klarer Hauptknopf */
+.menu button.rec-cta{background:linear-gradient(160deg,#4fd68c,var(--g));color:#fff;padding:16px 16px 16px 14px;border-radius:24px;box-shadow:0 7px 0 var(--g-dark);gap:12px;align-items:center}
+.rec-cta .rc-ic{flex:none;width:58px;height:58px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 0 rgba(0,0,0,.12);animation:rcPulse 2.2s ease-in-out infinite}
+@keyframes rcPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.rec-cta .rc-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.rec-cta .rc-txt b{font-size:22px;font-weight:900;line-height:1.1;text-shadow:0 2px 0 rgba(0,0,0,.12)}
+.menu button.rec-cta small{color:#eafff2;font-size:14px;font-weight:800}
+.rec-cta .rc-bar{display:block;height:9px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden;margin-top:3px}
+.rec-cta .rc-bar i{display:block;height:100%;width:0;border-radius:99px;background:#fff;transition:width .4s}
+.rec-cta .rc-go{flex:none;font-size:24px;opacity:.95}
+.menu button.rec-cta:active{transform:translateY(4px);box-shadow:0 3px 0 var(--g-dark)}
+@media (hover:hover) and (pointer:fine){ .menu button.rec-cta:hover{background:linear-gradient(160deg,#5ade96,#29b067)} }
+.menu-cta{margin-bottom:12px}

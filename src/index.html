@@ -99,14 +99,33 @@
   </div>
 </div>
 
+<!-- ================= Easter Egg: Fips' geheime Muffin-Party ================= -->
+<div class="overlay egg hidden" id="eggOverlay">
+  <button class="close-x" data-close="eggOverlay" aria-label="Schließen">✕</button>
+  <div class="egg-wrap">
+    <h2 class="egg-title">🧁 Geheime Muffin-Party!</h2>
+    <div class="egg-bubble" id="eggBubble"></div>
+    <div class="egg-stage"><div class="egg-fips" id="eggFips"></div></div>
+    <div class="egg-meter"><span>Bauch</span><span id="eggMeter"></span></div>
+    <div class="egg-tray" id="eggTray"></div>
+    <p class="egg-hint">Tippe auf einen Muffin, dann bekommt Fips ihn!</p>
+  </div>
+</div>
+
 <!-- ================= Eltern ================= -->
 <div class="overlay hidden" id="parentsOverlay">
   <div class="panel panel-parents">
     <button class="close-x" data-close="parentsOverlay">✕</button>
     <h2>👪 Für Eltern</h2>
+    <div class="menu menu-cta">
+      <button id="openRec" class="rec-cta">
+        <span class="rc-ic" aria-hidden="true">🎙️</span>
+        <span class="rc-txt"><b>Wörter aufnehmen</b><small id="recSummary"></small><span class="rc-bar"><i id="recSummaryBar"></i></span></span>
+        <span class="rc-go" aria-hidden="true">▶</span>
+      </button>
+    </div>
     <div class="parents-grid">
     <div class="menu">
-      <button id="openRec"><i>🎙️</i><span>Wörter aufnehmen<small id="recSummary"></small></span></button>
       <div class="privacy">
         <h3>🔒 Datenschutz</h3>
         <p>Eure Aufnahmen werden <b>nur hier auf diesem Gerät</b> im Browser gespeichert.</p>
@@ -176,6 +195,7 @@
 <script src="js/storage.js?v=__VERSION__"></script>
 <script src="js/sound.js?v=__VERSION__"></script>
 <script src="js/finale.js?v=__VERSION__"></script>
+<script src="js/egg.js?v=__VERSION__"></script>
 <script src="js/game.js?v=__VERSION__"></script>
 <script src="js/recorder.js?v=__VERSION__"></script>
 <script src="js/app.js?v=__VERSION__"></script>

@@ -98,6 +98,21 @@ function sfx(kind, lvl = 1){
       end = st + .5;
     }
     sfxLaughUntil = end + .1;
+  } else if (kind === "whoosh"){
+    tone(ctx, 300, t, 0.35, "sine", 0.15, 900);
+  } else if (kind === "nom"){
+    // Mampf-mampf: zwei tiefe, kurze Plopps
+    tone(ctx, 260, t, 0.09, "triangle", 0.35, 140);
+    tone(ctx, 230, t + 0.14, 0.09, "triangle", 0.3, 120);
+    tone(ctx, 1400, t + 0.3, 0.12, "sine", 0.08, 1800);
+  } else if (kind === "rumble"){
+    // Bauchgrummeln: tiefer, wackelnder Ton
+    const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+    o.type = "sawtooth"; o.frequency.setValueAtTime(70, t); o.frequency.linearRampToValueAtTime(110, t + 1.1);
+    lfo.frequency.value = 9; lg.gain.value = 18; lfo.connect(lg); lg.connect(o.frequency);
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 400;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.15); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+    o.connect(lp); lp.connect(g); g.connect(ctx.destination); o.start(t); lfo.start(t); o.stop(t + 1.25); lfo.stop(t + 1.25);
   } else if (kind === "swap"){
     // Wusch: zwei Töne, die aneinander vorbeigleiten
     tone(ctx, 520, t, 0.45, "sine", 0.22, 1040);

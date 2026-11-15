@@ -17,7 +17,8 @@ function refreshCounts(){
   const words = REC_ITEMS.filter(i => i.word), have = words.filter(i => hasRec(i.k)).length;
   $("recCount").textContent = `${have}/${words.length}`;
   $("recBar").style.width = (100 * have / words.length) + "%";
-  $("recSummary").textContent = have ? `${have} von ${words.length} Wörtern aufgenommen` : "Noch keine Wörter aufgenommen";
+  $("recSummary").textContent = have ? `${have} von ${words.length} Wörtern aufgenommen` : "Noch keine Wörter aufgenommen – hier geht’s los!";
+  $("recSummaryBar").style.width = (words.length ? Math.round(have / words.length * 100) : 0) + "%";
   // Startbildschirm
   const st = gdStatus();
   const gdOK = st.ok;

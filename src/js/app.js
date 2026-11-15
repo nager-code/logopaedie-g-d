@@ -71,8 +71,13 @@ document.querySelectorAll(".home-title .tile").forEach(t => {
 
 /* Kitzeln: je öfter man schnell hintereinander tippt, desto mehr lacht Fips –
    kichern → lachen → er kugelt sich vor Lachen auf dem Boden */
-let tickles = 0, tickleTimer = null, rofl = false;
+let tickles = 0, tickleTimer = null, rofl = false, eggTaps = 0, eggTimer = null;
 $("homeDragon").addEventListener("click", () => {
+  // Easter Egg: ganz oft ohne Pause kitzeln (auch während er sich am Boden kugelt) → Muffin-Party
+  eggTaps++;
+  clearTimeout(eggTimer);
+  eggTimer = setTimeout(() => eggTaps = 0, 2500);
+  if (eggTaps >= EGG_TAPS){ eggTaps = 0; tickles = 0; openEgg(); return; }
   if (rofl) return;                                   // kugelt sich gerade – erst wieder aufstehen lassen
   tickles++;
   clearTimeout(tickleTimer);
