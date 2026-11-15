@@ -61,8 +61,9 @@ function newGame(){
   if (mode === "gd"){
     const rg = recordedG(), rd = recordedD();
     const nG = !rd.length ? ROUNDS : !rg.length ? 0 : ROUNDS/2;
-    const g = nG ? freshFirst(rg, nG).map(([w,e]) => ({w,e,l:"G"})) : [];
-    const d = ROUNDS - nG ? freshFirst(rd, ROUNDS - nG).map(([w,e]) => ({w,e,l:"D"})) : [];
+    // gezielt üben: oft verwechselte Wörter kommen häufiger, sicher gekonnte seltener (progress.js)
+    const g = nG ? adaptivePick(rg, nG).map(([w,e]) => ({w,e,l:"G"})) : [];
+    const d = ROUNDS - nG ? adaptivePick(rd, ROUNDS - nG).map(([w,e]) => ({w,e,l:"D"})) : [];
     let tries = 0;
     do {
       deck = shuffle(g.concat(d)); tries++;
@@ -209,6 +210,7 @@ function answer(choice){
     ${explain}`;
 
   results[round] = correct === true ? "ok" : correct === false ? "no" : "skip";
+  recordAnswer(item.w, item.l, correct);
   renderProgress();
   if (!partyDue) show("next");   // bei fälliger Feier kommt der Pfeil erst mit Fips' Tanz – sonst tippt man die Feier weg
 
@@ -230,6 +232,7 @@ function next(){
 }
 function showEnd(){
   cancelRoundTimers();
+  recordRound();
   const ok = results.filter(r => r === "ok").length, n = deck.length;
   showFinale(ok, n);   // große Abschluss-Animation von Fips, je nach Ergebnis
   playSeq(["#end"]);

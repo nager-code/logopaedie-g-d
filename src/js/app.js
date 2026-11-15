@@ -1,6 +1,6 @@
 /* ================= Navigation ================= */
 function openParents(){
-  stopAll(); refreshCounts();
+  stopAll(); refreshCounts(); renderParentProgress();
   $("diag").textContent = `Version ${APP_VERSION} · Speicher: ${dbOK ? "ok" : "nicht dauerhaft"}`;
   show("parentsOverlay");
 }
@@ -74,6 +74,19 @@ $("eggMusicBtn").addEventListener("click", () => {
   eggMusicOn = !eggMusicOn;
   try { localStorage.setItem("eggMusic", eggMusicOn ? "on" : "off"); } catch(e){}
   eggMusic(eggMusicOn);
+});
+
+/* Sichern & Übertragen */
+$("bkSave").addEventListener("click", async () => {
+  const msg = $("bkMsg"); msg.textContent = "⏳ Wird vorbereitet …";
+  try { const n = await exportBackup(); msg.textContent = n ? `✅ ${n} Aufnahmen gesichert – die Datei ist in deinen Downloads.` : "Noch keine Aufnahmen zum Sichern."; }
+  catch(e){ msg.textContent = "❌ Das Sichern hat nicht geklappt."; }
+});
+$("bkFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const msg = $("bkMsg"); msg.textContent = "⏳ Wird geladen …";
+  try { const n = await importBackup(f); msg.textContent = `✅ ${n} Aufnahmen geladen.`; renderParentProgress(); }
+  catch(err){ msg.textContent = "❌ " + (err.message && err.message.includes("G oder D") ? err.message : "Die Datei konnte nicht gelesen werden."); }
 });
 
 /* Kitzeln: je öfter man schnell hintereinander tippt, desto mehr lacht Fips –

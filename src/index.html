@@ -147,6 +147,7 @@
         <span class="rc-go" aria-hidden="true">▶</span>
       </button>
     </div>
+    <div class="progress-box" id="progressBox"></div>
     <div class="parents-grid">
     <div class="menu">
       <div class="privacy">
@@ -167,6 +168,15 @@
       <p>Im Spiel: 🔊 = nochmal hören, 👀 = Lösung zeigen.</p>
     </div>
     </div>
+    </div>
+    <div class="backup-box">
+      <h3>💾 Sichern &amp; auf ein anderes Gerät übertragen</h3>
+      <p>Die Aufnahmen sind nur auf diesem Gerät. Speichere sie als Datei – zur Sicherheit, oder um sie z.&nbsp;B. auf dem Tablet wieder zu laden. Die Datei bleibt bei dir.</p>
+      <div class="bk-actions">
+        <button class="bk-btn" id="bkSave">⬇️ Aufnahmen sichern</button>
+        <label class="bk-btn ghost">⬆️ Sicherung laden<input type="file" id="bkFile" accept=".json,application/json" hidden></label>
+      </div>
+      <p class="bk-msg" id="bkMsg"></p>
     </div>
     <p class="diag" id="diag"></p>
   </div>
@@ -215,6 +225,7 @@
 <script src="js/pictures.js?v=__VERSION__"></script>
 <script src="js/util.js?v=__VERSION__"></script>
 <script src="js/dragon.js?v=__VERSION__"></script>
+<script src="js/progress.js?v=__VERSION__"></script>
 <script src="js/storage.js?v=__VERSION__"></script>
 <script src="js/sound.js?v=__VERSION__"></script>
 <script src="js/finale.js?v=__VERSION__"></script>

@@ -96,3 +96,60 @@ function encodeWav(samples, sr, gain){
   }
   return new Blob([buf], {type:"audio/wav"});
 }
+
+/* ================= Sichern & Übertragen =================
+   Alle Aufnahmen (und der Fortschritt) als eine Datei – zur Sicherheit oder für ein anderes Gerät.
+   Die Datei entsteht direkt im Browser und wird nirgends hochgeladen. */
+function bufToB64(buf){
+  const u = new Uint8Array(buf); let s = "";
+  for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+function b64ToBuf(b64){
+  const s = atob(b64), u = new Uint8Array(s.length);
+  for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i);
+  return u.buffer;
+}
+async function readAllRecs(){
+  const out = {};
+  try {
+    const db = await idb();
+    await new Promise(res => {
+      const c = db.transaction("rec", "readonly").objectStore("rec").openCursor();
+      c.onsuccess = () => { const x = c.result; if (x){ out[x.key] = x.value; x.continue(); } else res(); };
+      c.onerror = () => res();
+    });
+  } catch(e){}
+  // Falls der Speicher nicht dauerhaft war: was gerade im Speicher ist, trotzdem sichern
+  for (const k of Object.keys(recURL)) if (!out[k]){
+    try { const b = await (await fetch(recURL[k])).blob(); out[k] = {buf: await b.arrayBuffer(), type: b.type}; } catch(e){}
+  }
+  return out;
+}
+async function exportBackup(){
+  const recs = await readAllRecs(), data = {};
+  for (const [k, v] of Object.entries(recs)) data[k] = {type: v.type, b64: bufToB64(v.buf)};
+  const file = {app: "g-oder-d", format: 1, created: new Date().toISOString(), recs: data, stats: STATS, meta: META};
+  const blob = new Blob([JSON.stringify(file)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `fips-aufnahmen-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  return Object.keys(data).length;
+}
+async function importBackup(fileObj){
+  const file = JSON.parse(await fileObj.text());
+  if (!file || file.app !== "g-oder-d" || !file.recs) throw new Error("Das ist keine Sicherung von „G oder D?“.");
+  let n = 0;
+  for (const [k, v] of Object.entries(file.recs)){
+    const buf = b64ToBuf(v.b64);
+    setURL(k, new Blob([buf], {type: v.type}));
+    try { await withTimeout(dbDo("readwrite", s => s.put({buf, type: v.type}, k)), 4000); } catch(e){ dbOK = false; }
+    n++;
+  }
+  if (file.stats){ STATS = file.stats; save("stats", STATS); }
+  if (file.meta){ META = file.meta; save("meta", META); }
+  refreshCounts();
+  return n;
+}

@@ -75,6 +75,9 @@ Jedes Wort hat ein eigenes, von Hand gezeichnetes Bild – alle im gleichen Stil
 
 - **Eure eigenen Stimmen:** Es gibt keine Computerstimme. Unter **👪 Für Eltern → Wörter aufnehmen** sprecht ihr die Wörter ein. Eine Anzeige hilft mit Lautstärke und Restzeit, Stille am Anfang und Ende wird automatisch abgeschnitten.
 - **Schnell startklar:** Gespielt werden kann ab **5 aufgenommenen Wörtern** (G und D). Beim Aufnehmen werden die leichten Wörter zuerst vorgeschlagen, abwechselnd mit G und D. Im Spiel kommen nur Wörter vor, die schon aufgenommen sind.
+- **Gezielt üben:** Das Spiel merkt sich, welche Wörter oft verwechselt werden, und bringt sie häufiger – sicher gekonnte Wörter kommen seltener, neue werden eingestreut.
+- **Fortschritt:** Im Elternbereich steht, wie oft G und D richtig erkannt werden, welche Wörter noch schwer sind und welche schon super klappen.
+- **Sichern & übertragen:** Alle Aufnahmen (samt Fortschritt) lassen sich als Datei speichern und auf einem anderen Gerät wieder laden.
 - **Tipps zum Üben:** Im Elternbereich steht kurz, wie G und D gebildet werden und wie ihr gemeinsam üben könnt.
 
 ### 🔒 Datenschutz
@@ -100,7 +103,8 @@ src/                    alles, was veröffentlicht wird
   js/pictures.js        Gezeichnete Bilder zu allen Wörtern
   js/util.js            Hilfsfunktionen und Spielzustand
   js/dragon.js          Fips: zeigt je nach Gefühl die passende Pose
-  js/storage.js         Aufnahmen speichern (IndexedDB), Stille abschneiden
+  js/progress.js        Fortschritt je Wort, gezielte Wortauswahl, Übersicht für Eltern
+  js/storage.js         Aufnahmen speichern (IndexedDB), Stille abschneiden, Sichern & Laden
   js/sound.js           Aufnahmen abspielen, Geräusche und Fanfare
   js/game.js            Spiellogik und Feiern
   js/finale.js          Abschluss-Animationen (5 Stufen, 10 von 10 als Geschichte)

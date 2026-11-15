@@ -847,3 +847,31 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
   30%,42%,54%{transform:translateX(17%) scale(1.3,1.35)}
   80%{transform:scale(.78);opacity:.09}
   90%,100%{transform:none;opacity:.14}}
+
+/* Elternbereich: Fortschritt und Sicherung */
+.progress-box,.backup-box{text-align:left;background:#fff8e1;border:3px solid #ffe7a8;border-radius:20px;padding:10px 16px;margin:0 0 14px}
+.progress-box h3,.backup-box h3{margin:2px 0 6px;font-size:18px;font-weight:900;color:#b07a12}
+.panel .progress-box p,.panel .backup-box p{margin:4px 0 8px;font-size:15px;line-height:1.45}
+.panel .pg-empty{color:var(--muted)}
+.pg-bar{display:flex;align-items:center;gap:10px;margin:6px 0}
+.pg-l{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:20px;flex:none}
+.pg-bar.G .pg-l{background:var(--g)} .pg-bar.D .pg-l{background:var(--d)}
+.pg-track{flex:1;height:14px;border-radius:99px;background:#efe8d8;overflow:hidden}
+.pg-track i{display:block;height:100%;border-radius:99px;transition:width .5s}
+.pg-bar.G .pg-track i{background:var(--g)} .pg-bar.D .pg-track i{background:var(--d)}
+.pg-pct{width:52px;text-align:right;font-weight:900;font-size:16px}
+.panel .pg-h{margin:10px 0 6px;font-weight:900;font-size:15px}
+.pg-words{display:flex;flex-wrap:wrap;gap:6px}
+.pg-word{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:14px;padding:4px 10px 4px 4px;box-shadow:0 2px 0 rgba(59,44,90,.08)}
+.pg-word .pic-svg{width:30px;height:30px}
+.pg-word b{font-size:16px;font-weight:900}
+.pg-word .hl{padding:0 3px;border-radius:6px}
+.pg-word small{font-size:12px;font-weight:800;color:var(--muted)}
+.pg-reset{margin-top:10px;border:0;background:none;color:var(--muted);font-size:13px;font-weight:800;text-decoration:underline;cursor:pointer;padding:0}
+.backup-box{background:#eef6ff;border-color:#cfe3ff;margin:14px 0 0}
+.backup-box h3{color:var(--d-dark)}
+.bk-actions{display:flex;gap:8px;flex-wrap:wrap}
+.bk-btn{border:0;border-radius:999px;padding:11px 16px;font-size:16px;font-weight:900;background:var(--d);color:#fff;box-shadow:0 5px 0 var(--d-dark);cursor:pointer;display:inline-flex;align-items:center}
+.bk-btn.ghost{background:#fff;color:var(--d-dark);box-shadow:0 5px 0 rgba(31,99,201,.25)}
+.bk-btn:active{transform:translateY(3px)}
+.panel .bk-msg{margin:8px 0 0;font-size:14px;font-weight:800;min-height:1em}
