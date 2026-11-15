@@ -77,7 +77,7 @@ Jedes Wort hat ein eigenes, von Hand gezeichnetes Bild – alle im gleichen Stil
 - **Schnell startklar:** Gespielt werden kann ab **5 aufgenommenen Wörtern** (G und D). Beim Aufnehmen werden die leichten Wörter zuerst vorgeschlagen, abwechselnd mit G und D. Im Spiel kommen nur Wörter vor, die schon aufgenommen sind.
 - **Gezielt üben:** Das Spiel merkt sich, welche Wörter oft verwechselt werden, und bringt sie häufiger – sicher gekonnte Wörter kommen seltener, neue werden eingestreut.
 - **Fortschritt:** Im Elternbereich steht, wie oft G und D richtig erkannt werden, welche Wörter noch schwer sind und welche schon super klappen.
-- **Sichern & übertragen:** Alle Aufnahmen (samt Fortschritt) lassen sich als Datei speichern und auf einem anderen Gerät wieder laden.
+- **Sichern & übertragen:** Alle Aufnahmen (samt Fortschritt) lassen sich als ZIP-Datei speichern und auf einem anderen Gerät wieder laden. In der ZIP liegt jedes Wort auch als einzelne WAV-Datei mit englischem Namen ohne Umlaute (z. B. `recordings/saw.wav` = Säge).
 - **Tipps zum Üben:** Im Elternbereich steht kurz, wie G und D gebildet werden und wie ihr gemeinsam üben könnt.
 
 ### 🔒 Datenschutz
