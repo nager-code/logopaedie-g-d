@@ -24,7 +24,7 @@ Richtige und falsche Antworten werden mit Farbe und Geräusch zurückgemeldet. N
 
 ## Für Eltern
 
-Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Über **👪 Für Eltern → Wörter aufnehmen** sprechen Mama oder Papa die Wörter ein. Eine Anzeige zeigt dabei Lautstärke und Restzeit. Gespielt werden kann ab **5 aufgenommenen Wörtern** (mit G und D). Im Spiel kommen nur Wörter vor, die schon aufgenommen sind. Die Aufnahmen bleiben nur lokal im Browser gespeichert.
+Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Über **👪 Für Eltern → Wörter aufnehmen** sprechen Mama oder Papa die Wörter ein. Eine Anzeige zeigt dabei Lautstärke und Restzeit. Gespielt werden kann ab **5 aufgenommenen Wörtern** (mit G und D). Im Spiel kommen nur Wörter vor, die schon aufgenommen sind. Die Aufnahmen bleiben nur lokal im Browser gespeichert – im Elternbereich steht dazu ein kurzer Datenschutz-Hinweis.
 
 ## Technik
 
