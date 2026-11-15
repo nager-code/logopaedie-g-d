@@ -6,7 +6,7 @@ Ein kleines Lernspiel im Browser, mit dem Kinder üben, die Laute **G** und **D*
 
 ## Fips, der kleine Drache
 
-Fips begleitet durchs Spiel: Auf der Startseite winkt er und begrüßt das Kind. Bei einer richtigen Antwort hüpft er vor Freude. Bei einer falschen läuft er blau an, verdreht die Augen und streckt die Zunge raus. Tippt man ihn auf der Startseite an, kichert er.
+Fips begleitet durchs Spiel: Auf der Startseite winkt er und begrüßt das Kind. Bei einer richtigen Antwort springt er jubelnd in die Luft. Bei einer falschen kratzt er sich verlegen am Kopf („Hoppla!“). Tippt man ihn auf der Startseite an, kichert er.
 
 ## Wörter
 
@@ -32,11 +32,11 @@ Alles, was zum Spiel gehört, liegt in `src/`:
 ```
 src/index.html        Seitenaufbau
 src/favicon.svg       Icon
-src/img/fips.svg      Fips als Bild (Vorlage)
+src/img/fips-*.svg    Fips in drei Posen: Begrüßung, Jubel, Hoppla
 src/css/style.css     Design und Animationen
 src/js/words.js       Wortlisten, Wortpaare, Mindestanzahl Wörter
 src/js/util.js        Hilfsfunktionen und Spielzustand
-src/js/dragon.js      Fips: Grafik und Gefühle (winken, freuen, blau werden)
+src/js/dragon.js      Fips: zeigt je nach Gefühl die passende Pose
 src/js/storage.js     Aufnahmen speichern (IndexedDB), Stille abschneiden
 src/js/sound.js       Aufnahmen abspielen, Geräusche und Fanfare
 src/js/game.js        Spiellogik und Zwischendurch-Feiern
