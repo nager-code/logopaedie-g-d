@@ -98,8 +98,10 @@ function kInit(){
   $("kCups").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kMuffin.cup = b.dataset.v; kRender(); sfx("hic"); } });
   $("kTops").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kMuffin.top = b.dataset.v; kRender(); sfx("hic"); } });
   $("kKinds").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kKind = b.dataset.v; kRender(); } });
+  // Berührungen gehen an eine feste, unsichtbare Fläche über dem Muffin – der Muffin selbst wird bei jedem Streusel
+  // neu gezeichnet; läge der Finger auf einem Element, das dabei verschwindet, würde Safari den Tipp als Zoom deuten
   let down = false, last = 0;
-  const box = $("kMuffin");
+  const box = $("kTouch");
   box.addEventListener("pointerdown", e => { down = true; box.setPointerCapture(e.pointerId); kSprinkle(e); });
   box.addEventListener("pointermove", e => { if (down && Date.now() - last > 60){ last = Date.now(); kSprinkle(e); } });
   ["pointerup","pointercancel"].forEach(t => box.addEventListener(t, () => down = false));

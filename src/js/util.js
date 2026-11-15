@@ -38,7 +38,7 @@ let lastUsed = load("last", []);
   }, {passive:false});
   // Flächen zum Ziehen/Streuen: dort gar keine Browser-Gesten
   document.addEventListener("touchstart", e => {
-    if (e.target.closest && e.target.closest("#kMuffin,.egg-muffin")) e.preventDefault();
+    if (e.target.closest && e.target.closest("#kTouch,#kMuffin,.egg-muffin")) e.preventDefault();
   }, {passive:false});
   // Computer: Strg/⌘ + Mausrad bzw. Trackpad-Zoom und Strg/⌘ + Plus/Minus
   document.addEventListener("wheel", e => { if (e.ctrlKey || e.metaKey) e.preventDefault(); }, {passive:false});
