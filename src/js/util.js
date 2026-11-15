@@ -14,3 +14,19 @@ function hide(id){ $(id).classList.add("hidden"); }
 
 let mode = "gd", deck = [], round = 0, results = [], stars = 0, answered = false, cur = null;
 let lastUsed = load("last", []);
+
+/* ================= Kein Zoomen =================
+   iOS Safari ignoriert „user-scalable=no“ – deshalb Zoom-Gesten hier zusätzlich abfangen */
+(function(){
+  const stop = e => e.preventDefault();
+  // iOS: Auseinanderziehen mit zwei Fingern
+  ["gesturestart","gesturechange","gestureend"].forEach(t => document.addEventListener(t, stop, {passive:false}));
+  // alle anderen: Bewegung mit mehr als einem Finger
+  document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, {passive:false});
+  // Doppeltippen verhindert das CSS (touch-action) – ohne JS, damit schnelles Tippen auf Knöpfe nie verschluckt wird
+  // Computer: Strg/⌘ + Mausrad bzw. Trackpad-Zoom und Strg/⌘ + Plus/Minus
+  document.addEventListener("wheel", e => { if (e.ctrlKey || e.metaKey) e.preventDefault(); }, {passive:false});
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && ["+","-","=","0"].includes(e.key)) e.preventDefault();
+  });
+})();
