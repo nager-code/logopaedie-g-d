@@ -678,7 +678,7 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .eg-cloud.c1{top:16%;left:-20%} .eg-cloud.c2{top:26%;left:-40%;transform:scale(.7);animation-duration:55s;animation-delay:-20s} .eg-cloud.c3{top:8%;left:-30%;transform:scale(.85);animation-duration:48s;animation-delay:-35s}
 @keyframes egCloud{to{translate:150vw 0}}
 .eg-garland{position:absolute;left:0;top:0;width:100%;height:110px;overflow:visible}
-.eg-flag{transform-box:fill-box;transform-origin:50% 0;animation:egFlag 2.4s ease-in-out calc(var(--i) * -.3s) infinite alternate}
+/* nur der Wimpel selbst schaukelt – die Gruppe behält ihre Position an der Schnur */
 .eg-flag path{transform-box:fill-box;transform-origin:50% 0;animation:egFlag 2.4s ease-in-out calc(var(--i) * -.3s) infinite alternate}
 @keyframes egFlag{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
 .eg-bulb{filter:drop-shadow(0 0 1.5px currentColor);animation:egBulb 1.6s ease-in-out calc(var(--i) * -.2s) infinite alternate}
