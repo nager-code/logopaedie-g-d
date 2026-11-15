@@ -125,5 +125,6 @@ $("homeDragon").addEventListener("click", () => {
 
 mountDragons();
 refreshCounts();
+renderParentProgress();
 loadAllRecs();
 setTimeout(greet, 500);
