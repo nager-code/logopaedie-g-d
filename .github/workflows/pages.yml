@@ -27,6 +27,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Set version (cache busting)
+        run: |
+          VERSION="${GITHUB_SHA::7}"
+          sed -i "s/__VERSION__/${VERSION}/g" src/index.html src/js/words.js
+
       - name: Configure Pages
         uses: actions/configure-pages@v6
 

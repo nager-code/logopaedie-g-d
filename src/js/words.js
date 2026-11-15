@@ -15,6 +15,7 @@ const PAIRS = [
   [{w:"Wagen",e:"🚗",l:"G"},{w:"Waden",e:"🦵",l:"D"}],
   [{w:"Gaumen",e:"👄",l:"G"},{w:"Daumen",e:"👍",l:"D"}]
 ];
+const APP_VERSION = "__VERSION__";  // wird beim Veröffentlichen durch die Commit-Nummer ersetzt
 const ROUNDS = 10;
 const MIN_WORDS = 5;          // so viele Wörter (G + D) braucht „G oder D?“ mindestens
 const MAX_REC_MS = 4000;

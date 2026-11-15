@@ -1,15 +1,18 @@
 /* ================= Speicher (IndexedDB) ================= */
 const recURL = {};
 let dbOK = true, dbPromise = null;
+/* Promise mit Zeitlimit – manche Browser antworten bei IndexedDB nie */
+function withTimeout(p, ms){ return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]); }
+
 function idb(){
-  if (!dbPromise) dbPromise = new Promise((res, rej) => {
+  if (!dbPromise) dbPromise = withTimeout(new Promise((res, rej) => {
     try {
       const r = indexedDB.open("gd-stimme", 1);
       r.onupgradeneeded = () => r.result.createObjectStore("rec");
       r.onsuccess = () => res(r.result);
       r.onerror = () => rej(r.error);
     } catch(e){ rej(e); }
-  });
+  }), 3000);
   return dbPromise;
 }
 async function dbDo(modeRW, fn){
@@ -28,7 +31,7 @@ function setURL(k, blob){
 async function loadAllRecs(){
   try {
     const db = await idb();
-    await new Promise(res => {
+    await withTimeout(new Promise(res => {
       const c = db.transaction("rec","readonly").objectStore("rec").openCursor();
       c.onsuccess = () => {
         const x = c.result;
@@ -36,16 +39,17 @@ async function loadAllRecs(){
         else res();
       };
       c.onerror = () => res();
-    });
+    }), 4000);
   } catch(e){ dbOK = false; }
   refreshCounts();
 }
 async function storeRec(k, blob){
   const clean = await trimBlob(blob);
   setURL(k, clean);
+  refreshCounts();                       // sofort zählen, auch wenn das Speichern dauert
   try {
     const buf = await clean.arrayBuffer();
-    await dbDo("readwrite", s => s.put({buf, type: clean.type}, k));
+    await withTimeout(dbDo("readwrite", s => s.put({buf, type: clean.type}, k)), 4000);
   } catch(e){ dbOK = false; showRecWarn(); }
   refreshCounts();
 }
@@ -62,7 +66,7 @@ async function trimBlob(blob){
     const AC = window.AudioContext || window.webkitAudioContext;
     ac = new AC();
     const ab = await blob.arrayBuffer();
-    const buf = await new Promise((res, rej) => ac.decodeAudioData(ab, res, rej));
+    const buf = await withTimeout(new Promise((res, rej) => ac.decodeAudioData(ab, res, rej)), 3000);
     const d = buf.getChannelData(0), sr = buf.sampleRate;
     let peak = 0; for (let i=0;i<d.length;i++){ const a = Math.abs(d[i]); if (a > peak) peak = a; }
     if (peak < 0.005) return blob;
