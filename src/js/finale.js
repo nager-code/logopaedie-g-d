@@ -6,7 +6,7 @@ const FINALE = [   // ab welchem Anteil richtiger Antworten
   {min:.4, key:"clap",  title:"Schon richtig gut!",  text:"Fips klatscht für dich! 👏"},
   {min:.6, key:"jump",  title:"Toll gemacht!",       text:"Fips hüpft vor Freude!"},
   {min:.8, key:"flip",  title:"Super stark!",        text:"Fips macht einen Salto für dich!"},
-  {min:1,  key:"story", title:"Alles richtig!",      text:"Fips zündet für dich G und D an – du bist ein Hör-Profi! 👑"}
+  {min:1,  key:"story", title:"Alles richtig!",      text:"Fips hat G und D verbrannt – puff, nur noch Asche! Du bist ein Hör-Profi! 👑"}
 ];
 
 let finaleSvg = null;
@@ -113,10 +113,14 @@ function storyScene(){
     `<div class="st-flame" style="left:${x}%;--s:${s};--d:${d}s">${FIN_FLAME}</div>`).join("");
   const smoke = [0,1,2,3].map(i => `<i style="--i:${i};left:${20 + i * 14}%"></i>`).join("");
   const embers = Array.from({length:10}, (_, i) => `<i style="--i:${i};--x:${r(-40,40)}px;--y:${r(-110,-60)}px;left:${r(15,85)}%"></i>`).join("");
-  const letter = (l, cls) => `<div class="st-letter ${cls}"><div class="st-post"></div>
-    <div class="st-tile off">${l}<div class="st-char"></div></div><div class="st-tile on">${l}</div>
-    <div class="st-smoke">${smoke}</div><div class="st-burn">${burn}</div><div class="st-embers">${embers}</div>
-    <div class="st-fire">${FIN_FLAME}</div></div>`;
+  // nach dem Brand: das verkohlte Schild zerbricht in glühende Brocken, die herunterfallen und zu Asche zerfallen
+  const bits = Array.from({length:16}, (_, k) => {
+    const cx = k % 4, cy = Math.floor(k / 4);
+    return `<i style="left:${cx * 16}px;top:${cy * 16}px;--x:${r(-26,26).toFixed(0)}px;--y:${(70 - cy * 16 + r(-6,10)).toFixed(0)}px;--r:${r(-200,200).toFixed(0)}deg;--d:${(r(0,.25) + (3 - cy) * .05).toFixed(2)}s"></i>`;
+  }).join("");
+  const letter = (l, cls) => `<div class="st-letter ${cls}"><div class="st-ash"></div><div class="st-post"></div>
+    <div class="st-tile off">${l}<div class="st-char"></div></div><div class="st-bits">${bits}</div>
+    <div class="st-smoke">${smoke}</div><div class="st-burn">${burn}</div><div class="st-embers">${embers}</div></div>`;
   return `<div class="story">
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="finFire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF6A3D"/><stop offset=".55" stop-color="#FFB13B"/><stop offset="1" stop-color="#FFE45C"/></linearGradient></defs></svg>
     <div class="st-sun"></div><div class="st-cloud c1"></div><div class="st-cloud c2"></div>

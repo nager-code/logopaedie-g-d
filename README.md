@@ -45,7 +45,7 @@ Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen –
 | 4–5 richtig | klatscht für dich 👏 |
 | 6–7 richtig | macht Freudensprünge, mit Konfetti 🎊 |
 | 8–9 richtig | springt einen Salto ⭐ |
-| **10 von 10** | **erlebt eine kleine Geschichte:** läuft durch eine Landschaft und speit Feuer auf das **G** – es fängt Feuer, verkohlt und glüht, Flammen schlagen hoch, Rauch und Funken steigen auf, bis es bunt leuchtet. Dann geht es weiter zum **D**. Zum Schluss jubelt Fips mit Krone und Feuerwerk 👑 |
+| **10 von 10** | **erlebt eine kleine Geschichte:** läuft durch eine Landschaft und speit Feuer auf das **G** – es fängt Feuer, verkohlt, Flammen schlagen hoch, dann zerbricht es in glühende Brocken und zerfällt zu Asche. Danach ist das **D** dran. Zum Schluss jubelt Fips mit Krone und Feuerwerk 👑 |
 
 ## 🐉 Fips, der kleine Drache
 
