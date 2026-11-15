@@ -1,15 +1,14 @@
 /* ================= Was ist spielbar? ================= */
 const hasRec = k => !!recURL[k];
-function recordedG(){ return G_WORDS.filter(([w]) => hasRec(w)); }
-function recordedD(){ return D_WORDS.filter(([w]) => hasRec(w)); }
+function recordedG(){ return ALL_G.filter(([w]) => hasRec(w)); }
+function recordedD(){ return ALL_D.filter(([w]) => hasRec(w)); }
 function recordedPairs(){ return PAIRS.filter(p => p.every(x => hasRec(x.w))); }
 function gdStatus(){
   const g = recordedG().length, d = recordedD().length, n = g + d;
-  let missing = "";
-  if (n < MIN_WORDS) missing = `Noch ${MIN_WORDS - n} ${MIN_WORDS - n === 1 ? "Wort" : "Wörter"} aufnehmen`;
-  else if (!g) missing = "Noch ein Wort mit G aufnehmen";
-  else if (!d) missing = "Noch ein Wort mit D aufnehmen";
-  return {g, d, n, ok: !missing, missing};
+  const missing = n < MIN_WORDS ? `Noch ${MIN_WORDS - n} ${MIN_WORDS - n === 1 ? "Wort" : "Wörter"} aufnehmen` : "";
+  // nur ein Tipp, kein Hindernis: am meisten bringt das Spiel mit G- und D-Wörtern
+  const tip = !g && n ? "Tipp: Nimm auch Wörter mit G auf." : !d && n ? "Tipp: Nimm auch Wörter mit D auf." : "";
+  return {g, d, n, ok: n >= MIN_WORDS, missing, tip};
 }
 function canPlay(m){ return m === "gd" ? gdStatus().ok : recordedPairs().length >= 1; }
 function dots(n, max){ return Array.from({length:max}, (_,i) => `<span class="gdot ${i < n ? "on" : ""}"></span>`).join(""); }
@@ -30,16 +29,14 @@ function refreshCounts(){
   // Hinweis auf dem Startbildschirm
   $("needRec").classList.toggle("hidden", gdOK);
   $("needDots").innerHTML = dots(Math.min(st.n, MIN_WORDS), MIN_WORDS);
-  $("needText").innerHTML = st.n < MIN_WORDS
-    ? `<b>${st.n} von ${MIN_WORDS}</b> Wörtern aufgenommen`
-    : `${st.missing}.`;
+  $("needText").innerHTML = `<b>${Math.min(st.n, MIN_WORDS)} von ${MIN_WORDS}</b> Wörtern aufgenommen`;
 
   // Ziel-Anzeige im Aufnahme-Studio
   const goal = $("recGoal");
   goal.classList.toggle("ok", gdOK);
   goal.innerHTML = gdOK
-    ? `✅ <span><b>Genug zum Spielen!</b><br><small>Jedes weitere Wort macht das Spiel abwechslungsreicher.</small></span>`
-    : `🎯 <span><b>${st.missing}</b>, dann kann das Spiel starten.<br><span class="gdots">${dots(Math.min(st.n, MIN_WORDS), MIN_WORDS)}</span> <small>mind. ${MIN_WORDS} Wörter mit G und D</small></span>`;
+    ? `✅ <span><b>Genug zum Spielen!</b><br><small>${st.tip || "Jedes weitere Wort macht das Spiel abwechslungsreicher."}</small></span>`
+    : `🎯 <span><b>${st.missing}</b>, dann kann das Spiel starten.<br><span class="gdots">${dots(Math.min(st.n, MIN_WORDS), MIN_WORDS)}</span> <small>mind. ${MIN_WORDS} Wörter</small></span>`;
 }
 
 /* ================= Spiel ================= */
@@ -62,8 +59,10 @@ function startGame(m){
 function newGame(){
   round = 0; results = []; answered = false; streak = 0;
   if (mode === "gd"){
-    const g = freshFirst(recordedG(), ROUNDS/2).map(([w,e]) => ({w,e,l:"G"}));
-    const d = freshFirst(recordedD(), ROUNDS/2).map(([w,e]) => ({w,e,l:"D"}));
+    const rg = recordedG(), rd = recordedD();
+    const nG = !rd.length ? ROUNDS : !rg.length ? 0 : ROUNDS/2;
+    const g = nG ? freshFirst(rg, nG).map(([w,e]) => ({w,e,l:"G"})) : [];
+    const d = ROUNDS - nG ? freshFirst(rd, ROUNDS - nG).map(([w,e]) => ({w,e,l:"D"})) : [];
     let tries = 0;
     do {
       deck = shuffle(g.concat(d)); tries++;

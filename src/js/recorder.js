@@ -5,10 +5,11 @@ let selKey = null, studioState = "idle";
 
 function itemByKey(k){ return REC_ITEMS.find(i => i.k === k); }
 function firstMissing(after){
-  const start = after ? REC_ITEMS.findIndex(i => i.k === after) + 1 : 0;
-  for (let n=0;n<REC_ITEMS.length;n++){
-    const it = REC_ITEMS[(start + n) % REC_ITEMS.length];
-    if (it.word && !hasRec(it.k)) return it.k;
+  // abwechselnd G und D vorschlagen
+  const start = after ? REC_ORDER.findIndex(i => i.k === after) + 1 : 0;
+  for (let n=0;n<REC_ORDER.length;n++){
+    const it = REC_ORDER[(Math.max(0, start) + n) % REC_ORDER.length];
+    if (!hasRec(it.k)) return it.k;
   }
   return null;
 }

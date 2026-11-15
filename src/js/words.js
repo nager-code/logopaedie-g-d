@@ -37,3 +37,16 @@ const REC_SECTIONS = (() => {
   ];
 })();
 const REC_ITEMS = REC_SECTIONS.flatMap(s => s.items);
+
+/* Alle Wörter mit Buchstabe – auch die aus den Wortpaaren zählen für „G oder D?“ */
+const ALL_G = (() => { const m = new Map(G_WORDS.map(x => [x[0], x])); PAIRS.flat().filter(p => p.l === "G").forEach(p => m.has(p.w) || m.set(p.w, [p.w, p.e])); return [...m.values()]; })();
+const ALL_D = (() => { const m = new Map(D_WORDS.map(x => [x[0], x])); PAIRS.flat().filter(p => p.l === "D").forEach(p => m.has(p.w) || m.set(p.w, [p.w, p.e])); return [...m.values()]; })();
+
+/* Reihenfolge beim Aufnehmen: abwechselnd G und D, damit schnell beide Buchstaben dabei sind */
+const REC_ORDER = (() => {
+  const g = REC_ITEMS.filter(i => i.word && ALL_G.some(x => x[0] === i.k));
+  const d = REC_ITEMS.filter(i => i.word && ALL_D.some(x => x[0] === i.k) && !g.includes(i));
+  const out = [];
+  for (let i = 0; i < Math.max(g.length, d.length); i++){ if (g[i]) out.push(g[i]); if (d[i]) out.push(d[i]); }
+  return out;
+})();
