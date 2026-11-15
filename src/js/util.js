@@ -23,7 +23,23 @@ let lastUsed = load("last", []);
   ["gesturestart","gesturechange","gestureend"].forEach(t => document.addEventListener(t, stop, {passive:false}));
   // alle anderen: Bewegung mit mehr als einem Finger
   document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, {passive:false});
-  // Doppeltippen verhindert das CSS (touch-action) – ohne JS, damit schnelles Tippen auf Knöpfe nie verschluckt wird
+  // Doppeltippen: Safari auf dem iPhone beachtet touch-action nicht überall. Ein zweiter Tipp kurz nach dem ersten
+  // wird deshalb abgefangen (kein Zoom) – und als normaler Klick weitergegeben, damit kein Tipp verloren geht.
+  let lastTouchEnd = 0;
+  document.addEventListener("touchend", e => {
+    const now = Date.now(), quick = now - lastTouchEnd < 380;
+    lastTouchEnd = now;
+    if (!quick || !e.cancelable || e.touches.length) return;
+    const t = e.target;
+    if (t.closest && t.closest("input,select,textarea,[contenteditable]")) return;   // Texteingaben normal lassen
+    e.preventDefault();
+    const p = e.changedTouches[0];
+    t.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true, view: window, clientX: p.clientX, clientY: p.clientY}));
+  }, {passive:false});
+  // Flächen zum Ziehen/Streuen: dort gar keine Browser-Gesten
+  document.addEventListener("touchstart", e => {
+    if (e.target.closest && e.target.closest("#kMuffin,.egg-muffin")) e.preventDefault();
+  }, {passive:false});
   // Computer: Strg/⌘ + Mausrad bzw. Trackpad-Zoom und Strg/⌘ + Plus/Minus
   document.addEventListener("wheel", e => { if (e.ctrlKey || e.metaKey) e.preventDefault(); }, {passive:false});
   document.addEventListener("keydown", e => {
