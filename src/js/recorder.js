@@ -19,7 +19,7 @@ function setStudio(state, msg){
   const st = $("studio");
   st.className = "studio " + state;
   const it = itemByKey(selKey);
-  $("stEmoji").textContent = it ? it.e : "";
+  $("stEmoji").innerHTML = it ? (it.word ? pic(it.k, it.e) : it.e) : "";
   $("stWord").textContent = it ? it.t : "";
   const has = selKey && hasRec(selKey);
   const msgs = {
@@ -71,7 +71,7 @@ function renderRecList(){
     const rows = sec.items.filter(i => !only || !hasRec(i.k) || i.k === selKey).map(i => {
       const has = hasRec(i.k);
       return `<div class="recrow ${has ? "has" : ""} ${i.k === selKey ? "sel" : ""}" data-k="${i.k}">
-        <span class="e">${i.e}</span>
+        <span class="e">${i.word ? pic(i.k, i.e) : i.e}</span>
         <span class="w">${i.t}</span>
         <span class="st">${has ? "✅ fertig" : "fehlt"}</span>
         ${has ? `<button class="rbtn" data-act="del" aria-label="Löschen">🗑</button>` : ""}

@@ -81,6 +81,17 @@ button{font-family:inherit;color:inherit}
 .speaker.talking{animation:wobble .6s infinite}
 .peek{position:absolute;right:14px;bottom:12px;border:0;background:#f1eef8;border-radius:999px;padding:6px 12px;font-size:20px;cursor:pointer}
 .big-emoji{font-size:100px;line-height:1.05;animation:pop .45s}
+/* gezeichnete Wortbilder */
+.pic-svg{display:block;width:100%;height:100%;overflow:visible}
+.big-emoji .pic-svg{width:150px;height:150px}
+.pic .e .pic-svg{width:120px;height:120px}
+.letter small .pic-svg{width:40px;height:40px;margin:2px auto 0}
+.chip.pic-chip{width:54px;height:54px;min-width:0;padding:4px;background:#fff;border:4px solid #eee}
+.chip.pic-chip.G{border-color:var(--g)} .chip.pic-chip.D{border-color:var(--d)}
+.st-emoji .pic-svg{width:110px;height:110px;margin:0 auto}
+.recrow .e .pic-svg{width:34px;height:34px}
+.mode .ic.ic-pics{gap:0}
+.mode .ic.ic-pics .pic-svg{width:42px;height:42px}
 .word{font-size:46px;font-weight:900;letter-spacing:1px}
 .hl{display:inline-block;padding:0 6px;border-radius:12px;color:#fff;margin:0 1px}
 .hl.G{background:var(--g)} .hl.D{background:var(--d)}
