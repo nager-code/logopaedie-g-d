@@ -1,0 +1,216 @@
+/* ================= Was ist spielbar? ================= */
+const hasRec = k => !!recURL[k];
+function recordedG(){ return G_WORDS.filter(([w]) => hasRec(w)); }
+function recordedD(){ return D_WORDS.filter(([w]) => hasRec(w)); }
+function recordedPairs(){ return PAIRS.filter(p => p.every(x => hasRec(x.w))); }
+function canPlay(m){ return m === "gd" ? recordedG().length >= 1 && recordedD().length >= 1 : recordedPairs().length >= 1; }
+
+function refreshCounts(){
+  const words = REC_ITEMS.filter(i => i.word), have = words.filter(i => hasRec(i.k)).length;
+  $("recCount").textContent = `${have}/${words.length}`;
+  $("recBar").style.width = (100 * have / words.length) + "%";
+  $("recSummary").textContent = have ? `${have} von ${words.length} Wörtern aufgenommen` : "Noch keine Wörter aufgenommen";
+  // Startbildschirm
+  const g = recordedG().length, d = recordedD().length, p = recordedPairs().length;
+  const gdOK = canPlay("gd"), pOK = canPlay("pair");
+  document.querySelector('.mode[data-mode="gd"]').classList.toggle("locked", !gdOK);
+  document.querySelector('.mode[data-mode="pair"]').classList.toggle("locked", !pOK);
+  $("sub-gd").textContent = gdOK ? `Hör gut zu! (${g + d} Wörter)` : "🔒 Erst Wörter mit G und D aufnehmen";
+  $("sub-pair").textContent = pOK ? `Tipp das richtige Bild (${p} Paare)` : "🔒 Erst ein Wortpaar aufnehmen";
+  $("needRec").classList.toggle("hidden", gdOK || pOK);
+}
+
+/* ================= Spiel ================= */
+function freshFirst(list, n){
+  const fresh = shuffle(list.filter(x => !lastUsed.includes(x[0])));
+  const old = shuffle(list.filter(x => lastUsed.includes(x[0])));
+  const base = fresh.concat(old);
+  const out = [];
+  while (out.length < n) out.push(...(out.length ? shuffle(base) : base));
+  return out.slice(0, n);
+}
+
+function startGame(m){
+  if (!canPlay(m)){ openParents(); return; }
+  mode = m; stars = 0; $("stars").textContent = "⭐ 0";
+  hide("home"); show("game"); hide("endOverlay");
+  newGame();
+}
+
+function newGame(){
+  round = 0; results = []; answered = false;
+  if (mode === "gd"){
+    const g = freshFirst(recordedG(), ROUNDS/2).map(([w,e]) => ({w,e,l:"G"}));
+    const d = freshFirst(recordedD(), ROUNDS/2).map(([w,e]) => ({w,e,l:"D"}));
+    let tries = 0;
+    do {
+      deck = shuffle(g.concat(d)); tries++;
+    } while (tries < 300 && (/(G{4}|D{4})/.test(deck.map(x => x.l).join("")) || deck.some((x,i) => i && x.w === deck[i-1].w)));
+    lastUsed = deck.map(x => x.w); save("last", lastUsed);
+  } else {
+    const pairs = recordedPairs();
+    deck = []; let prev = null;
+    for (let i=0;i<ROUNDS;i++){
+      let p, t, n = 0;
+      do { p = pick(pairs); t = pick(p); n++; } while (n < 20 && prev && t.w === prev.w);
+      prev = t;
+      deck.push({pair: shuffle(p), target: t});
+    }
+  }
+  renderRound();
+}
+
+function goHome(){ stopAll(); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
+
+function setBubble(text, cls){
+  const b = $("bubble");
+  b.className = "bubble " + (cls || "");
+  b.textContent = text;
+  b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+}
+function highlight(word, letter){
+  const i = word.toLowerCase().indexOf(letter.toLowerCase());
+  if (i < 0) return word;
+  return word.slice(0,i) + `<span class="hl ${letter}">${word[i]}</span>` + word.slice(i+1);
+}
+function renderProgress(){
+  $("progress").innerHTML = deck.map((_,i) => {
+    const r = results[i]; const cls = r ? r : (i === round ? "now" : "");
+    const sym = r === "ok" ? "✓" : r === "no" ? "✗" : "";
+    return `<div class="dot ${cls}">${sym}</div>`;
+  }).join("");
+}
+function currentWord(){ return mode === "gd" ? cur.w : cur.target.w; }
+function playCurrent(){ playSeq([currentWord()]); }
+
+function renderRound(){
+  answered = false;
+  cur = deck[round];
+  renderProgress();
+  hide("next");
+  setBubble(mode === "gd" ? "G oder D? 👂" : "Welches Bild? 👂");
+
+  const card = $("card");
+  card.className = "card";
+  card.innerHTML = `
+    <button class="speaker" id="spk" aria-label="Nochmal hören">🔊</button>
+    <button class="peek" id="peek" aria-label="Lösung zeigen">👀</button>`;
+  $("spk").addEventListener("click", e => { e.stopPropagation(); playCurrent(); });
+  $("peek").addEventListener("click", e => { e.stopPropagation(); answer(undefined); });
+
+  const ans = $("answers");
+  if (mode === "gd"){
+    ans.innerHTML = `
+      <button class="letter G" data-l="G"><b>G</b><small>🦒</small></button>
+      <button class="letter D" data-l="D"><b>D</b><small>🦕</small></button>`;
+    ans.querySelectorAll(".letter").forEach(b => b.addEventListener("click", () => answer(b.dataset.l)));
+  } else {
+    ans.innerHTML = cur.pair.map((p,i) => `
+      <button class="pic" data-i="${i}"><span class="e">${p.e}</span><span class="lbl"></span></button>`).join("");
+    ans.querySelectorAll(".pic").forEach(b => b.addEventListener("click", () => answer(+b.dataset.i)));
+  }
+  setTimeout(playCurrent, 350);
+}
+
+function addBadge(el, ok){
+  const b = document.createElement("span");
+  b.className = "badge " + (ok ? "ok" : "no");
+  b.textContent = ok ? "✓" : "✗";
+  el.appendChild(b);
+}
+
+function answer(choice){
+  if (answered) return;
+  answered = true;
+  let correct = null, chosenLabel = "";
+
+  if (mode === "gd"){
+    if (choice !== undefined){ correct = (choice === cur.l); chosenLabel = choice; }
+    document.querySelectorAll(".letter").forEach(b => {
+      const l = b.dataset.l;
+      if (l === cur.l){ b.classList.add("right"); addBadge(b, true); }
+      else if (choice === l){ b.classList.add("wrong"); addBadge(b, false); }
+      else b.classList.add("dim");
+    });
+  } else {
+    const targetIdx = cur.pair.indexOf(cur.target);
+    if (choice !== undefined){ correct = (choice === targetIdx); chosenLabel = cur.pair[choice].e; }
+    document.querySelectorAll(".pic").forEach((b,i) => {
+      const p = cur.pair[i];
+      b.querySelector(".lbl").innerHTML = highlight(p.w, p.l);
+      if (i === targetIdx){ b.classList.add("right"); addBadge(b, true); }
+      else if (choice === i){ b.classList.add("wrong"); addBadge(b, false); }
+      else b.classList.add("dim");
+    });
+  }
+
+  const item = mode === "gd" ? cur : cur.target;
+  const card = $("card");
+  card.className = "card"; void card.offsetWidth;
+  let explain = "";
+  stopAll();
+
+  if (correct === true){
+    setBubble("✅ " + pick(PRAISE), "good");
+    sfx("right");
+    card.classList.add("flip","is-right");
+    stars++; updateStars(); confetti();
+  } else if (correct === false){
+    setBubble("❌ " + pick(OOPS), "bad");
+    sfx("wrong");
+    explain = mode === "gd"
+      ? `<div class="explain"><span class="chip ${chosenLabel} x">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.l}</span></div>`
+      : `<div class="explain"><span class="chip x" style="background:#eee">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.e}</span></div>`;
+    card.classList.add("is-wrong");
+    try { if (navigator.vibrate) navigator.vibrate([120,60,120]); } catch(e){}
+  } else {
+    setBubble("👀 Schau mal!");
+    card.classList.add("flip","is-seen");
+  }
+
+  card.innerHTML = `
+    <div class="big-emoji">${item.e}</div>
+    <div class="word">${highlight(item.w, item.l)}</div>
+    ${explain}`;
+
+  results[round] = correct === true ? "ok" : correct === false ? "no" : "skip";
+  renderProgress();
+  show("next");
+
+  setTimeout(() => {
+    if (correct === false) playSeq(["#" + item.l, item.w]);
+    else if (correct === true) playSeq(["#ok", item.w]);
+    else playSeq([item.w]);
+  }, correct === null ? 400 : 900);
+}
+
+function next(){
+  round++;
+  if (round >= deck.length) return showEnd();
+  renderRound();
+}
+function showEnd(){
+  const ok = results.filter(r => r === "ok").length, n = deck.length;
+  $("endStars").textContent = "⭐".repeat(Math.max(1, Math.round(ok/2)));
+  $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
+  show("endOverlay");
+  sfx("right"); confetti(); setTimeout(confetti, 400);
+  playSeq(["#end"]);
+}
+function updateStars(){
+  const s = $("stars"); s.textContent = "⭐ " + stars;
+  s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
+}
+function confetti(){
+  const items = ["⭐","🎉","✨","🌟","🎈","💛"];
+  for (let i=0;i<18;i++){
+    const el = document.createElement("span");
+    el.className = "confetti"; el.textContent = pick(items);
+    const a = rnd()*Math.PI*2, d = 120 + rnd()*160;
+    el.style.setProperty("--x", Math.cos(a)*d + "px");
+    el.style.setProperty("--y", Math.sin(a)*d + "px");
+    el.style.setProperty("--r", (rnd()*720-360) + "deg");
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1200);
+  }
+}

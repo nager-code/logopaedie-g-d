@@ -17,7 +17,21 @@ Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Übe
 
 ## Technik
 
-Eine einzige Datei (`index.html`), ohne Abhängigkeiten. Genutzt werden MediaRecorder, Web Audio und IndexedDB.
+Reines HTML, CSS und JavaScript, ohne Abhängigkeiten und ohne Build-Schritt. Genutzt werden MediaRecorder, Web Audio und IndexedDB.
+
+```
+index.html        Seitenaufbau
+css/style.css     Design
+js/words.js       Wortlisten und Wortpaare
+js/util.js        Hilfsfunktionen und Spielzustand
+js/storage.js     Aufnahmen speichern (IndexedDB), Stille abschneiden
+js/sound.js       Aufnahmen abspielen, Geräusche für richtig/falsch
+js/game.js        Spiellogik
+js/recorder.js    Aufnahme-Studio
+js/app.js         Navigation und Start
+```
+
+Neue Wörter kommen in `js/words.js` dazu.
 Bei jedem Push auf `main` veröffentlicht eine GitHub Action die Seite auf GitHub Pages.
 
 ## Lizenz

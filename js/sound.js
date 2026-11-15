@@ -1,0 +1,63 @@
+/* ================= Abspielen (nur eigene Aufnahmen) ================= */
+function setTalking(on){ const s = document.querySelector(".speaker"); if (s) s.classList.toggle("talking", on); }
+let curAudio = null;
+function stopAll(){
+  if (curAudio){ try { curAudio.pause(); } catch(e){} curAudio = null; }
+  setTalking(false);
+}
+function playRec(k){
+  return new Promise(resolve => {
+    const url = recURL[k];
+    if (!url){ resolve(false); return; }
+    const a = new Audio(url);
+    curAudio = a;
+    let done = false;
+    const fin = () => { if (done) return; done = true; setTalking(false); resolve(true); };
+    a.onended = a.onerror = fin;
+    setTalking(true);
+    a.play().catch(fin);
+    setTimeout(fin, 8000);
+  });
+}
+async function playSeq(keys){
+  stopAll();
+  for (const k of keys) if (recURL[k]) await playRec(k);
+}
+
+/* ================= Geräusche ================= */
+let sfxCtx = null;
+function getCtx(){
+  try {
+    if (!sfxCtx){ const AC = window.AudioContext || window.webkitAudioContext; sfxCtx = new AC(); }
+    if (sfxCtx.state === "suspended") sfxCtx.resume();
+    return sfxCtx;
+  } catch(e){ return null; }
+}
+function tone(ctx, freq, start, dur, type, vol, freqEnd){
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, start);
+  if (freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, start + dur);
+  g.gain.setValueAtTime(0.0001, start);
+  g.gain.exponentialRampToValueAtTime(vol, start + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(start); o.stop(start + dur + 0.05);
+}
+function sfx(kind){
+  const ctx = getCtx(); if (!ctx) return;
+  const t = ctx.currentTime + 0.02;
+  if (kind === "right"){
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      tone(ctx, f, t + i * 0.09, 0.35, "triangle", 0.35);
+      tone(ctx, f * 2, t + i * 0.09, 0.2, "sine", 0.08);
+    });
+  } else if (kind === "wrong"){
+    tone(ctx, 330, t, 0.22, "square", 0.12, 260);
+    tone(ctx, 247, t + 0.22, 0.4, "square", 0.12, 165);
+  } else if (kind === "recstart"){
+    tone(ctx, 880, t, 0.12, "sine", 0.25);
+  } else if (kind === "recstop"){
+    tone(ctx, 660, t, 0.1, "sine", 0.2); tone(ctx, 990, t + 0.1, 0.14, "sine", 0.2);
+  }
+}
