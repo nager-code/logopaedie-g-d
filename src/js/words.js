@@ -20,7 +20,9 @@ const ROUNDS = 10;
 const MIN_WORDS = 5;          // so viele Wörter (G + D) braucht „G oder D?“ mindestens
 const MAX_REC_MS = 4000;
 const PRAISE = ["Super!","Toll gemacht!","Klasse!","Spitze!","Richtig!"];
-const OOPS = ["Hoppla!","Fast!","Nochmal hinhören!"];
+const OOPS = ["Brrr, ich bin ganz blau! 🥶","Hoppla! Nochmal hinhören!","Huch! Das war knapp!","Blubb! Fast!"];
+const HELLO = ["Hallo! Ich bin Fips! 👋<br>Spielst du mit mir?","Hallo! Schön, dass du da bist! 💚","Hallo! Ich bin Fips, der kleine Drache! 🐉"];
+const GIGGLE = ["Hihi, das kitzelt! 😄","Ich bin Fips! 💚","Los, spielen wir! 🎉","Hörst du G oder D? 👂"];
 
 const REC_SECTIONS = (() => {
   const seen = new Set();

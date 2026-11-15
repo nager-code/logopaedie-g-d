@@ -22,5 +22,26 @@ document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click
   refreshCounts();
 }));
 
+/* Fips begrüßt den Besucher */
+let heroTimer = null;
+function heroSay(html, ms = 3500){
+  const b = $("heroBubble");
+  b.innerHTML = html; b.classList.remove("hidden");
+  b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+  clearTimeout(heroTimer);
+  heroTimer = setTimeout(() => b.classList.add("hidden"), ms);
+}
+function greet(){
+  dragonDo("homeDragon", "wave", 3600);
+  heroSay(pick(HELLO), 4200);
+}
+$("homeDragon").addEventListener("click", () => {
+  dragonDo("homeDragon", "giggle", 1200);
+  heroSay(pick(GIGGLE), 2200);
+  sfx("giggle");
+});
+
+mountDragons();
 refreshCounts();
 loadAllRecs();
+setTimeout(greet, 500);

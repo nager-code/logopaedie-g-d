@@ -81,7 +81,7 @@ function newGame(){
   renderRound();
 }
 
-function goHome(){ endParty(); stopAll(); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
+function goHome(){ endParty(); stopAll(); setTimeout(greet, 300); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
 
 function setBubble(text, cls){
   const b = $("bubble");
@@ -106,6 +106,7 @@ function playCurrent(){ playSeq([currentWord()]); }
 
 function renderRound(){
   answered = false;
+  dragonReset("buddyDragon");
   cur = deck[round];
   renderProgress();
   hide("next");
@@ -173,13 +174,15 @@ function answer(choice){
 
   if (correct === true){
     setBubble("✅ " + pick(PRAISE), "good");
+    dragonDo("buddyDragon", "happy", 2000);
     sfx("right");
     card.classList.add("flip","is-right");
     stars++; updateStars(); confetti();
     streak++;
     if (streak % STREAK_EVERY === 0) setTimeout(() => celebrate(streak), 1500);
   } else if (correct === false){
-    setBubble("❌ " + pick(OOPS), "bad");
+    setBubble(pick(OOPS), "bad");
+    dragonDo("buddyDragon", "oops", 2600);
     sfx("wrong");
     streak = 0;
     explain = mode === "gd"
@@ -218,6 +221,7 @@ function showEnd(){
   $("endStars").textContent = "⭐".repeat(Math.max(1, Math.round(ok/2)));
   $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
   show("endOverlay");
+  dragonDo("endDragon", ok >= n/2 ? "happy" : "wave", 0);
   sfx("right"); confetti(); setTimeout(confetti, 400);
   playSeq(["#end"]);
 }
@@ -228,7 +232,7 @@ const PARTIES = [
   {cls:"rocket",   html:`<div class="p-rocket">🚀</div><div class="p-trail">✨✨✨</div>`},
   {cls:"rainbow",  html:`<div class="p-rainbow"><i></i><i></i><i></i><i></i><i></i></div><div class="p-unicorn">🦄</div>`},
   {cls:"parade",   html:`<div class="p-parade"><span>🦕</span><span>🦒</span><span>🐬</span><span>🐯</span><span>🦔</span></div>`},
-  {cls:"owl",      html:`<div class="p-owl">🦉</div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span></div>`},
+  {cls:"dragon",   html:`<div class="p-dragon" data-dragon></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span></div>`},
   {cls:"balloons", html:`<div class="p-balloons"><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span></div>`},
   {cls:"fireworks",html:`<div class="p-fw"></div>`}
 ];
@@ -238,6 +242,9 @@ function celebrate(n){
   const p = PARTIES[i], el = $("party");
   el.className = "party pt-" + p.cls;
   el.innerHTML = `${p.html}<div class="p-badge"><span class="p-fire">🔥</span><b>${n}</b><small>richtig hintereinander!</small></div>`;
+  mountDragons(el);
+  el.querySelectorAll("[data-dragon]").forEach(d => dragonDo(d, "happy", 0));
+  dragonDo("buddyDragon", "happy", 2500);
   if (p.cls === "fireworks"){
     const fw = el.querySelector(".p-fw");
     for (let k = 0; k < 4; k++){

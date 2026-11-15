@@ -62,6 +62,8 @@ function sfx(kind){
     const n = [[523.25,0],[523.25,0.13],[523.25,0.26],[698.46,0.42]];
     n.forEach(([f, d], i) => tone(ctx, f, t + d, i === 3 ? 0.7 : 0.12, "square", 0.1));
     [[698.46],[880],[1046.5]].forEach(([f]) => tone(ctx, f, t + 0.42, 0.8, "triangle", 0.18));
+  } else if (kind === "giggle"){
+    [880, 1046.5, 880, 1174.7].forEach((f, i) => tone(ctx, f, t + i * 0.08, 0.1, "sine", 0.18));
   } else if (kind === "recstop"){
     tone(ctx, 660, t, 0.1, "sine", 0.2); tone(ctx, 990, t + 0.1, 0.14, "sine", 0.2);
   }

@@ -12,8 +12,11 @@
 <!-- ================= Start ================= -->
 <section class="screen" id="home">
   <div class="home-title">
-    <div class="owl">🦉</div>
     <h1><span class="lg">G</span> oder <span class="ld">D</span>?</h1>
+  </div>
+  <div class="home-hero">
+    <div class="hero-bubble hidden" id="heroBubble"></div>
+    <div data-dragon id="homeDragon" class="home-dragon"></div>
   </div>
   <div class="needrec hidden" id="needRec">
     🎙️ Bevor es losgeht, nehmen Mama oder Papa <b>mindestens 5</b> Wörter mit ihrer Stimme auf.
@@ -44,7 +47,7 @@
     <div class="stars" id="stars">⭐ 0</div>
   </div>
   <div class="buddy">
-    <div class="owl">🦉</div>
+    <div data-dragon id="buddyDragon" class="buddy-dragon"></div>
     <div class="bubble" id="bubble">Hör gut zu!</div>
   </div>
   <div class="card" id="card"></div>
@@ -58,7 +61,7 @@
 <!-- ================= Ende ================= -->
 <div class="overlay hidden" id="endOverlay">
   <div class="panel">
-    <div class="owl">🦉</div>
+    <div data-dragon id="endDragon" class="end-dragon"></div>
     <h1>Geschafft!</h1>
     <div class="endstars" id="endStars"></div>
     <p id="endText"></p>
@@ -121,6 +124,7 @@
 
 <script src="js/words.js?v=__VERSION__"></script>
 <script src="js/util.js?v=__VERSION__"></script>
+<script src="js/dragon.js?v=__VERSION__"></script>
 <script src="js/storage.js?v=__VERSION__"></script>
 <script src="js/sound.js?v=__VERSION__"></script>
 <script src="js/game.js?v=__VERSION__"></script>
