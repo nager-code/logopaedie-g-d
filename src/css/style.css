@@ -599,10 +599,18 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .fin-svg .fb-spark{fill:#FFF3A0;animation:fbSpark .5s calc(var(--bt) + .1s + var(--j) * .06s) ease-out 2}
 @keyframes fbPuff{0%{transform:translate(4px,0) scale(.3);fill:#FFFBE0;opacity:1}35%{fill:#FFD54A;opacity:1}70%{fill:#FF8A3D;opacity:.95}100%{transform:translate(calc(var(--len) * 1px),calc(var(--oy) * 1px)) scale(1.9);fill:#E8455F;opacity:0}}
 @keyframes fbSpark{0%{transform:translate(10px,0);opacity:1}100%{transform:translate(calc(var(--len) * .9px),calc(var(--oy) * 1px));opacity:0}}
-/* Maul weit auf und glühend */
-.fin-svg .fb-mouth{transform-origin:200px 228px;transform:scale(0);animation:fbMouth 1.3s calc(var(--bt) - .12s) forwards}
-@keyframes fbMouth{0%{transform:scale(0)}12%{transform:scale(1.15)}20%,85%{transform:scale(1)}100%{transform:scale(0)}}
-.fin-svg .fb-mouth ellipse:last-child{animation:fbFlick .1s linear infinite alternate;transform-origin:200px 232px}
+/* Glut im Maul, darüber der Feuerball – er deckt die Mundkontur ganz ab */
+.fin-svg .fb-mouth{transform-origin:200px 232px;transform:scale(0);animation:fbMouth 1.3s calc(var(--bt) - .15s) forwards}
+@keyframes fbMouth{0%{transform:scale(0)}12%{transform:scale(1.1)}20%,85%{transform:scale(1)}100%{transform:scale(0)}}
+.fin-svg .fb-ball{transform:translate(200px,232px) scale(0);animation:fbBall 1.25s calc(var(--bt) - .1s) cubic-bezier(.2,.9,.3,1.2) forwards}
+@keyframes fbBall{0%{transform:translate(200px,232px) scale(0)}14%{transform:translate(200px,232px) scale(1.2)}24%,82%{transform:translate(200px,232px) scale(1)}100%{transform:translate(200px,232px) scale(0)}}
+.fin-svg .fb-ring{animation:fbSpin .5s linear infinite}
+.fin-svg .fb-ring2{animation:fbSpin .35s linear infinite reverse}
+@keyframes fbSpin{from{transform:rotate(-6deg) scale(1,1)}50%{transform:rotate(6deg) scale(1.07,.95)}to{transform:rotate(-6deg) scale(1,1)}}
+.fin-svg .fb-halo{animation:fbFlick .15s linear infinite alternate}
+/* Kopf dreht sich zum Buchstaben, solange Fips Feuer speit */
+.st-walk .fin-svg .tilt{animation:stHead 10.3s ease-in-out both}
+@keyframes stHead{0%,22.3%{transform:none}26.2%,37.9%{transform:rotate(9deg) translateX(8px)}41.3%,71.8%{transform:none}75.7%,87.4%{transform:rotate(9deg) translateX(8px)}90.8%,100%{transform:none}}
 /* vorher: Rauchwölkchen aus der Nase · danach: Rauch aus dem Maul */
 .fin-svg .fb-smoke,.fin-svg .fb-smoke2{fill:#A79CC4;opacity:0;transform-box:fill-box;transform-origin:center}
 .fin-svg .fb-smoke{animation:fbNose .6s calc(var(--bt) - .6s + (var(--j) - var(--j) % 2) * .14s) ease-out forwards}

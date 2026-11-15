@@ -43,20 +43,33 @@ function finBreath(i, bt){
   const r = (a, b) => (a + rnd() * (b - a)).toFixed(1);
   const puffs = Array.from({length:14}, (_, k) => `<circle class="fb-puff" r="${r(12,19)}" style="--j:${k};--oy:${r(-34,34)}"/>`).join("");
   const sparks = Array.from({length:10}, (_, k) => `<circle class="fb-spark" r="${r(2.5,4)}" style="--j:${k};--oy:${r(-60,60)}"/>`).join("");
+  // Feuerball am Maul: Flammenkranz aus Zungen, darin heller Kern
+  // runde, lodernde Feuerwolke: Bögen nach außen, nach rechts (zum Strahl hin) etwas länger gezogen
+  const tongues = (n, r1, r2, rot = 0) => { let d = "";
+    const p = (a, rr) => { const st = 1 + .28 * Math.max(0, Math.cos(a)); return `${(Math.cos(a) * rr * st).toFixed(1)} ${(Math.sin(a) * rr).toFixed(1)}`; };
+    for (let k = 0; k < n; k++){
+      const a0 = (k / n) * Math.PI * 2 + rot, a2 = ((k + 1) / n) * Math.PI * 2 + rot, w = (a2 - a0) * .45;
+      d += (k ? "" : "M" + p(a0, r1)) + ` C${p(a0 + w * .2, r2 * 1.05)} ${p(a2 - w * .2, r2 * 1.05)} ${p(a2, r1)}`;
+    }
+    return d + " Z"; };
   const smoke = (cls, pts) => pts.map(([x,y], k) => `<circle class="${cls}" cx="${x}" cy="${y}" r="7" style="--j:${k}"/>`).join("");
   return `<g class="fb" style="--bt:${bt}s;--k:3.3;--len:330;--ang:10deg">
     <g class="fb-nose">${smoke("fb-smoke", [[193,204],[207,204],[193,204],[207,204]])}</g>
+    <g class="fb-mouth"><ellipse cx="200" cy="232" rx="28" ry="24" fill="url(#fbGlow)"/></g>
     <g class="fb-jet">
       <g class="fb-cone">
-        <path class="fb-outer" d="M0 -13 C14 -18 26 -30 40 -32 C46 -40 56 -44 62 -40 C72 -50 88 -50 96 -42 C108 -38 114 -22 110 -8 C116 0 116 6 110 10 C114 26 106 42 94 44 C84 52 68 50 60 42 C50 46 40 40 38 32 C24 30 14 18 0 13 Z"/>
-        <path class="fb-mid" d="M0 -9 C24 -14 48 -26 76 -28 C94 -29 104 -16 102 0 C104 16 94 29 76 28 C48 26 24 14 0 9 Z"/>
-        <path class="fb-core" d="M0 -6 C24 -9 46 -14 66 -14 C76 -13 80 -6 80 0 C80 6 76 13 66 14 C46 14 24 9 0 6 Z"/>
+        <path class="fb-outer" d="M0 -26 C14 -28 26 -32 40 -34 C46 -40 56 -44 62 -40 C72 -50 88 -50 96 -42 C108 -38 114 -22 110 -8 C116 0 116 6 110 10 C114 26 106 42 94 44 C84 52 68 50 60 42 C50 46 40 40 38 32 C24 32 14 28 0 26 Z"/>
+        <path class="fb-mid" d="M0 -18 C24 -20 48 -26 76 -28 C94 -29 104 -16 102 0 C104 16 94 29 76 28 C48 26 24 20 0 18 Z"/>
+        <path class="fb-core" d="M0 -11 C24 -12 46 -14 66 -14 C76 -13 80 -6 80 0 C80 6 76 13 66 14 C46 14 24 12 0 11 Z"/>
       </g>
       ${puffs}${sparks}
     </g>
-    <g class="fb-mouth"><ellipse cx="200" cy="232" rx="27" ry="22" fill="#5A1E3A" stroke="#2F7D63" stroke-width="4"/>
-      <ellipse cx="200" cy="234" rx="20" ry="15" fill="url(#fbGlow)"/>
-      <path d="M181 220 L186 229 L191 221 Z M219 220 L214 229 L209 221 Z" fill="#fff"/></g>
+    <g class="fb-ball">
+      <circle class="fb-halo" r="58" fill="url(#fbHalo)"/>
+      <path class="fb-ring" d="${tongues(8, 31, 41)}" fill="url(#fbBallOut)" stroke="#F06A3A" stroke-width="2" stroke-linejoin="round"/>
+      <path class="fb-ring2" d="${tongues(7, 21, 29, .4)}" fill="url(#fbBallMid)"/>
+      <ellipse rx="17" ry="14" fill="url(#fbBallCore)"/>
+    </g>
     <g class="fb-after">${smoke("fb-smoke2", [[214,226],[220,222],[226,226]])}</g>
   </g>`;
 }
@@ -64,6 +77,10 @@ const FIN_BREATH_DEFS = `<defs>
   <linearGradient id="fbOuter" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE45C"/><stop offset=".3" stop-color="#FFB13B"/><stop offset=".65" stop-color="#FF7A3D"/><stop offset=".9" stop-color="#E8455F" stop-opacity=".9"/><stop offset="1" stop-color="#E8455F" stop-opacity=".5"/></linearGradient>
   <linearGradient id="fbMid" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFF6C0"/><stop offset=".45" stop-color="#FFD54A"/><stop offset="1" stop-color="#FF9A3D" stop-opacity=".8"/></linearGradient>
   <linearGradient id="fbCore" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#FFF6C0"/><stop offset="1" stop-color="#FFE45C" stop-opacity="0"/></linearGradient>
+  <radialGradient id="fbHalo" cx=".5" cy=".5" r=".5"><stop offset=".4" stop-color="#FFB13B" stop-opacity=".55"/><stop offset="1" stop-color="#FF8A3D" stop-opacity="0"/></radialGradient>
+  <radialGradient id="fbBallOut" cx=".5" cy=".5" r=".5"><stop offset=".35" stop-color="#FFD54A"/><stop offset=".75" stop-color="#FF8A3D"/><stop offset="1" stop-color="#E8455F"/></radialGradient>
+  <radialGradient id="fbBallMid" cx=".5" cy=".5" r=".5"><stop offset=".2" stop-color="#FFF6C0"/><stop offset="1" stop-color="#FFC23A"/></radialGradient>
+  <radialGradient id="fbBallCore" cx=".45" cy=".45" r=".55"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#FFFBE0"/><stop offset="1" stop-color="#FFE45C"/></radialGradient>
   <radialGradient id="fbGlow" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#FFFBE0"/><stop offset=".45" stop-color="#FFD54A"/><stop offset="1" stop-color="#FF7A3D"/></radialGradient>
 </defs>`;
 /* Feuer genau auf den Buchstaben richten: Zielpunkt in Fips' Kopf-Koordinaten umrechnen */
