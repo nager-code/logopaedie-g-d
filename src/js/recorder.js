@@ -29,7 +29,7 @@ function setStudio(state, msg){
     recording: `<span class="rec-dot"></span> Aufnahme läuft – jetzt sprechen!`,
     saving: "⏳ Wird gespeichert …",
     done: "✅ Gespeichert! Hör sie dir an – passt sie? Dann weiter ➜",
-    quiet: "⚠️ Das war sehr leise. Bitte näher ans Handy und nochmal aufnehmen.",
+    quiet: "⚠️ Das war sehr leise. Bitte näher ans Mikrofon (bzw. Handy) und nochmal aufnehmen.",
     error: msg || "⚠️ Das hat nicht geklappt."
   };
   $("stStatus").innerHTML = msgs[state] || "";
@@ -196,3 +196,23 @@ $("recList").addEventListener("change", async e => {
   renderRecList(); setStudio("done"); playRec(k);
 });
 $("onlyMissing").addEventListener("change", renderRecList);
+
+/* Tastatur (PC) */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape"){
+    const open = ["recOverlay","parentsOverlay"].find(id => !$(id).classList.contains("hidden"));
+    if (open){ e.preventDefault(); document.querySelector(`[data-close="${open}"]`).click(); }
+    return;
+  }
+  if ($("recOverlay").classList.contains("hidden") || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("input,textarea,select")) return;
+  if (e.key === " " || e.code === "Space"){
+    e.preventDefault();
+    if (!$("stRec").disabled) $("stRec").click();
+  } else if (e.key === "ArrowRight"){
+    e.preventDefault();
+    if (!$("stNext").disabled) $("stNext").click();
+  } else if (e.key === "p" || e.key === "P"){
+    if (!$("stPlay").disabled) $("stPlay").click();
+  }
+});

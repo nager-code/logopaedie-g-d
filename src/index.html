@@ -72,13 +72,15 @@
 
 <!-- ================= Eltern ================= -->
 <div class="overlay hidden" id="parentsOverlay">
-  <div class="panel">
+  <div class="panel panel-parents">
     <button class="close-x" data-close="parentsOverlay">✕</button>
     <h2>👪 Für Eltern</h2>
+    <div class="parents-grid">
     <div class="menu">
       <button id="openRec"><i>🎙️</i><span>Wörter aufnehmen<small id="recSummary"></small></span></button>
     </div>
-    <h2 style="margin-top:20px">💡 So hilfst du beim Üben</h2>
+    <div class="tips-wrap">
+    <h2 class="tips-title">💡 So hilfst du beim Üben</h2>
     <div class="tips">
       <p>Das Spiel verwendet nur eure eigenen Aufnahmen. Es kommen nur Wörter vor, die schon aufgenommen sind. Je mehr Wörter, desto abwechslungsreicher.</p>
       <p><b style="color:var(--d-dark)">D:</b> Die Zungenspitze tippt oben hinter die Zähne.</p>
@@ -86,14 +88,18 @@
       <p>Sprecht das Wort gemeinsam nach und schaut dabei in einen Spiegel. Kurz und oft üben (5 Minuten am Tag) bringt am meisten.</p>
       <p>Im Spiel: 🔊 = nochmal hören, 👀 = Lösung zeigen.</p>
     </div>
+    </div>
+    </div>
     <p class="small" id="diag" style="margin:14px 0 0"></p>
   </div>
 </div>
 
 <!-- ================= Aufnahme-Studio ================= -->
 <div class="overlay hidden" id="recOverlay">
-  <div class="panel">
+  <div class="panel panel-rec">
     <button class="close-x" data-close="recOverlay" aria-label="Schließen">✕</button>
+    <div class="rec-layout">
+    <div class="rec-main">
     <h2 style="text-align:left;margin-right:46px">🎙️ Wörter aufnehmen</h2>
     <div class="rec-progress"><div class="recbar"><i id="recBar"></i></div><span class="small" id="recCount"></span></div>
     <div class="warn hidden" id="recWarn"></div>
@@ -112,13 +118,18 @@
         <button class="st-side" id="stNext" aria-label="Nächstes Wort">➜</button>
       </div>
       <div class="st-hint" id="stHint">Stille am Anfang und Ende wird automatisch abgeschnitten.</div>
+      <div class="st-keys">Tastatur: <kbd>Leertaste</kbd> aufnehmen/stoppen · <kbd>P</kbd> anhören · <kbd>→</kbd> nächstes Wort · <kbd>Esc</kbd> schließen</div>
+    </div>
     </div>
 
+    <div class="rec-side">
     <div class="list-head">
       <b>Alle Wörter</b>
       <label><input type="checkbox" id="onlyMissing"> nur fehlende</label>
     </div>
     <div id="recList"></div>
+    </div>
+    </div>
   </div>
 </div>
 
