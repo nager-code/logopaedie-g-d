@@ -19,12 +19,10 @@ function refreshCounts(){
   $("recBar").style.width = (100 * have / words.length) + "%";
   $("recSummary").textContent = have ? `${have} von ${words.length} Wörtern aufgenommen` : "Noch keine Wörter aufgenommen";
   // Startbildschirm
-  const st = gdStatus(), p = recordedPairs().length;
-  const gdOK = st.ok, pOK = canPlay("pair");
+  const st = gdStatus();
+  const gdOK = st.ok;
   document.querySelector('.mode[data-mode="gd"]').classList.toggle("locked", !gdOK);
-  document.querySelector('.mode[data-mode="pair"]').classList.toggle("locked", !pOK);
-  $("sub-gd").textContent = gdOK ? `Hör gut zu! (${st.n} Wörter)` : `🔒 ${st.n} von ${MIN_WORDS} Wörtern`;
-  $("sub-pair").textContent = pOK ? `Tipp das richtige Bild (${p} ${p === 1 ? "Paar" : "Paare"})` : "🔒 Mind. 1 Wortpaar aufnehmen";
+  $("sub-gd").textContent = gdOK ? "Hör gut zu! 👂" : `${st.n} von ${MIN_WORDS} Wörtern`;
 
   // Hinweis auf dem Startbildschirm
   $("needRec").classList.toggle("hidden", gdOK);

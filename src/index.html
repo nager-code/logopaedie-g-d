@@ -11,32 +11,37 @@
 
 <!-- ================= Start ================= -->
 <section class="screen" id="home">
-  <div class="home-title">
-    <h1><span class="lg">G</span> oder <span class="ld">D</span>?</h1>
-  </div>
+  <header class="home-title">
+    <h1 aria-label="G oder D?"><span class="tile lg">G</span><span class="oder">oder</span><span class="tile ld">D</span><span class="qm">?</span></h1>
+    <p class="home-sub">Das Hörspiel mit Fips</p>
+  </header>
   <div class="home-hero">
     <div class="hero-bubble hidden" id="heroBubble"></div>
+    <div class="stage" aria-hidden="true">
+      <div class="rainbow"></div>
+      <div class="cloud c1"></div><div class="cloud c2"></div>
+      <div class="sun"></div>
+    </div>
     <div data-dragon id="homeDragon" class="home-dragon"></div>
   </div>
-  <div class="needrec hidden" id="needRec">
-    🎙️ Bevor es losgeht, nehmen Mama oder Papa <b>mindestens 5</b> Wörter mit ihrer Stimme auf.
-    <div class="gdots big" id="needDots"></div>
-    <div id="needText" class="needtext"></div>
-    <button class="bigbtn mini" id="needRecBtn">Wörter aufnehmen</button>
+  <div class="home-main">
+    <div class="needrec hidden" id="needRec">
+      <div class="needrec-ic" aria-hidden="true">🎙️</div>
+      <p class="needrec-txt">Bevor es losgeht, nehmen Mama oder Papa <b>mindestens 5&nbsp;Wörter</b> mit ihrer Stimme auf.</p>
+      <div class="gdots big" id="needDots"></div>
+      <div id="needText" class="needtext"></div>
+      <button class="bigbtn mini" id="needRecBtn">Wörter aufnehmen</button>
+    </div>
+    <div class="modes">
+      <button class="mode m1" data-mode="gd">
+        <span class="ic" aria-hidden="true"><i class="chipG">G</i><i class="chipD">D</i></span>
+        <span class="txt"><b>Spiel starten</b><span class="sub" id="sub-gd">Hör gut zu!</span></span>
+        <span class="go" aria-hidden="true"></span>
+      </button>
+    </div>
+    <button class="parents-btn" id="parentsBtn">👪 Für Eltern</button>
   </div>
-  <div class="modes">
-    <button class="mode m1" data-mode="gd">
-      <span class="ic">🦒🦕</span>
-      <span><b>G oder D?</b><span class="sub" id="sub-gd">Hör gut zu!</span></span>
-      <span class="go">▶</span>
-    </button>
-    <button class="mode m2" data-mode="pair">
-      <span class="ic">🖼️</span>
-      <span><b>Welches Bild?</b><span class="sub" id="sub-pair">Tipp das richtige Bild</span></span>
-      <span class="go">▶</span>
-    </button>
-  </div>
-  <button class="parents-btn" id="parentsBtn">👪 Für Eltern</button>
+  <div class="meadow" aria-hidden="true"><span>🌼</span><span>🌷</span><span>🍄</span><span>🌸</span><span>🌼</span><span>🌷</span></div>
 </section>
 
 <!-- ================= Spiel ================= -->

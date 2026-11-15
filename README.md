@@ -12,10 +12,9 @@ Fips begleitet durchs Spiel: Auf der Startseite winkt er und begrüßt das Kind.
 
 40 Wörter mit D und 40 mit G, nach Schwierigkeit in Stufen geordnet (z. B. *D am Wortanfang*, *D in der Wortmitte*, *GR und GL am Anfang*). D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Beim Aufnehmen werden die leichten Wörter zuerst vorgeschlagen, abwechselnd mit G und D.
 
-## Spielarten
+## So wird gespielt
 
-- **G oder D?** – Ein Wort wird vorgesprochen, das Kind tippt auf **G** oder **D**.
-- **Welches Bild?** – Hörpaare wie *Nagel / Nadel*, *Bogen / Boden* oder *Regen / reden*: Das Kind tippt auf das passende Bild.
+Ein Wort wird vorgesprochen, das Kind tippt auf **G** oder **D**.
 
 Richtige und falsche Antworten werden mit Farbe und Geräusch zurückgemeldet. Nach jeweils 3 richtigen Antworten hintereinander gibt es eine kleine Feier-Animation. Währenddessen sind die Knöpfe ausgeblendet und die Wiedergabe pausiert, danach geht es weiter. 👀 zeigt die Lösung.
 

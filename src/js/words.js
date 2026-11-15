@@ -31,7 +31,7 @@ const G_LEVELS = [
 const D_WORDS = D_LEVELS.flatMap(l => l.words);
 const G_WORDS = G_LEVELS.flatMap(l => l.words);
 
-/* Hörpaare (Minimalpaare) für „Welches Bild?“ */
+/* Hörpaare (Minimalpaare): ihre Wörter kommen zusätzlich ins G-oder-D-Spiel */
 const PAIRS = [
   [{w:"Nagel",e:"💅",l:"G"},{w:"Nadel",e:"🪡",l:"D"}],
   [{w:"Bogen",e:"🏹",l:"G"},{w:"Boden",e:"🟫",l:"D"}],
@@ -55,7 +55,7 @@ const REC_SECTIONS = (() => {
   return [
     ...G_LEVELS.map(lvl),
     ...D_LEVELS.map(lvl),
-    {title:"Weitere Wörter für „Welches Bild?“", items: uniq(PAIRS.flat().map(p => ({k:p.w, e:p.e, t:p.w, word:true})))},
+    {title:"Weitere Wörter (Hörpaare wie Nagel / Nadel)", items: uniq(PAIRS.flat().map(p => ({k:p.w, e:p.e, t:p.w, word:true})))},
     {title:"Sätze (freiwillig)", note:"Damit hört dein Kind auch Lob und Hinweise mit deiner Stimme.", box:true, items: [
       {k:"#G",  e:"🟢", t:"„Das ist ein G.“"},
       {k:"#D",  e:"🔵", t:"„Das ist ein D.“"},
