@@ -1,8 +1,7 @@
 /* ================= Navigation ================= */
 function openParents(){
   stopAll(); refreshCounts();
-  const st = gdStatus();
-  $("diag").textContent = `Version ${APP_VERSION} · ${st.n} Wörter (G: ${st.g}, D: ${st.d}) · Speicher: ${dbOK ? "ok" : "nicht dauerhaft"}`;
+  $("diag").textContent = `Version ${APP_VERSION} · Speicher: ${dbOK ? "ok" : "nicht dauerhaft"}`;
   show("parentsOverlay");
 }
 document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => startGame(b.dataset.mode)));
