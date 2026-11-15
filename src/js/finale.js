@@ -33,7 +33,8 @@ const FIN_CROWN = `<g class="fin-crown">
 /* ---------- 10 von 10: kleine Geschichte ----------
    Fips läuft durch die Landschaft, zündet mit seinem Feueratem erst das G, dann das D an
    und jubelt am Ende mit Krone. Zeiten in Sekunden – passend zu den Animationen in style.css */
-const STORY_END = 7.8;
+const STORY_END = 10.3;
+const STORY_FIRE = [3.2, 8.3];   // Zeitpunkte, an denen G und D Feuer fangen
 const FIN_TREE = c => `<svg viewBox="0 0 60 90"><rect x="25" y="50" width="10" height="38" rx="3" fill="url(#pg-brown)" stroke="#6E4429" stroke-width="3"/>
   <circle cx="30" cy="34" r="24" fill="url(#pg-${c})" stroke="${PIC_PAL[c][3]}" stroke-width="3"/><ellipse cx="22" cy="24" rx="8" ry="4" fill="#fff" opacity=".5"/></svg>`;
 const FIN_FLOWER = c => `<svg viewBox="0 0 20 30"><path d="M10 30 V14" stroke="#3E7D22" stroke-width="2.5"/><g fill="${c}"><circle cx="6" cy="10" r="4"/><circle cx="14" cy="10" r="4"/><circle cx="10" cy="5" r="4"/><circle cx="10" cy="14" r="4"/></g><circle cx="10" cy="10" r="3" fill="#FFD54A"/></svg>`;
@@ -45,8 +46,15 @@ function storyScene(){
     `<div class="st-tree" style="left:${x}%;--h:${r(.85,1.15)}">${FIN_TREE(c)}</div>`).join("");
   const flowers = Array.from({length:22}, (_, i) =>
     `<div class="st-flower" style="left:${i*4.5 + r(0,3)}%">${FIN_FLOWER(pick(["#FF88A8","#C0A4F0","#FFB062","#93BFF5"]))}</div>`).join("");
+  // Buchstabe: grau → fängt Feuer → Flammen klettern hoch, er glüht und verkohlt, Rauch und Funken → leuchtet bunt
+  const burn = [[6,.8,0],[22,1.1,.15],[40,1.25,.05],[56,1,.25],[72,.85,.1],[30,.9,.45],[50,.95,.55]].map(([x,s,d]) =>
+    `<div class="st-flame" style="left:${x}%;--s:${s};--d:${d}s">${FIN_FLAME}</div>`).join("");
+  const smoke = [0,1,2,3].map(i => `<i style="--i:${i};left:${20 + i * 14}%"></i>`).join("");
+  const embers = Array.from({length:10}, (_, i) => `<i style="--i:${i};--x:${r(-40,40)}px;--y:${r(-110,-60)}px;left:${r(15,85)}%"></i>`).join("");
   const letter = (l, cls) => `<div class="st-letter ${cls}"><div class="st-post"></div>
-    <div class="st-tile off">${l}</div><div class="st-tile on">${l}</div><div class="st-fire">${FIN_FLAME}</div></div>`;
+    <div class="st-tile off">${l}<div class="st-char"></div></div><div class="st-tile on">${l}</div>
+    <div class="st-smoke">${smoke}</div><div class="st-burn">${burn}</div><div class="st-embers">${embers}</div>
+    <div class="st-fire">${FIN_FLAME}</div></div>`;
   return `<div class="story">
     <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="finFire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF6A3D"/><stop offset=".55" stop-color="#FFB13B"/><stop offset="1" stop-color="#FFE45C"/></linearGradient></defs></svg>
     <div class="st-sun"></div><div class="st-cloud c1"></div><div class="st-cloud c2"></div>
@@ -124,6 +132,7 @@ async function showFinale(ok, n){
     stage.innerHTML = `<img class="fin-svg" src="img/fips-tanz.svg?v=${APP_VERSION}" alt="Fips">`;
   }
   finaleFx(f.key);
+  if (f.key === "story") STORY_FIRE.forEach(t => later(() => sfx("fire"), t * 1000 - 400));   // Feueratem + Knistern
   show("endOverlay");
   sfx(level >= 2 ? "fanfare" : "right");
 }

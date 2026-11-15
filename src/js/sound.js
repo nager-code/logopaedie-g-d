@@ -73,6 +73,14 @@ function sfx(kind){
     [[698.46],[880],[1046.5]].forEach(([f]) => tone(ctx, f, t + 0.42, 0.8, "triangle", 0.18));
   } else if (kind === "giggle"){
     [880, 1046.5, 880, 1174.7].forEach((f, i) => tone(ctx, f, t + i * 0.08, 0.1, "sine", 0.18));
+  } else if (kind === "fire"){
+    // Fauchen und Knistern: gefiltertes Rauschen, das an- und abschwillt, dazu kleine Knackser
+    const len = 2.2, buf = ctx.createBuffer(1, ctx.sampleRate * len, ctx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++){ d[i] = (Math.random() * 2 - 1) * 0.6; if (Math.random() < 0.0009) d[i] = (Math.random() < .5 ? -1 : 1); }
+    const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = buf; bp.type = "bandpass"; bp.frequency.setValueAtTime(500, t); bp.frequency.linearRampToValueAtTime(1400, t + 0.5); bp.frequency.linearRampToValueAtTime(800, t + len); bp.Q.value = 0.8;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.25); g.gain.setValueAtTime(0.5, t + 1.2); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    src.connect(bp); bp.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + len);
   } else if (kind === "recstop"){
     tone(ctx, 660, t, 0.1, "sine", 0.2); tone(ctx, 990, t + 0.1, 0.14, "sine", 0.2);
   }
