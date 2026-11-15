@@ -13,11 +13,11 @@ Richtige und falsche Antworten werden mit Farbe, Geräusch und Sprachausgabe zur
 
 ## Für Eltern
 
-Über **👪 Für Eltern** lassen sich alle Wörter mit der eigenen Stimme aufnehmen. Das klingt deutlich natürlicher als die Computerstimme. Die Aufnahmen bleiben nur lokal im Browser gespeichert. Wörter ohne Aufnahme liest die Sprachausgabe des Geräts vor.
+Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Über **👪 Für Eltern → Wörter aufnehmen** sprechen Mama oder Papa die Wörter ein. Eine Anzeige zeigt dabei Lautstärke und Restzeit. Im Spiel kommen nur Wörter vor, die schon aufgenommen sind. Die Aufnahmen bleiben nur lokal im Browser gespeichert.
 
 ## Technik
 
-Eine einzige Datei (`index.html`), ohne Abhängigkeiten. Genutzt werden Web Speech API, MediaRecorder, Web Audio und IndexedDB.
+Eine einzige Datei (`index.html`), ohne Abhängigkeiten. Genutzt werden MediaRecorder, Web Audio und IndexedDB.
 Bei jedem Push auf `main` veröffentlicht eine GitHub Action die Seite auf GitHub Pages.
 
 ## Lizenz
