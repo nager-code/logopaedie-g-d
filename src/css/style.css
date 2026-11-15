@@ -438,3 +438,154 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
   .letter small .pic-svg{width:26px;height:26px}
   .next{width:64px;height:64px;font-size:32px}
 }
+
+/* ================= Finale: Fips' große Abschluss-Animation ================= */
+.overlay.finale{background:radial-gradient(ellipse at 50% 30%,#fffdf3,#ffeccb);backdrop-filter:none;overflow-x:hidden;overflow-y:auto;align-items:center}
+.fin-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.fx{position:absolute;width:28px;height:28px;opacity:0;pointer-events:none}
+.fx svg{display:block;width:100%;height:100%}
+.fx i{display:block;width:10px;height:14px;border-radius:3px}
+.fin-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;max-width:440px;margin:auto 0}
+.fin-stage{position:relative;width:230px;margin-top:10px}
+.fin-flip .fin-stage{margin-top:120px}
+.fin-panel{padding:14px 18px 10px}
+.fin-panel h1{margin:2px 0 4px}
+.fin-panel p{margin:6px 0 12px}
+.fin-stars{display:flex;justify-content:center;gap:4px;margin:2px 0}
+.fin-star{width:40px;height:40px;fill:#EEE8F7;stroke:#D5CCE8;animation:starIn .45s calc(.3s + var(--i) * .18s) both}
+.fin-star.on{fill:url(#pg-gold);stroke:#A87500;filter:drop-shadow(0 3px 0 rgba(168,117,0,.25))}
+.fin-svg{display:block;width:100%;height:auto;overflow:visible}
+
+/* Gelenke (Koordinaten im Fips-SVG) */
+.fin-svg .jump{transform-origin:200px 372px}
+.fin-svg .tilt{transform-origin:200px 258px}
+.fin-svg .wigR{transform-origin:252px 288px}
+.fin-svg .wigL{transform-origin:148px 288px}
+.fin-svg .wingL{transform-origin:150px 280px}
+.fin-svg .wingR{transform-origin:250px 280px}
+.fin-svg .tail{transform-origin:250px 332px}
+.fin-svg .fin-crown{transform-origin:200px 80px}
+.fin-svg .blink{transform-box:fill-box;transform-origin:center;animation:finBlink 4.5s infinite}
+.fin-svg .tw{transform-box:fill-box;transform-origin:center;animation:finTw 2.4s ease-in-out infinite}
+.fin-svg .tw2{animation-delay:.8s} .fin-svg .tw3{animation-delay:1.6s}
+@keyframes finBlink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes finTw{0%,100%{transform:scale(.4);opacity:.3}50%{transform:scale(1.1);opacity:1}}
+
+/* Stufe 1 – Mut machen: wiegt sich, nickt, winkt */
+.fin-cheer .fin-svg .jump{animation:fcSway 1.8s ease-in-out infinite}
+.fin-cheer .fin-svg .tilt{animation:fcNod 1.8s ease-in-out infinite}
+.fin-cheer .fin-svg .wigR{animation:fcWave .45s ease-in-out infinite alternate}
+.fin-cheer .fin-svg .tail{animation:fcWag .9s ease-in-out infinite alternate}
+.fin-cheer .fin-svg .wingL{animation:fcFlapL .9s ease-in-out infinite alternate}
+.fin-cheer .fin-svg .wingR{animation:fcFlapR .9s ease-in-out infinite alternate}
+/* Stufe 2 – Klatschen */
+.fin-clap .fin-svg .jump{animation:fcBounce .5s ease-in-out infinite}
+.fin-clap .fin-svg .wigR{animation:fcClapR .5s ease-in-out infinite}
+.fin-clap .fin-svg .wigL{animation:fcClapL .5s ease-in-out infinite}
+.fin-clap .fin-svg .tilt{animation:fcNod 1s ease-in-out infinite}
+.fin-clap .fin-svg .tail{animation:fcWag .5s ease-in-out infinite alternate}
+/* Stufe 3 – Freudensprünge */
+.fin-jump .fin-svg .jump{animation:fcHop .9s cubic-bezier(.3,0,.4,1) infinite}
+.fin-jump .fin-svg .wigR{animation:fcPumpR .45s ease-in-out infinite alternate}
+.fin-jump .fin-svg .wigL{animation:fcPumpL .45s ease-in-out infinite alternate}
+.fin-jump .fin-svg .wingL{animation:fcFlapL .225s ease-in-out infinite alternate}
+.fin-jump .fin-svg .wingR{animation:fcFlapR .225s ease-in-out infinite alternate}
+.fin-jump .fin-svg .tilt{animation:fcNod .9s ease-in-out infinite}
+.fin-jump .fin-svg .tail{animation:fcWag .45s ease-in-out infinite alternate}
+/* Stufe 4 – Salto */
+.fin-flip .fin-svg{transform-origin:50% 62%;will-change:transform;animation:fcFlip 2.7s ease-in-out infinite}
+.fin-flip .fin-svg .shadow-static{display:none}
+.fin-flip .fin-stage::after{content:"";position:absolute;left:20%;right:20%;bottom:2px;height:14px;border-radius:50%;background:rgba(43,74,64,.16);z-index:-1;animation:fcShadow 2.7s ease-in-out infinite}
+.fin-flip .fin-svg .wigR{animation:fcPumpR .45s ease-in-out infinite alternate}
+.fin-flip .fin-svg .wigL{animation:fcPumpL .45s ease-in-out infinite alternate}
+.fin-flip .fin-svg .wingL{animation:fcFlapL .225s ease-in-out infinite alternate}
+.fin-flip .fin-svg .wingR{animation:fcFlapR .225s ease-in-out infinite alternate}
+.fin-flip .fin-svg .tail{animation:fcWag .45s ease-in-out infinite alternate}
+
+@keyframes fcSway{0%,100%{transform:rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+@keyframes fcNod{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes fcWave{from{transform:rotate(-24deg)}to{transform:rotate(16deg)}}
+@keyframes fcWag{from{transform:rotate(-9deg)}to{transform:rotate(8deg)}}
+@keyframes fcFlapL{from{transform:rotate(-6deg)}to{transform:rotate(24deg)}}
+@keyframes fcFlapR{from{transform:rotate(6deg)}to{transform:rotate(-24deg)}}
+@keyframes fcBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes fcClapR{0%,100%{transform:rotate(4deg)}50%{transform:rotate(-38deg)}}
+@keyframes fcClapL{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(38deg)}}
+@keyframes fcHop{0%,100%{transform:translateY(0) scale(1.08,.92)}15%{transform:translateY(0) scale(1,1)}45%{transform:translateY(-90px) scale(.96,1.05)}75%{transform:translateY(0) scale(1.06,.94)}88%{transform:translateY(0) scale(1,1)}}
+@keyframes fcPumpR{from{transform:rotate(12deg)}to{transform:rotate(-24deg)}}
+@keyframes fcPumpL{from{transform:rotate(-12deg)}to{transform:rotate(24deg)}}
+@keyframes fcFlip{
+  0%{transform:translateY(0) rotate(0) scale(1,1)}
+  12%{transform:translateY(8px) rotate(0) scale(1.1,.88)}
+  22%{transform:translateY(-40px) rotate(-20deg) scale(.95,1.06)}
+  45%{transform:translateY(-120px) rotate(-200deg) scale(1,1)}
+  62%{transform:translateY(-20px) rotate(-345deg) scale(1,1)}
+  70%{transform:translateY(0) rotate(-360deg) scale(1.12,.88)}
+  78%{transform:translateY(0) rotate(-360deg) scale(.97,1.03)}
+  86%{transform:translateY(-16px) rotate(-360deg) scale(1,1)}
+  94%,100%{transform:translateY(0) rotate(-360deg) scale(1,1)}}
+@keyframes fcShadow{0%,12%,70%,100%{transform:scale(1);opacity:1}45%{transform:scale(.45);opacity:.4}86%{transform:scale(.85)}}
+
+/* Effekte im Hintergrund */
+@keyframes finRise{0%{top:105%;opacity:0;transform:scale(var(--s)) rotate(-10deg)}10%,85%{opacity:.85}100%{top:-10%;opacity:0;transform:scale(var(--s)) rotate(10deg)}}
+@keyframes finTwinkle{0%,100%{opacity:.15;transform:scale(calc(var(--s) * .5)) rotate(0)}50%{opacity:1;transform:scale(var(--s)) rotate(25deg)}}
+@keyframes finFall{0%{top:-5%;opacity:1;transform:rotate(0) scale(var(--s))}100%{top:105%;opacity:1;transform:rotate(var(--r)) scale(var(--s))}}
+@keyframes finBurst{0%,68%{opacity:0;transform:translate(-50%,-50%) scale(0)}70%{opacity:1;transform:translate(-50%,-50%) scale(var(--s))}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(calc(var(--s) * .5))}}
+@keyframes finFirework{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}8%{opacity:1}60%{opacity:1;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--s))}75%,100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--s))}}
+
+/* Stufe 5 (10 von 10) – Geschichte: Fips läuft durch die Landschaft und zündet G und D an */
+.fin-story .fin-stage{width:min(420px,94vw)}
+.story{position:relative;height:250px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,#bfe6ff 0%,#e4f5ff 60%,#fff6d6 100%);box-shadow:0 10px 0 rgba(59,44,90,.12);border:5px solid #fff}
+.st-sun{position:absolute;right:22px;top:18px;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b8,#ffcf3f);box-shadow:0 0 0 8px rgba(255,207,63,.25)}
+.st-cloud{position:absolute;width:70px;height:22px;border-radius:20px;background:#fff;opacity:.9;animation:stCloud 9s linear infinite}
+.st-cloud::before{content:"";position:absolute;left:14px;top:-12px;width:32px;height:28px;border-radius:50%;background:#fff}
+.st-cloud.c1{top:30px;left:20%} .st-cloud.c2{top:58px;left:70%;transform:scale(.7);animation-duration:12s}
+@keyframes stCloud{from{translate:0 0}to{translate:-60px 0}}
+.st-hills{position:absolute;left:-10%;right:-10%;bottom:30px;height:90px;background:radial-gradient(ellipse at 25% 100%,#b8ef9e 0 55%,transparent 56%),radial-gradient(ellipse at 75% 100%,#a6e48e 0 60%,transparent 61%);animation:stHills 7.8s linear both}
+@keyframes stHills{0%,4%{transform:translateX(0)}29%,50%{transform:translateX(-5%)}76%,100%{transform:translateX(-10%)}}
+.st-strip{position:absolute;left:0;bottom:0;width:300%;height:100%;animation:stStrip 7.8s linear both}
+@keyframes stStrip{0%,3.8%{transform:translateX(0)}29.5%,50%{transform:translateX(-30%)}75.6%,100%{transform:translateX(-60%)}}
+.st-path{position:absolute;left:0;right:0;bottom:0;height:34px;background:linear-gradient(180deg,#96d965 0 22%,#f2d9a8 22% 100%);border-top:3px solid #66b53c}
+.st-tree{position:absolute;bottom:26px;width:60px;height:90px;transform:scale(var(--h));transform-origin:bottom center}
+.st-tree svg{width:100%;height:100%}
+.st-flower{position:absolute;bottom:22px;width:14px;height:21px}
+.st-flower svg{width:100%;height:100%}
+.st-letter{position:absolute;bottom:30px;width:64px;height:100px;margin-left:-32px}
+.st-letter.lg{left:50.67%} .st-letter.ld{left:80.67%}
+.st-post{position:absolute;left:27px;bottom:0;width:10px;height:34px;border-radius:4px;background:linear-gradient(90deg,#edba80,#d49756);border:2.5px solid #8f5a2b}
+.st-tile{position:absolute;left:0;bottom:30px;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:900;line-height:1}
+.st-tile.off{background:linear-gradient(160deg,#e9e4f4,#c9c2d9);color:#8b7fb0;box-shadow:0 5px 0 #a79cc4}
+.st-tile.on{color:#fff;opacity:0;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+.lg .st-tile.on{background:linear-gradient(160deg,#4fd68c,var(--g));box-shadow:0 5px 0 var(--g-dark),0 0 26px 8px rgba(255,190,60,.75);animation:stLight .6s 3.4s both}
+.ld .st-tile.on{background:linear-gradient(160deg,#6aa9ff,var(--d));box-shadow:0 5px 0 var(--d-dark),0 0 26px 8px rgba(255,190,60,.75);animation:stLight .6s 7.0s both}
+.st-fire{position:absolute;left:14px;bottom:86px;width:36px;height:46px;transform-origin:50% 100%;transform:scale(0)}
+.st-fire svg{width:100%;height:100%}
+.lg .st-fire{animation:stFireOn .4s 3.4s both,stFlicker .35s 3.8s ease-in-out infinite alternate}
+.ld .st-fire{animation:stFireOn .4s 7.0s both,stFlicker .35s 7.4s ease-in-out infinite alternate}
+@keyframes stLight{0%{opacity:0;transform:scale(.9)}50%{opacity:1;transform:scale(1.18)}100%{opacity:1;transform:scale(1)}}
+@keyframes stFireOn{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes stFlicker{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.92,1.1) rotate(3deg)}}
+/* Feueratem: von Fips' Mund bis zum Buchstaben */
+.st-breath{position:absolute;left:100px;bottom:74px;width:calc(62% - 100px - 30px);height:28px;transform-origin:0 50%;transform:scaleX(0);opacity:0;border-radius:50%;
+  background:radial-gradient(ellipse at 0% 50%,#fff8c8 0 14%,#ffd54a 30%,#ff9a3d 55%,rgba(255,90,40,.85) 68%,rgba(255,90,40,0) 72%)}
+.st-breath.b1{animation:stBreath .8s 2.75s both}
+.st-breath.b2{animation:stBreath .8s 6.35s both}
+@keyframes stBreath{0%{opacity:1;transform:scaleX(0) scaleY(.6)}40%{opacity:1;transform:scaleX(1) scaleY(1)}75%{opacity:1;transform:scaleX(1.02) scaleY(1.1)}100%{opacity:0;transform:scaleX(1.05) scaleY(1.2)}}
+/* Fips: laufen (st-walk), Luft holen und sich vorbeugen (st-lean), am Ende jubeln (st-fips) */
+.st-fips{position:absolute;left:12px;bottom:26px;width:136px;transform-origin:50% 100%;animation:stJoy .9s 7.8s cubic-bezier(.3,0,.4,1) infinite}
+.st-lean{transform-origin:50% 100%;animation:stLean 7.8s ease-in-out both}
+.st-walk{transform-origin:50% 100%;animation:stWalk .5s .3s ease-in-out 4,stWalk .5s 3.9s ease-in-out 4}
+.st-walk .fin-svg .wigR{animation:fcPumpR .25s ease-in-out infinite alternate}
+.st-walk .fin-svg .wigL{animation:fcPumpL .25s ease-in-out infinite alternate}
+.st-walk .fin-svg .wingL{animation:fcFlapL .5s ease-in-out infinite alternate}
+.st-walk .fin-svg .wingR{animation:fcFlapR .5s ease-in-out infinite alternate}
+.st-walk .fin-svg .tail{animation:fcWag .5s ease-in-out infinite alternate}
+.st-walk .fin-svg .fin-crown{animation:stCrown .7s 7.5s both}
+@keyframes stWalk{0%,50%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-9px) rotate(-4deg)}75%{transform:translateY(-9px) rotate(4deg)}}
+@keyframes stLean{0%,29.5%{transform:none}31%{transform:scale(1.1,1.06)}36%,46%{transform:rotate(9deg) translateX(6px)}50%,75.6%{transform:none}77%{transform:scale(1.1,1.06)}82%,92%{transform:rotate(9deg) translateX(6px)}96%,100%{transform:none}}
+@keyframes stJoy{0%,100%{transform:translateY(0) scale(1.06,.94)}15%{transform:translateY(0) scale(1)}45%{transform:translateY(-46px) scale(.97,1.04)}75%{transform:translateY(0) scale(1.04,.96)}}
+@keyframes stCrown{0%{transform:translateY(-140px) scale(.4);opacity:0}60%{transform:translateY(8px) scale(1.15);opacity:1}100%{transform:none;opacity:1}}
+
+@media (prefers-reduced-motion: reduce){
+  .finale *, .finale *::before, .finale *::after{animation-duration:.01s!important;animation-iteration-count:1!important;animation-delay:0s!important}
+}

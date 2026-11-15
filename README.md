@@ -35,6 +35,18 @@
 - 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt.
 - 🔊 hört das Wort nochmal, 👀 zeigt die Lösung.
 
+### 🏁 Das große Finale
+
+Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen – Kopf, Arme, Flügel und Schwanz bewegen sich dabei einzeln:
+
+| Ergebnis | Fips … |
+|---|---|
+| unter 4 richtig | wiegt sich, nickt und winkt dir Mut zu 💚 |
+| 4–5 richtig | klatscht für dich 👏 |
+| 6–7 richtig | macht Freudensprünge, mit Konfetti 🎊 |
+| 8–9 richtig | springt einen Salto ⭐ |
+| **10 von 10** | **erlebt eine kleine Geschichte:** läuft durch eine Landschaft, zündet mit seinem Feueratem erst das **G** und dann das **D** an und jubelt mit Krone und Feuerwerk 👑 |
+
 ## 🐉 Fips, der kleine Drache
 
 Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, kichert, wenn man ihn antippt, freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
@@ -77,6 +89,7 @@ src/                    alles, was veröffentlicht wird
   js/storage.js         Aufnahmen speichern (IndexedDB), Stille abschneiden
   js/sound.js           Aufnahmen abspielen, Geräusche und Fanfare
   js/game.js            Spiellogik und Feiern
+  js/finale.js          Abschluss-Animationen (5 Stufen, 10 von 10 als Geschichte)
   js/recorder.js        Aufnahme-Studio
   js/app.js             Navigation und Start
 docs/                   Screenshots für diese README

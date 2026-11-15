@@ -48,6 +48,7 @@ function freshFirst(list, n){
 }
 
 function startGame(m){
+  loadFinaleSvg();   // Fips fürs Finale schon mal laden
   if (!canPlay(m)){ openParents(); return; }
   mode = m; stars = 0; $("stars").textContent = "⭐ 0";
   hide("home"); show("game"); hide("endOverlay");
@@ -228,11 +229,7 @@ function next(){
 function showEnd(){
   cancelRoundTimers();
   const ok = results.filter(r => r === "ok").length, n = deck.length;
-  $("endStars").textContent = "⭐".repeat(Math.max(1, Math.round(ok/2)));
-  $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
-  show("endOverlay");
-  dragonDo("endDragon", ok >= n/2 ? "dance" : "wave", 0);   // gutes Ergebnis: Fips tanzt
-  sfx("right"); confetti(); setTimeout(confetti, 400);
+  showFinale(ok, n);   // große Abschluss-Animation von Fips, je nach Ergebnis
   playSeq(["#end"]);
 }
 /* ================= Zwischendurch-Feier bei einer Serie ================= */

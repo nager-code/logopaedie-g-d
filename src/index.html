@@ -86,13 +86,16 @@
 
 <!-- ================= Ende ================= -->
 <div class="overlay hidden" id="endOverlay">
-  <div class="panel">
-    <div data-dragon id="endDragon" class="end-dragon"></div>
-    <h1>Geschafft!</h1>
-    <div class="endstars" id="endStars"></div>
-    <p id="endText"></p>
-    <button class="bigbtn" id="restartBtn">Nochmal 🔁</button>
-    <p><button class="parents-btn" id="endHome">🏠 Zum Start</button></p>
+  <div class="fin-fx" id="finFx" aria-hidden="true"></div>
+  <div class="fin-wrap">
+    <div class="fin-stage" id="endDragon"></div>
+    <div class="panel fin-panel">
+      <h1 id="endTitle">Geschafft!</h1>
+      <div class="fin-stars" id="endStars"></div>
+      <p id="endText"></p>
+      <button class="bigbtn" id="restartBtn">Nochmal 🔁</button>
+      <p><button class="parents-btn" id="endHome">🏠 Zum Start</button></p>
+    </div>
   </div>
 </div>
 
@@ -172,6 +175,7 @@
 <script src="js/dragon.js?v=__VERSION__"></script>
 <script src="js/storage.js?v=__VERSION__"></script>
 <script src="js/sound.js?v=__VERSION__"></script>
+<script src="js/finale.js?v=__VERSION__"></script>
 <script src="js/game.js?v=__VERSION__"></script>
 <script src="js/recorder.js?v=__VERSION__"></script>
 <script src="js/app.js?v=__VERSION__"></script>
