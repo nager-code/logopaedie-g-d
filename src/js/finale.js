@@ -34,7 +34,52 @@ const FIN_CROWN = `<g class="fin-crown">
    Fips läuft durch die Landschaft, zündet mit seinem Feueratem erst das G, dann das D an
    und jubelt am Ende mit Krone. Zeiten in Sekunden – passend zu den Animationen in style.css */
 const STORY_END = 10.3;
-const STORY_FIRE = [3.2, 8.3];   // Zeitpunkte, an denen G und D Feuer fangen
+const STORY_FIRE = [3.2, 8.3];     // Zeitpunkte, an denen G und D Feuer fangen
+const STORY_BREATH = [2.75, 7.85]; // Beginn des Feueratems (dauert 1,1 s)
+
+/* Feueratem – sitzt in Fips' Kopf (Mund bei 200/228), bewegt sich also mit, wenn er sich vorbeugt.
+   Richtung und Länge werden kurz vor dem Feuer auf den Buchstaben ausgerichtet (finAim). */
+function finBreath(i, bt){
+  const r = (a, b) => (a + rnd() * (b - a)).toFixed(1);
+  const puffs = Array.from({length:14}, (_, k) => `<circle class="fb-puff" r="${r(12,19)}" style="--j:${k};--oy:${r(-34,34)}"/>`).join("");
+  const sparks = Array.from({length:10}, (_, k) => `<circle class="fb-spark" r="${r(2.5,4)}" style="--j:${k};--oy:${r(-60,60)}"/>`).join("");
+  const smoke = (cls, pts) => pts.map(([x,y], k) => `<circle class="${cls}" cx="${x}" cy="${y}" r="7" style="--j:${k}"/>`).join("");
+  return `<g class="fb" style="--bt:${bt}s;--k:3.3;--len:330;--ang:10deg">
+    <g class="fb-nose">${smoke("fb-smoke", [[193,204],[207,204],[193,204],[207,204]])}</g>
+    <g class="fb-jet">
+      <g class="fb-cone">
+        <path class="fb-outer" d="M0 -13 C14 -18 26 -30 40 -32 C46 -40 56 -44 62 -40 C72 -50 88 -50 96 -42 C108 -38 114 -22 110 -8 C116 0 116 6 110 10 C114 26 106 42 94 44 C84 52 68 50 60 42 C50 46 40 40 38 32 C24 30 14 18 0 13 Z"/>
+        <path class="fb-mid" d="M0 -9 C24 -14 48 -26 76 -28 C94 -29 104 -16 102 0 C104 16 94 29 76 28 C48 26 24 14 0 9 Z"/>
+        <path class="fb-core" d="M0 -6 C24 -9 46 -14 66 -14 C76 -13 80 -6 80 0 C80 6 76 13 66 14 C46 14 24 9 0 6 Z"/>
+      </g>
+      ${puffs}${sparks}
+    </g>
+    <g class="fb-mouth"><ellipse cx="200" cy="232" rx="27" ry="22" fill="#5A1E3A" stroke="#2F7D63" stroke-width="4"/>
+      <ellipse cx="200" cy="234" rx="20" ry="15" fill="url(#fbGlow)"/>
+      <path d="M181 220 L186 229 L191 221 Z M219 220 L214 229 L209 221 Z" fill="#fff"/></g>
+    <g class="fb-after">${smoke("fb-smoke2", [[214,226],[220,222],[226,226]])}</g>
+  </g>`;
+}
+const FIN_BREATH_DEFS = `<defs>
+  <linearGradient id="fbOuter" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE45C"/><stop offset=".3" stop-color="#FFB13B"/><stop offset=".65" stop-color="#FF7A3D"/><stop offset=".9" stop-color="#E8455F" stop-opacity=".9"/><stop offset="1" stop-color="#E8455F" stop-opacity=".5"/></linearGradient>
+  <linearGradient id="fbMid" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFF6C0"/><stop offset=".45" stop-color="#FFD54A"/><stop offset="1" stop-color="#FF9A3D" stop-opacity=".8"/></linearGradient>
+  <linearGradient id="fbCore" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#FFF6C0"/><stop offset="1" stop-color="#FFE45C" stop-opacity="0"/></linearGradient>
+  <radialGradient id="fbGlow" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#FFFBE0"/><stop offset=".45" stop-color="#FFD54A"/><stop offset="1" stop-color="#FF7A3D"/></radialGradient>
+</defs>`;
+/* Feuer genau auf den Buchstaben richten: Zielpunkt in Fips' Kopf-Koordinaten umrechnen */
+function finAim(i){
+  const svg = document.querySelector("#storyFips svg"), fb = svg && svg.querySelectorAll(".fb")[i];
+  const tile = document.querySelectorAll(".story .st-tile.off")[i];
+  if (!fb || !tile) return;
+  try {
+    const head = svg.querySelector(".tilt"), rc = tile.getBoundingClientRect();
+    const p = new DOMPoint(rc.left + rc.width * .3, rc.top + rc.height * .55).matrixTransform(head.getScreenCTM().inverse());
+    const dx = p.x - 200, dy = p.y - 230, len = Math.hypot(dx, dy);
+    fb.style.setProperty("--len", len.toFixed(1));
+    fb.style.setProperty("--k", (len / 100).toFixed(3));
+    fb.style.setProperty("--ang", (Math.atan2(dy, dx) * 180 / Math.PI).toFixed(1) + "deg");
+  } catch(e){}
+}
 const FIN_TREE = c => `<svg viewBox="0 0 60 90"><rect x="25" y="50" width="10" height="38" rx="3" fill="url(#pg-brown)" stroke="#6E4429" stroke-width="3"/>
   <circle cx="30" cy="34" r="24" fill="url(#pg-${c})" stroke="${PIC_PAL[c][3]}" stroke-width="3"/><ellipse cx="22" cy="24" rx="8" ry="4" fill="#fff" opacity=".5"/></svg>`;
 const FIN_FLOWER = c => `<svg viewBox="0 0 20 30"><path d="M10 30 V14" stroke="#3E7D22" stroke-width="2.5"/><g fill="${c}"><circle cx="6" cy="10" r="4"/><circle cx="14" cy="10" r="4"/><circle cx="10" cy="5" r="4"/><circle cx="10" cy="14" r="4"/></g><circle cx="10" cy="10" r="3" fill="#FFD54A"/></svg>`;
@@ -61,7 +106,7 @@ function storyScene(){
     <div class="st-hills"></div>
     <div class="st-strip">${trees}<div class="st-path"></div>${flowers}${letter("G","lg")}${letter("D","ld")}</div>
     <div class="st-fips"><div class="st-lean"><div class="st-walk" id="storyFips"></div></div></div>
-    <div class="st-breath b1"></div><div class="st-breath b2"></div>
+    <div class="st-glow g1"></div><div class="st-glow g2"></div>
   </div>`;
 }
 
@@ -127,12 +172,17 @@ async function showFinale(ok, n){
     const el = stage.querySelector("svg");
     el.removeAttribute("width"); el.removeAttribute("height");
     el.setAttribute("aria-label", "Fips"); el.classList.add("fin-svg");
-    if (f.key === "story") el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", FIN_CROWN);
+    if (f.key === "story"){
+      el.insertAdjacentHTML("afterbegin", FIN_BREATH_DEFS);
+      el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", STORY_BREATH.map((t, i) => finBreath(i, t)).join("") + FIN_CROWN);
+    }
   } else {
     stage.innerHTML = `<img class="fin-svg" src="img/fips-tanz.svg?v=${APP_VERSION}" alt="Fips">`;
   }
   finaleFx(f.key);
-  if (f.key === "story") STORY_FIRE.forEach(t => later(() => sfx("fire"), t * 1000 - 400));   // Feueratem + Knistern
+  if (f.key === "story"){
+    STORY_BREATH.forEach((t, i) => { finAim(i); later(() => finAim(i), t * 1000 - 40); later(() => sfx("fire"), t * 1000); });
+  }
   show("endOverlay");
   sfx(level >= 2 ? "fanfare" : "right");
 }

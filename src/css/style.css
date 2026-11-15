@@ -583,16 +583,41 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 @keyframes stLight{0%{opacity:0;transform:scale(.9)}50%{opacity:1;transform:scale(1.18)}100%{opacity:1;transform:scale(1)}}
 @keyframes stFireOn{from{transform:scale(0)}to{transform:scale(1)}}
 @keyframes stFlicker{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(.92,1.1) rotate(3deg)}}
-/* Feueratem: von Fips' Mund bis zum Buchstaben, mit flackerndem Rand */
-.st-breath{position:absolute;left:100px;bottom:72px;width:calc(62% - 100px - 18px);height:32px;transform-origin:0 50%;transform:scaleX(0);opacity:0;border-radius:50%;
-  background:radial-gradient(ellipse at 0% 50%,#fff8c8 0 14%,#ffd54a 30%,#ff9a3d 55%,rgba(255,90,40,.85) 68%,rgba(255,90,40,0) 72%)}
-.st-breath::after{content:"";position:absolute;inset:-6px 0 -6px 30%;border-radius:50%;background:radial-gradient(ellipse at 0% 50%,rgba(255,213,74,.0) 30%,rgba(255,138,61,.55) 55%,rgba(255,90,40,0) 72%);animation:stFlicker .12s linear infinite alternate}
-.st-breath.b1{animation:stBreath 1.1s 2.7s both}
-.st-breath.b2{animation:stBreath 1.1s 7.8s both}
-@keyframes stBreath{0%{opacity:1;transform:scaleX(0) scaleY(.5)}35%{opacity:1;transform:scaleX(1) scaleY(1)}80%{opacity:1;transform:scaleX(1.03) scaleY(1.15)}100%{opacity:0;transform:scaleX(1.06) scaleY(1.3)}}
+/* Feueratem (sitzt in Fips' SVG-Kopf, Mund bei 200/228; Zeiten über --bt) */
+.fin-svg .fb{opacity:0;animation:fbShow 1.9s calc(var(--bt) - .6s) forwards}
+@keyframes fbShow{0%,99%{opacity:1}100%{opacity:0}}
+.fin-svg .fb-jet{transform:translate(200px,230px) rotate(var(--ang))}
+.fin-svg .fb-cone{transform-origin:0 0;transform:scale(0,.4);animation:fbCone 1.1s var(--bt) cubic-bezier(.2,.8,.3,1) forwards}
+@keyframes fbCone{0%{transform:scale(0,.4);opacity:1}28%{transform:scale(var(--k),1);opacity:1}85%{transform:scale(calc(var(--k) * 1.03),1.18);opacity:1}100%{transform:scale(calc(var(--k) * 1.06),1.35);opacity:0}}
+.fin-svg .fb-outer{fill:url(#fbOuter);transform-origin:0 0;animation:fbFlick .09s linear infinite alternate}
+.fin-svg .fb-mid{fill:url(#fbMid);transform-origin:0 0;animation:fbFlick .07s linear -.03s infinite alternate-reverse}
+.fin-svg .fb-core{fill:url(#fbCore)}
+@keyframes fbFlick{from{transform:scaleY(.86) skewX(-2deg)}to{transform:scaleY(1.12) skewX(2deg)}}
+/* Feuerbälle und Funken fliegen vom Mund zum Buchstaben */
+.fin-svg .fb-puff,.fin-svg .fb-spark{opacity:0}
+.fin-svg .fb-puff{animation:fbPuff .42s calc(var(--bt) + var(--j) * .03s) linear 2}
+.fin-svg .fb-spark{fill:#FFF3A0;animation:fbSpark .5s calc(var(--bt) + .1s + var(--j) * .06s) ease-out 2}
+@keyframes fbPuff{0%{transform:translate(4px,0) scale(.3);fill:#FFFBE0;opacity:1}35%{fill:#FFD54A;opacity:1}70%{fill:#FF8A3D;opacity:.95}100%{transform:translate(calc(var(--len) * 1px),calc(var(--oy) * 1px)) scale(1.9);fill:#E8455F;opacity:0}}
+@keyframes fbSpark{0%{transform:translate(10px,0);opacity:1}100%{transform:translate(calc(var(--len) * .9px),calc(var(--oy) * 1px));opacity:0}}
+/* Maul weit auf und glühend */
+.fin-svg .fb-mouth{transform-origin:200px 228px;transform:scale(0);animation:fbMouth 1.3s calc(var(--bt) - .12s) forwards}
+@keyframes fbMouth{0%{transform:scale(0)}12%{transform:scale(1.15)}20%,85%{transform:scale(1)}100%{transform:scale(0)}}
+.fin-svg .fb-mouth ellipse:last-child{animation:fbFlick .1s linear infinite alternate;transform-origin:200px 232px}
+/* vorher: Rauchwölkchen aus der Nase · danach: Rauch aus dem Maul */
+.fin-svg .fb-smoke,.fin-svg .fb-smoke2{fill:#A79CC4;opacity:0;transform-box:fill-box;transform-origin:center}
+.fin-svg .fb-smoke{animation:fbNose .6s calc(var(--bt) - .6s + (var(--j) - var(--j) % 2) * .14s) ease-out forwards}
+.fin-svg .fb-smoke2{animation:fbAfter 1s calc(var(--bt) + 1.05s + var(--j) * .12s) ease-out forwards}
+@keyframes fbNose{0%{opacity:.8;transform:translateY(0) scale(.4)}100%{opacity:0;transform:translateY(-34px) scale(1.4)}}
+@keyframes fbAfter{0%{opacity:.7;transform:translate(0,0) scale(.5)}100%{opacity:0;transform:translate(20px,-50px) scale(2)}}
+/* warmes Licht über der Szene, solange Fips Feuer speit */
+.st-glow{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 45% 62%,rgba(255,170,60,.45),rgba(255,170,60,0) 60%)}
+.st-glow.g1{animation:stGlow 1.3s 2.75s ease-out}
+.st-glow.g2{animation:stGlow 1.3s 7.85s ease-out}
+@keyframes stGlow{0%{opacity:0}20%,70%{opacity:1}100%{opacity:0}}
 /* Fips: laufen (st-walk), Luft holen und sich vorbeugen (st-lean), am Ende jubeln (st-fips) */
 .st-fips{position:absolute;left:12px;bottom:26px;width:136px;transform-origin:50% 100%;animation:stJoy .9s 10.3s cubic-bezier(.3,0,.4,1) infinite}
 .st-lean{transform-origin:50% 100%;animation:stLean 10.3s ease-in-out both}
+@keyframes stLean{0%,22.3%{transform:none}24.3%{transform:scale(1.12,1.07)}26.2%,37.9%{transform:rotate(8deg) translateX(6px)}41.3%,71.8%{transform:none}73.8%{transform:scale(1.12,1.07)}75.7%,87.4%{transform:rotate(8deg) translateX(6px)}90.8%,100%{transform:none}}
 .st-walk{transform-origin:50% 100%;animation:stWalk .5s .3s ease-in-out 4,stWalk .5s 5.4s ease-in-out 4}
 .st-walk .fin-svg .wigR{animation:fcPumpR .25s ease-in-out infinite alternate}
 .st-walk .fin-svg .wigL{animation:fcPumpL .25s ease-in-out infinite alternate}
@@ -601,7 +626,6 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .st-walk .fin-svg .tail{animation:fcWag .5s ease-in-out infinite alternate}
 .st-walk .fin-svg .fin-crown{animation:stCrown .7s 10.0s both}
 @keyframes stWalk{0%,50%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-9px) rotate(-4deg)}75%{transform:translateY(-9px) rotate(4deg)}}
-@keyframes stLean{0%,22.3%{transform:none}25.2%{transform:scale(1.12,1.07)}27.2%,36.9%{transform:rotate(9deg) translateX(6px)}40.8%,71.8%{transform:none}74.8%{transform:scale(1.12,1.07)}76.7%,86.4%{transform:rotate(9deg) translateX(6px)}90.3%,100%{transform:none}}
 @keyframes stJoy{0%,100%{transform:translateY(0) scale(1.06,.94)}15%{transform:translateY(0) scale(1)}45%{transform:translateY(-46px) scale(.97,1.04)}75%{transform:translateY(0) scale(1.04,.96)}}
 @keyframes stCrown{0%{transform:translateY(-140px) scale(.4);opacity:0}60%{transform:translateY(8px) scale(1.15);opacity:1}100%{transform:none;opacity:1}}
 
