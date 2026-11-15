@@ -239,24 +239,26 @@ button:active{transform:translateY(4px)}
 
 /* Fips tanzt: außen die Bewegung über die Bühne, innen der Tanzschritt */
 .p-stage{position:absolute;left:50%;top:calc(13% + 218px);width:300px;height:70px;margin-left:-150px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,207,63,.55),rgba(255,207,63,0));animation:glow 1s ease-in-out infinite alternate}
-.p-dance{position:absolute;left:50%;top:13%;width:250px;margin-left:-125px}
-.p-dance .p-dragon{width:100%;transform-origin:50% 90%}
-.pt-sway   .p-dragon{animation:dSway .45s ease-in-out infinite alternate}
-.pt-spin   .p-dragon{animation:dSpin 1.3s ease-in-out infinite}
-.pt-hop    .p-dragon{animation:dHop .55s cubic-bezier(.3,0,.4,1) infinite}
-.pt-twist  .p-dragon{animation:dTwist .5s ease-in-out infinite alternate}
-.pt-steps  .p-dance{animation:dSteps 2.6s ease-in-out infinite}
-.pt-steps  .p-dragon{animation:dSway .32s ease-in-out infinite alternate}
-@keyframes dSway{from{transform:rotate(-12deg) translateY(0)}to{transform:rotate(12deg) translateY(-14px)}}
-@keyframes dSpin{0%{transform:rotateY(0) translateY(0)}35%{transform:rotateY(180deg) translateY(-30px)}70%,100%{transform:rotateY(360deg) translateY(0)}}
-@keyframes dHop{0%,100%{transform:translateY(0) scale(1.12,.88)}20%{transform:translateY(0) scale(.94,1.06)}50%{transform:translateY(-60px) scale(1,1) rotate(6deg)}80%{transform:translateY(0) scale(1.05,.95)}}
-@keyframes dTwist{0%{transform:translateX(-30px) rotate(-10deg) scale(1.06,.94)}100%{transform:translateX(30px) rotate(10deg) scale(.96,1.04)}}
-@keyframes dSteps{0%,100%{transform:translateX(-90px) scaleX(1)}49%{transform:translateX(90px) scaleX(1)}50%{transform:translateX(90px) scaleX(-1)}99%{transform:translateX(-90px) scaleX(-1)}}
+.p-dance{position:absolute;left:50%;top:13%;width:250px;margin-left:-125px;will-change:transform}
+/* Alle Tanzschritte im gleichen Takt (0,45 s pro Schlag), nur transform → läuft auf der Grafikkarte */
+.p-dance .p-dragon{width:100%;transform-origin:50% 90%;will-change:transform;backface-visibility:hidden}
+.pt-sway   .p-dragon{animation:dSway .9s ease-in-out infinite}
+.pt-spin   .p-dragon{animation:dSpin 1.8s ease-in-out infinite}
+.pt-hop    .p-dragon{animation:dHop .9s ease-in-out infinite}
+.pt-twist  .p-dragon{animation:dTwist .9s ease-in-out infinite}
+.pt-steps  .p-dance{animation:dSteps 3.6s ease-in-out infinite}
+.pt-steps  .p-dragon{animation:dSway .9s ease-in-out infinite}
+@keyframes dSway{0%,100%{transform:translate3d(0,0,0) rotate(-10deg)}25%{transform:translate3d(0,-14px,0) rotate(0)}50%{transform:translate3d(0,0,0) rotate(10deg)}75%{transform:translate3d(0,-14px,0) rotate(0)}}
+@keyframes dSpin{0%{transform:translate3d(0,0,0) rotateY(0)}25%{transform:translate3d(0,-26px,0) rotateY(90deg)}50%{transform:translate3d(0,0,0) rotateY(180deg)}75%{transform:translate3d(0,-26px,0) rotateY(270deg)}100%{transform:translate3d(0,0,0) rotateY(360deg)}}
+@keyframes dHop{0%,100%{transform:translate3d(0,0,0) rotate(0)}25%{transform:translate3d(0,-44px,0) rotate(-6deg)}50%{transform:translate3d(0,0,0) rotate(0)}75%{transform:translate3d(0,-44px,0) rotate(6deg)}}
+@keyframes dTwist{0%,100%{transform:translate3d(-26px,0,0) rotate(-9deg)}50%{transform:translate3d(26px,0,0) rotate(9deg)}}
+@keyframes dSteps{0%,100%{transform:translate3d(-80px,0,0)}50%{transform:translate3d(80px,0,0)}}
 @keyframes glow{from{opacity:.6;transform:scale(.9)}to{opacity:1;transform:scale(1.1)}}
 .p-notes span{position:absolute;top:30%;font-size:42px;animation:noteUp 1.4s ease-out infinite}
 .p-notes span:nth-child(1){left:14%} .p-notes span:nth-child(2){left:76%;animation-delay:.45s} .p-notes span:nth-child(3){left:30%;animation-delay:.9s} .p-notes span:nth-child(4){left:62%;animation-delay:1.2s}
 @keyframes noteUp{from{transform:translateY(0) rotate(-10deg);opacity:1}to{transform:translateY(-140px) rotate(14deg);opacity:0}}
-.dragon.end-dragon.dancing .dr-pose.on{transform-origin:50% 90%;animation:dSway .45s ease-in-out infinite alternate}
+.dragon.end-dragon.dance{transform-origin:50% 90%;will-change:transform;animation:dSway .9s ease-in-out infinite}
+body.partying .buddy-dragon{visibility:hidden}   /* hinter der Feier nichts mitrechnen */
 
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{0%{transform:translate(-50%,-50%) scale(0)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}

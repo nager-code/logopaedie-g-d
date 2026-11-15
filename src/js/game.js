@@ -223,8 +223,7 @@ function showEnd(){
   $("endStars").textContent = "⭐".repeat(Math.max(1, Math.round(ok/2)));
   $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
   show("endOverlay");
-  dragonDo("endDragon", ok >= n/2 ? "happy" : "wave", 0);
-  $("endDragon").classList.toggle("dancing", ok >= n/2);   // gutes Ergebnis: Fips tanzt
+  dragonDo("endDragon", ok >= n/2 ? "dance" : "wave", 0);   // gutes Ergebnis: Fips tanzt
   sfx("right"); confetti(); setTimeout(confetti, 400);
   playSeq(["#end"]);
 }
@@ -250,7 +249,7 @@ function celebrate(n, afterSeq){
     <div class="p-ribbon"><span class="p-num">${n}</span><span>richtig hintereinander!</span></div>
   </div>`;
   mountDragons(el);
-  el.querySelectorAll("[data-dragon]").forEach(d => dragonDo(d, "happy", 0));
+  el.querySelectorAll("[data-dragon]").forEach(d => dragonDo(d, "dance", 0));
   dragonDo("buddyDragon", "happy", 2500);
   sfx("fanfare");
   clearTimeout(partyTimer);

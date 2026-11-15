@@ -35,7 +35,7 @@ Alles, was zum Spiel gehört, liegt in `src/`:
 ```
 src/index.html        Seitenaufbau
 src/favicon.svg       Icon
-src/img/fips-*.svg    Fips in drei Posen: Begrüßung, Jubel, Hoppla
+src/img/fips-*.svg    Fips in vier Posen: Begrüßung, Jubel, Hoppla, Tanz (steht still, getanzt wird per CSS)
 src/css/style.css     Design und Animationen
 src/js/words.js       Wortlisten, Wortpaare, Mindestanzahl Wörter
 src/js/pictures.js    Gezeichnete Bilder zu allen Wörtern
