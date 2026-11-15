@@ -1,0 +1,38 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8">
+<!-- Vorlage für das Teilen-Bild (1200 × 630) und das README-Banner. Erzeugt mit tools/make-images.js -->
+<style>
+:root{--g:#2fbf71;--g-dark:#1e8f52;--d:#3a8dff;--d-dark:#1f63c9;--pink:#ff7aa2;--pink-dark:#d9507c;--ink:#3b2c5a;--muted:#8b7fb0;--sun:#ffcf3f}
+*{box-sizing:border-box}
+body{margin:0;width:1200px;height:630px;overflow:hidden;font-family:"Nunito","Varela Round","Arial Rounded MT Bold",system-ui,sans-serif;color:var(--ink);
+  background:radial-gradient(ellipse at 28% 45%,#fffdf3 0%,#fff3d1 55%,#ffe6c4 100%)}
+.dots{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cpath d='M34 40c-7-5-5-11 0-8 5-3 7 3 0 8z' fill='%23ffc2d3'/%3E%3Ccircle cx='112' cy='30' r='3' fill='%23a9e5cc'/%3E%3Cpath d='M118 104q1.5-6 3-0 6 1.5 0 3-1.5 6-3 0-6-1.5 0-3z' fill='%23ffd98a'/%3E%3Ccircle cx='52' cy='122' r='2.5' fill='%23ffc2d3'/%3E%3Ccircle cx='78' cy='76' r='2' fill='%23cdbdf2'/%3E%3C/svg%3E");background-size:160px 160px;opacity:.9}
+.rainbow{position:absolute;left:-120px;top:70px;width:720px;height:720px;border-radius:50%;
+  background:radial-gradient(circle,transparent 52%,#cdbdf2 52%,#cdbdf2 56%,#a9d4ff 56%,#a9d4ff 60%,#a9e5cc 60%,#a9e5cc 64%,#ffe08a 64%,#ffe08a 68%,#ffc2d3 68%,#ffc2d3 72%,transparent 72%);opacity:.75}
+.fips{position:absolute;left:40px;top:70px;width:500px;filter:drop-shadow(0 18px 18px rgba(59,44,90,.12))}
+.right{position:absolute;left:560px;top:62px;width:600px}
+h1{margin:0;display:flex;align-items:center;gap:14px;font-size:84px;font-weight:900;line-height:1}
+.tile{display:inline-flex;align-items:center;justify-content:center;width:118px;height:118px;border-radius:34px;color:#fff;font-size:84px}
+.tile.g{background:linear-gradient(160deg,#4fd68c,var(--g));box-shadow:0 9px 0 var(--g-dark);transform:rotate(-6deg)}
+.tile.d{background:linear-gradient(160deg,#6aa9ff,var(--d));box-shadow:0 9px 0 var(--d-dark);transform:rotate(6deg)}
+.qm{color:var(--pink);font-size:96px;transform:rotate(10deg);display:inline-block}
+.sub{margin:30px 0 0;font-size:40px;font-weight:900;line-height:1.15}
+.sub b{color:var(--pink-dark)}
+.txt{margin:14px 0 0;font-size:25px;font-weight:700;color:var(--muted);line-height:1.35}
+.pics{display:flex;gap:14px;margin-top:30px}
+.card{width:104px;height:104px;background:#fff;border-radius:28px;box-shadow:0 7px 0 rgba(59,44,90,.1);padding:10px;display:flex}
+.card:nth-child(odd){transform:rotate(-4deg)} .card:nth-child(even){transform:rotate(4deg) translateY(6px)}
+.card svg{width:100%;height:100%}
+.url{position:absolute;right:40px;bottom:26px;font-size:20px;font-weight:800;color:var(--muted)}
+</style></head><body>
+<div class="dots"></div><div class="rainbow"></div>
+<img class="fips" src="../src/img/fips-begruessung.svg" alt="">
+<div class="right">
+  <h1><span class="tile g">G</span><span>oder</span><span class="tile d">D</span><span class="qm">?</span></h1>
+  <p class="sub">Das Hörspiel mit <b>Fips</b>,<br>dem kleinen Drachen</p>
+  <p class="txt">Kinder üben spielerisch, G und D zu hören –<br>mit den Stimmen von Mama und Papa.</p>
+  <div class="pics" id="pics"></div>
+</div>
+<div class="url">nager-code.github.io/logopaedie-g-d</div>
+<script src="../src/js/pictures.js"></script>
+<script>document.getElementById("pics").innerHTML = ["Giraffe","Dino","Geschenk","Delfin","Gabel"].map(w => `<div class="card">${pic(w)}</div>`).join("");</script>
+</body></html>
