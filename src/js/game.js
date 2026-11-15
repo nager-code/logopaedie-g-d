@@ -79,7 +79,7 @@ function newGame(){
   renderRound();
 }
 
-function goHome(){ partyAfter = null; endParty(); stopAll(); setTimeout(greet, 300); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
+function goHome(){ cancelRoundTimers(); partyAfter = null; endParty(); stopAll(); setTimeout(greet, 300); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
 
 function setBubble(text, cls){
   const b = $("bubble");
@@ -102,7 +102,14 @@ function renderProgress(){
 function currentWord(){ return mode === "gd" ? cur.w : cur.target.w; }
 function playCurrent(){ playSeq([currentWord()]); }
 
+/* Verzögerte Aktionen einer Runde – beim Weiterschalten werden sie verworfen,
+   damit nie das Wort der vorigen Runde nachkommt */
+let roundTimers = [];
+function later(fn, ms){ const t = setTimeout(() => { roundTimers = roundTimers.filter(x => x !== t); fn(); }, ms); roundTimers.push(t); }
+function cancelRoundTimers(){ roundTimers.forEach(clearTimeout); roundTimers = []; }
+
 function renderRound(){
+  cancelRoundTimers(); stopAll();
   answered = false;
   dragonReset("buddyDragon");
   cur = deck[round];
@@ -129,7 +136,7 @@ function renderRound(){
       <button class="pic" data-i="${i}"><span class="e">${pic(p.w, p.e)}</span><span class="lbl"></span></button>`).join("");
     ans.querySelectorAll(".pic").forEach(b => b.addEventListener("click", () => answer(+b.dataset.i)));
   }
-  setTimeout(playCurrent, 350);
+  later(playCurrent, 350);
 }
 
 function addBadge(el, ok){
@@ -207,9 +214,9 @@ function answer(choice){
     // erst feiern, danach das Wort – nichts soll sich überlagern
     partyDue = false;
     const n = streak;
-    setTimeout(() => celebrate(n, seq), 800);
+    later(() => celebrate(n, seq), 800);
   } else {
-    setTimeout(() => { if (!partyOn) playSeq(seq); }, correct === null ? 400 : 900);
+    later(() => { if (!partyOn) playSeq(seq); }, correct === null ? 400 : 900);
   }
 }
 
@@ -219,6 +226,7 @@ function next(){
   renderRound();
 }
 function showEnd(){
+  cancelRoundTimers();
   const ok = results.filter(r => r === "ok").length, n = deck.length;
   $("endStars").textContent = "⭐".repeat(Math.max(1, Math.round(ok/2)));
   $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
@@ -261,7 +269,7 @@ function endParty(){
   document.body.classList.remove("partying");
   const wasOn = partyOn; partyOn = false;
   const seq = partyAfter; partyAfter = null;
-  if (wasOn && seq && !$("game").classList.contains("hidden")) setTimeout(() => playSeq(seq), 250);   // danach weiter
+  if (wasOn && seq && !$("game").classList.contains("hidden")) later(() => playSeq(seq), 250);   // danach weiter
 }
 
 function updateStars(){

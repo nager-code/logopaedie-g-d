@@ -1,8 +1,11 @@
 /* ================= Abspielen (nur eigene Aufnahmen) ================= */
 function setTalking(on){ const s = document.querySelector(".speaker"); if (s) s.classList.toggle("talking", on); }
-let curAudio = null;
+let curAudio = null, curFin = null, playToken = 0;
+/* Stoppt alles, was gerade läuft – auch eine angefangene Wortfolge läuft danach nicht weiter */
 function stopAll(){
+  playToken++;
   if (curAudio){ try { curAudio.pause(); } catch(e){} curAudio = null; }
+  if (curFin) curFin();
   setTalking(false);
 }
 function playRec(k){
@@ -12,7 +15,8 @@ function playRec(k){
     const a = new Audio(url);
     curAudio = a;
     let done = false;
-    const fin = () => { if (done) return; done = true; setTalking(false); resolve(true); };
+    const fin = () => { if (done) return; done = true; if (curFin === fin) curFin = null; setTalking(false); resolve(true); };
+    curFin = fin;
     a.onended = a.onerror = fin;
     setTalking(true);
     a.play().catch(fin);
@@ -21,8 +25,12 @@ function playRec(k){
 }
 async function playSeq(keys){
   stopAll();
+  const token = playToken;
   if (typeof partyOn !== "undefined" && partyOn) return;   // während einer Feier still sein
-  for (const k of keys) if (recURL[k]) await playRec(k);
+  for (const k of keys){
+    if (token !== playToken) return;                        // inzwischen weitergeschaltet → nichts Altes mehr abspielen
+    if (recURL[k]) await playRec(k);
+  }
 }
 
 /* ================= Geräusche ================= */

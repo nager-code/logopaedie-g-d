@@ -103,6 +103,11 @@ button{font-family:inherit;color:inherit}
 .card.is-right{background:var(--g-soft);border-color:var(--g)}
 .card.is-wrong{background:var(--red-soft);border-color:var(--red);animation:shake .5s}
 .card.is-seen{background:#f1eef8;border-color:#c9c2d9}
+/* Feste Höhe: die Karte wächst nicht, wenn bei einem Fehler die Erklärung dazukommt –
+   so bleiben Antwort-Knöpfe und Weiter-Pfeil immer an derselben Stelle */
+.card{height:272px;min-height:0}
+.card.is-wrong .big-emoji .pic-svg{width:100px;height:100px}
+.card.is-wrong{gap:6px}
 .speaker{width:140px;height:140px;border-radius:50%;border:0;cursor:pointer;background:radial-gradient(circle at 35% 30%,#fff3b8,var(--sun));font-size:68px;box-shadow:0 8px 0 var(--sun-dark);display:flex;align-items:center;justify-content:center}
 .speaker.talking{animation:wobble .6s infinite}
 .peek{position:absolute;right:14px;bottom:12px;border:0;background:#f1eef8;border-radius:999px;padding:6px 12px;font-size:20px;cursor:pointer}
@@ -112,13 +117,13 @@ button{font-family:inherit;color:inherit}
 .big-emoji .pic-svg{width:150px;height:150px}
 .pic .e .pic-svg{width:120px;height:120px}
 .letter small .pic-svg{width:40px;height:40px;margin:2px auto 0}
-.chip.pic-chip{width:54px;height:54px;min-width:0;padding:4px;background:#fff;border:4px solid #eee}
+.chip.pic-chip{width:48px;height:48px;min-width:0;padding:4px;background:#fff;border:4px solid #eee}
 .chip.pic-chip.G{border-color:var(--g)} .chip.pic-chip.D{border-color:var(--d)}
 .st-emoji .pic-svg{width:110px;height:110px;margin:0 auto}
 .recrow .e .pic-svg{width:34px;height:34px}
 .mode .ic.ic-pics{gap:0}
 .mode .ic.ic-pics .pic-svg{width:42px;height:42px}
-.word{font-size:46px;font-weight:900;letter-spacing:1px}
+.word{font-size:clamp(30px,10.5vw,46px);font-weight:900;letter-spacing:1px;line-height:1.15;white-space:nowrap}
 .hl{display:inline-block;padding:0 6px;border-radius:12px;color:#fff;margin:0 1px}
 .hl.G{background:var(--g)} .hl.D{background:var(--d)}
 .explain{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;justify-content:center}
@@ -382,4 +387,20 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
   .panel-rec .studio{margin-bottom:0}
   .panel-rec .st-emoji{font-size:96px}
   .panel-rec .st-word{font-size:44px}
+}
+
+/* Kleine Handys (z. B. iPhone SE): alles etwas kompakter, damit der Weiter-Pfeil sichtbar bleibt */
+@media (max-height:740px){
+  #game.screen{gap:10px;padding-top:10px}
+  .buddy-dragon{width:92px}
+  .bubble{font-size:19px;padding:10px 14px}
+  .card{height:226px;padding:14px}
+  .speaker{width:118px;height:118px;font-size:56px}
+  .big-emoji .pic-svg{width:116px;height:116px}
+  .card.is-wrong .big-emoji .pic-svg{width:74px;height:74px}
+  .word{font-size:clamp(28px,9.5vw,40px)}
+  .letter{padding:8px 8px 6px}
+  .letter b{font-size:68px}
+  .letter small .pic-svg{width:30px;height:30px}
+  .next{width:76px;height:76px;font-size:38px}
 }
