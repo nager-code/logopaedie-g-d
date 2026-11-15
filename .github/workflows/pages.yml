@@ -33,11 +33,10 @@ jobs:
           VERSION="${GITHUB_SHA::7}"
           sed -i "s/__VERSION__/${VERSION}/g" src/index.html src/js/words.js
 
-      - name: Build site
+      - name: Build site (nur der Inhalt von src/)
         run: |
-          mkdir -p _site/src
+          mkdir -p _site
           cp -r src/. _site/
-          cp -r src/. _site/src/
           touch _site/.nojekyll
 
       - name: Configure Pages
