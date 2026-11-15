@@ -49,7 +49,7 @@ Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen –
 
 ## 🐉 Fips, der kleine Drache
 
-Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, kichert, wenn man ihn antippt, freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
+Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein paarmal antippen: er kichert – öfter: er lacht laut – ganz oft: er kugelt sich vor Lachen auf dem Boden), freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
 
 ## 🖼️ 83 gezeichnete Wörter
 

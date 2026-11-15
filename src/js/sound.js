@@ -34,7 +34,7 @@ async function playSeq(keys){
 }
 
 /* ================= Geräusche ================= */
-let sfxCtx = null;
+let sfxCtx = null, sfxLaughUntil = 0;
 function getCtx(){
   try {
     if (!sfxCtx){ const AC = window.AudioContext || window.webkitAudioContext; sfxCtx = new AC(); }
@@ -53,7 +53,7 @@ function tone(ctx, freq, start, dur, type, vol, freqEnd){
   o.connect(g); g.connect(ctx.destination);
   o.start(start); o.stop(start + dur + 0.05);
 }
-function sfx(kind){
+function sfx(kind, lvl = 1){
   const ctx = getCtx(); if (!ctx) return;
   const t = ctx.currentTime + 0.02;
   if (kind === "right"){
@@ -71,6 +71,22 @@ function sfx(kind){
     const n = [[523.25,0],[523.25,0.13],[523.25,0.26],[698.46,0.42]];
     n.forEach(([f, d], i) => tone(ctx, f, t + d, i === 3 ? 0.7 : 0.12, "square", 0.1));
     [[698.46],[880],[1046.5]].forEach(([f]) => tone(ctx, f, t + 0.42, 0.8, "triangle", 0.18));
+  } else if (kind === "laugh"){
+    // Lachen: „hi-hi-hi“ (1), „ha-ha-ha“ (2), langes Losprusten (3) – Silben aus Ton + gefiltertem Hauch
+    if (sfxLaughUntil > ctx.currentTime) return;        // nicht übereinander lachen
+    const n = lvl === 1 ? 4 : lvl === 2 ? 6 : 12, gap = lvl === 1 ? .1 : .14;
+    const base = lvl === 1 ? 1100 : lvl === 2 ? 620 : 560;
+    for (let i = 0; i < n; i++){
+      const st = t + i * gap + (lvl === 3 && i > 5 ? .12 : 0);
+      const f = base * (1 - i * (lvl === 3 ? .025 : .03)) * (1 + (i % 2) * .06);
+      const o = ctx.createOscillator(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+      o.type = lvl === 1 ? "sine" : "sawtooth";
+      o.frequency.setValueAtTime(f * 1.12, st); o.frequency.exponentialRampToValueAtTime(f * .82, st + gap * .8);
+      bp.type = "bandpass"; bp.frequency.value = lvl === 1 ? 1800 : 1200; bp.Q.value = 2;
+      g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(lvl === 1 ? .25 : .35, st + .015); g.gain.exponentialRampToValueAtTime(0.0001, st + gap * .85);
+      o.connect(bp); bp.connect(g); g.connect(ctx.destination); o.start(st); o.stop(st + gap);
+    }
+    sfxLaughUntil = t + n * gap + .2;
   } else if (kind === "giggle"){
     [880, 1046.5, 880, 1174.7].forEach((f, i) => tone(ctx, f, t + i * 0.08, 0.1, "sine", 0.18));
   } else if (kind === "fire"){

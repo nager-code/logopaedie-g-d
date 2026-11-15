@@ -9,7 +9,7 @@ const DRAGON_POSES = {
   dance: { src: "img/fips-tanz.svg",        alt: `${DRAGON_NAME} tanzt` }
 };
 /* Gefühl → Pose (ohne Gefühl: Begrüßungs-Pose) */
-const DRAGON_STATE_POSE = { wave: "hello", happy: "cheer", yay: "dance", giggle: "cheer", oops: "oops", dance: "dance" };
+const DRAGON_STATE_POSE = { wave: "hello", happy: "cheer", yay: "dance", giggle: "cheer", oops: "oops", dance: "dance", laugh: "cheer", rofl: "cheer" };
 const DRAGON_STATES = Object.keys(DRAGON_STATE_POSE);
 
 const DRAGON_FX = {
@@ -17,7 +17,9 @@ const DRAGON_FX = {
   yay:   ["💖","💚","✨","⭐","💗"],
   oops:  ["❓","💧","💭"],
   wave:  ["✨","💖"],
-  giggle:["💗","✨"]
+  giggle:["💗","✨"],
+  laugh: ["😆","💗","✨","Ha!"],
+  rofl:  ["😂","🤣","💗","Ha!","Hi!"]
 };
 
 /* Alle Platzhalter mit data-dragon füllen */
@@ -64,7 +66,7 @@ function dragonFx(el, state){
   const box = el.querySelector(".dr-fx"); if (!box) return;
   const items = DRAGON_FX[state] || [];
   if (!items.length) return;
-  const n = state === "happy" || state === "yay" ? 7 : state === "oops" ? 4 : 3;
+  const n = state === "happy" || state === "yay" ? 7 : state === "rofl" ? 10 : state === "laugh" ? 6 : state === "oops" ? 4 : 3;
   for (let i = 0; i < n; i++){
     const s = document.createElement("span");
     s.textContent = pick(items);

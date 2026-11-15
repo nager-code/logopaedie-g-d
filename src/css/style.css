@@ -296,6 +296,21 @@ body.partying .buddy-dragon,body.partying .bubble{visibility:hidden}   /* hinter
   88%{transform:translate3d(0,0,0) rotateY(360deg) rotate(7deg)}
   100%{transform:translate3d(0,0,0) rotateY(360deg) rotate(0)}}
 .dragon.giggle .dr-pose.on{animation:drWiggle .25s ease-in-out 4}
+/* Kitzeln: lautes Lachen schüttelt Fips, ganz viel Kitzeln → er kugelt sich vor Lachen auf dem Boden */
+.dragon.laugh .dr-pose.on{transform-origin:50% 92%;animation:drLaugh .2s ease-in-out 7}
+@keyframes drLaugh{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-8deg) translateY(-8px) scale(1.04,.97)}75%{transform:rotate(8deg) translateY(-8px) scale(1.04,.97)}}
+.dragon.rofl .dr-pose.on{transform-origin:50% 62%;animation:drRofl 3s ease-in-out}
+@keyframes drRofl{
+  0%{transform:none}
+  8%{transform:rotate(-12deg) translateY(-14px)}
+  18%{transform:translateY(14px) rotate(78deg)}
+  24%{transform:translateY(10px) rotate(70deg)}  30%{transform:translateY(16px) rotate(82deg)}
+  36%{transform:translateY(10px) rotate(70deg)}  42%{transform:translateY(16px) rotate(82deg)}
+  48%{transform:translateY(10px) rotate(70deg)}  54%{transform:translateY(16px) rotate(82deg)}
+  60%{transform:translateY(10px) rotate(70deg)}  66%{transform:translateY(14px) rotate(78deg)}
+  80%{transform:rotate(-10deg) translateY(-12px)}
+  90%{transform:rotate(4deg)}
+  100%{transform:none}}
 .dragon.oops .dr-pose.on{animation:drShiver .08s linear 6}
 
 /* fliegende Herzchen / Fragezeichen */
