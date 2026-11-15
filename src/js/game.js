@@ -185,7 +185,8 @@ function answer(choice){
     card.classList.add("flip","is-right");
     stars++; updateStars(); confetti();
     streak++;
-    partyDue = streak % STREAK_EVERY === 0;
+    // keine Zwischen-Feier mehr kurz vor Schluss (z. B. 9 richtig hintereinander) – gleich kommt ja das große Finale
+    partyDue = streak % STREAK_EVERY === 0 && round < deck.length - 2;
   } else if (correct === false){
     setBubble(pick(OOPS), "bad");
     dragonDo("buddyDragon", "oops", 2600);

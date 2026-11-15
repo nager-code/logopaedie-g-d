@@ -32,7 +32,7 @@
 
 - ✅ **Richtig:** Fips springt vor Freude mit einer Drehung in die Luft.
 - 🤔 **Falsch:** Fips kratzt sich verlegen am Kopf, und das Spiel zeigt, welcher Buchstabe richtig gewesen wäre.
-- 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt.
+- 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt (in den letzten beiden Runden nicht mehr, da kommt gleich das Finale).
 - 🔊 hört das Wort nochmal, 👀 zeigt die Lösung.
 
 ### 🏁 Das große Finale
