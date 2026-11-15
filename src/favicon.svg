@@ -1,28 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-labelledby="t">
   <title id="t">Kleiner, süßer Drache winkt zur Begrüßung</title>
   <defs>
-    <radialGradient id="skin" cx="0.38" cy="0.3" r="0.8">
-      <stop offset="0" stop-color="#A8EED2"/>
-      <stop offset="1" stop-color="#63C9A1"/>
+    <radialGradient id="skin" cx="0.36" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#B4F2D9"/>
+      <stop offset="0.55" stop-color="#7DD9B4"/>
+      <stop offset="1" stop-color="#55BE96"/>
     </radialGradient>
-    <radialGradient id="belly" cx="0.5" cy="0.35" r="0.7">
-      <stop offset="0" stop-color="#FFF8E1"/>
-      <stop offset="1" stop-color="#FFE7A8"/>
+    <linearGradient id="shadeDown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.55" stop-color="#2F7D63" stop-opacity="0"/>
+      <stop offset="1" stop-color="#2F7D63" stop-opacity="0.22"/>
+    </linearGradient>
+    <radialGradient id="belly" cx="0.45" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#FFFBEA"/>
+      <stop offset="1" stop-color="#FFE29C"/>
     </radialGradient>
-    <radialGradient id="eye" cx="0.5" cy="0.3" r="0.75">
-      <stop offset="0" stop-color="#5A4386"/>
-      <stop offset="0.7" stop-color="#211A35"/>
+    <radialGradient id="pinkG" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#FFD3DF"/>
+      <stop offset="1" stop-color="#FFA5BE"/>
     </radialGradient>
     <linearGradient id="horn" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFE3A3"/>
-      <stop offset="1" stop-color="#FFBE6B"/>
+      <stop offset="0" stop-color="#FFEBB8"/>
+      <stop offset="1" stop-color="#FFB95E"/>
     </linearGradient>
+    <radialGradient id="iris" cx="0.5" cy="0.75" r="0.7">
+      <stop offset="0" stop-color="#9C7BE0"/>
+      <stop offset="0.6" stop-color="#4C3784"/>
+      <stop offset="1" stop-color="#2A1F4A"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#C9F5E4" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#C9F5E4" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="bodyClip"><ellipse cx="200" cy="306" rx="64" ry="56"/></clipPath>
     <path id="spark" d="M0 -10 Q2 -2 10 0 Q2 2 0 10 Q-2 2 -10 0 Q-2 -2 0 -10 Z"/>
     <path id="heart" d="M0 7 C-15 -3 -11 -17 0 -9 C11 -17 15 -3 0 7 Z"/>
   </defs>
 
   <style>
     .bob   { animation: bob 3s ease-in-out infinite; }
+    .tilt  { transform-origin: 200px 258px; animation: tilt 6s ease-in-out infinite; }
     .wave  { transform-origin: 252px 292px; animation: wave 1.4s ease-in-out infinite; }
     .tail  { transform-origin: 250px 330px; animation: tail 2.2s ease-in-out infinite; }
     .wingL { transform-origin: 150px 280px; animation: flapL 1.8s ease-in-out infinite; }
@@ -32,6 +48,7 @@
     .tw2   { animation-delay: .8s; } .tw3 { animation-delay: 1.6s; }
     .float { animation: float 2.8s ease-out infinite; }
     @keyframes bob   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes tilt  { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(-2deg); } }
     @keyframes wave  { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-24deg); } }
     @keyframes tail  { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-7deg); } }
     @keyframes flapL { 0%,100% { transform: rotate(0); } 50% { transform: rotate(10deg); } }
@@ -40,50 +57,67 @@
     @keyframes tw    { 0%,100% { transform: scale(.4); opacity: .3; } 50% { transform: scale(1.1); opacity: 1; } }
     @keyframes float { 0% { transform: translate(0,10px); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(6px,-30px); opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
-      .bob,.wave,.tail,.wingL,.wingR,.blink,.tw,.float { animation: none; }
+      .bob,.tilt,.wave,.tail,.wingL,.wingR,.blink,.tw,.float { animation: none; }
+      .tilt { transform: rotate(-5deg); }
     }
   </style>
+
+  <!-- sanfter Hintergrund-Schein -->
+  <circle cx="200" cy="215" r="180" fill="url(#glow)"/>
 
   <!-- Glitzer -->
   <g fill="#FFD36E">
     <use href="#spark" class="tw"     transform="translate(58 92) scale(1.3)"/>
-    <use href="#spark" class="tw tw2" transform="translate(344 96) scale(1.1)"/>
-    <use href="#spark" class="tw tw3" transform="translate(52 236) scale(.8)"/>
-    <use href="#spark" class="tw tw2" transform="translate(296 52) scale(.7)"/>
+    <use href="#spark" class="tw tw2" transform="translate(348 104) scale(1.1)"/>
+    <use href="#spark" class="tw tw3" transform="translate(48 236) scale(.8)"/>
+    <use href="#spark" class="tw tw2" transform="translate(300 46) scale(.7)"/>
   </g>
 
-  <!-- Schatten -->
-  <ellipse cx="200" cy="376" rx="92" ry="10" fill="#2B4A40" opacity="0.12"/>
+  <!-- Schatten am Boden -->
+  <ellipse cx="200" cy="377" rx="96" ry="10" fill="#2B4A40" opacity="0.14"/>
 
-  <g class="bob" stroke="#3A8F72" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+  <g class="bob">
+   <g stroke="#2F7D63" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
 
-    <!-- Schwanz mit Herz-Spitze -->
+    <!-- Schwanz mit Zacken und Herz-Spitze -->
     <g class="tail">
-      <path d="M246 334 C298 354 342 342 350 312" fill="none" stroke="#3A8F72" stroke-width="30"/>
-      <path d="M246 334 C298 354 342 342 350 312" fill="none" stroke="#6FD0AA" stroke-width="21"/>
+      <path d="M286 336 Q292 316 306 332 Z" fill="url(#horn)" stroke-width="3.5"/>
+      <path d="M314 330 Q318 310 332 322 Z" fill="url(#horn)" stroke-width="3.5"/>
+      <path d="M246 334 C298 354 342 342 350 312" fill="none" stroke="#2F7D63" stroke-width="30"/>
+      <path d="M246 334 C298 354 342 342 350 312" fill="none" stroke="#72D3AC" stroke-width="21"/>
+      <path d="M262 334 C300 346 334 338 344 318" fill="none" stroke="#fff" stroke-width="4" opacity="0.35"/>
       <g transform="translate(353 293) rotate(18) scale(1.7)" stroke-width="2.6">
-        <use href="#heart" fill="#FFB8CB"/>
+        <use href="#heart" fill="url(#pinkG)"/>
       </g>
     </g>
 
     <!-- Flügelchen -->
     <g class="wingL">
-      <path d="M152 270 C122 248 94 250 88 270 C102 268 104 282 97 293 C111 289 117 300 112 311 C128 304 142 298 156 292 Z" fill="#FFB8CB"/>
-      <path d="M140 274 L106 274 M138 284 L112 298" fill="none" stroke="#F28DAE" stroke-width="3"/>
+      <path d="M152 270 C122 248 94 250 88 270 C102 268 104 282 97 293 C111 289 117 300 112 311 C128 304 142 298 156 292 Z" fill="url(#pinkG)"/>
+      <path d="M142 274 L106 272 M140 284 L112 298" fill="none" stroke="#F08AAB" stroke-width="3"/>
     </g>
     <g class="wingR">
-      <path d="M248 270 C278 248 306 250 312 270 C298 268 296 282 303 293 C289 289 283 300 288 311 C272 304 258 298 244 292 Z" fill="#FFB8CB"/>
-      <path d="M260 274 L294 274 M262 284 L288 298" fill="none" stroke="#F28DAE" stroke-width="3"/>
+      <path d="M248 270 C278 248 306 250 312 270 C298 268 296 282 303 293 C289 289 283 300 288 311 C272 304 258 298 244 292 Z" fill="url(#pinkG)"/>
+      <path d="M258 274 L294 272 M260 284 L288 298" fill="none" stroke="#F08AAB" stroke-width="3"/>
     </g>
 
     <!-- Körper -->
-    <ellipse cx="200" cy="306" rx="64" ry="56" fill="url(#skin)"/>
-    <ellipse cx="200" cy="316" rx="40" ry="40" fill="url(#belly)"/>
-    <g fill="none" stroke="#EBC874" stroke-width="3">
-      <path d="M172 300 Q200 308 228 300"/>
-      <path d="M166 318 Q200 327 234 318"/>
-      <path d="M172 336 Q200 344 228 336"/>
+    <ellipse cx="200" cy="306" rx="64" ry="56" fill="url(#skin)" stroke="none"/>
+    <g clip-path="url(#bodyClip)" stroke="none">
+      <ellipse cx="200" cy="306" rx="64" ry="56" fill="url(#shadeDown)"/>
     </g>
+    <ellipse cx="200" cy="318" rx="40" ry="39" fill="url(#belly)" stroke-width="3.5"/>
+    <g fill="none" stroke="#EDC46A" stroke-width="3">
+      <path d="M170 300 Q200 309 230 300"/>
+      <path d="M163 318 Q200 328 237 318"/>
+      <path d="M170 337 Q200 345 230 337"/>
+    </g>
+    <ellipse cx="186" cy="300" rx="12" ry="7" transform="rotate(-20 186 300)" fill="#fff" opacity="0.55" stroke="none"/>
+    <!-- Schatten des Kopfes auf dem Körper -->
+    <g clip-path="url(#bodyClip)" stroke="none">
+      <ellipse cx="200" cy="258" rx="74" ry="18" fill="#2F7D63" opacity="0.25"/>
+    </g>
+    <ellipse cx="200" cy="306" rx="64" ry="56" fill="none"/>
 
     <!-- linkes Ärmchen (auf dem Bauch) -->
     <ellipse cx="150" cy="306" rx="13" ry="20" transform="rotate(28 150 306)" fill="url(#skin)"/>
@@ -91,7 +125,7 @@
     <!-- Füßchen mit Zehenbohnen -->
     <ellipse cx="168" cy="356" rx="25" ry="15" fill="url(#skin)"/>
     <ellipse cx="232" cy="356" rx="25" ry="15" fill="url(#skin)"/>
-    <g fill="#FFB8CB" stroke="none">
+    <g fill="#FFA9C0" stroke="none">
       <ellipse cx="168" cy="359" rx="8" ry="5"/>
       <circle cx="155" cy="350" r="3.2"/><circle cx="166" cy="346" r="3.2"/><circle cx="177" cy="348" r="3.2"/>
       <ellipse cx="232" cy="359" rx="8" ry="5"/>
@@ -100,73 +134,97 @@
 
     <!-- rechtes Ärmchen (winkt) -->
     <g class="wave">
-      <path d="M252 292 L316 240" fill="none" stroke="#3A8F72" stroke-width="30"/>
-      <path d="M252 292 L316 240" fill="none" stroke="#6FD0AA" stroke-width="21"/>
+      <path d="M252 292 L316 240" fill="none" stroke="#2F7D63" stroke-width="30"/>
+      <path d="M252 292 L316 240" fill="none" stroke="#72D3AC" stroke-width="21"/>
       <circle cx="320" cy="236" r="17" fill="url(#skin)"/>
-      <g fill="#FFB8CB" stroke="none">
+      <g fill="#FFA9C0" stroke="none">
         <ellipse cx="322" cy="239" rx="7" ry="5"/>
         <circle cx="311" cy="228" r="3"/><circle cx="320" cy="224" r="3"/><circle cx="330" cy="228" r="3"/>
       </g>
     </g>
+   </g>
 
-    <!-- Ohr-Flossen -->
-    <path d="M98 140 C70 122 54 138 63 151 C52 160 58 177 74 173 C68 185 80 196 96 186 Z" fill="#FFB8CB"/>
-    <path d="M302 140 C330 122 346 138 337 151 C348 160 342 177 326 173 C332 185 320 196 304 186 Z" fill="#FFB8CB"/>
+   <!-- Kopf (leicht geneigt) -->
+   <g class="tilt">
+    <g stroke="#2F7D63" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+      <!-- Ohr-Flossen -->
+      <path d="M98 140 C70 122 54 138 63 151 C52 160 58 177 74 173 C68 185 80 196 96 186 Z" fill="url(#pinkG)"/>
+      <path d="M302 140 C330 122 346 138 337 151 C348 160 342 177 326 173 C332 185 320 196 304 186 Z" fill="url(#pinkG)"/>
+      <path d="M92 152 L72 151 M92 168 L76 172" fill="none" stroke="#F08AAB" stroke-width="3"/>
+      <path d="M308 152 L328 151 M308 168 L324 172" fill="none" stroke="#F08AAB" stroke-width="3"/>
 
-    <!-- Hörnchen & Haarbüschel -->
-    <path d="M138 108 Q126 70 150 58 Q168 64 176 98 Z" fill="url(#horn)"/>
-    <path d="M262 108 Q274 70 250 58 Q232 64 224 98 Z" fill="url(#horn)"/>
-    <path d="M172 96 C168 78 182 70 190 80 C190 58 212 58 210 80 C218 70 232 78 228 96 Z" fill="url(#horn)"/>
+      <!-- Hörnchen mit Rillen & Haarbüschel -->
+      <path d="M138 108 Q126 70 150 58 Q168 64 176 98 Z" fill="url(#horn)"/>
+      <path d="M262 108 Q274 70 250 58 Q232 64 224 98 Z" fill="url(#horn)"/>
+      <path d="M137 86 Q150 82 162 90 M141 72 Q150 70 156 76" fill="none" stroke="#E79A3F" stroke-width="3"/>
+      <path d="M263 86 Q250 82 238 90 M259 72 Q250 70 244 76" fill="none" stroke="#E79A3F" stroke-width="3"/>
+      <path d="M172 96 C168 78 182 70 190 80 C190 58 212 58 210 80 C218 70 232 78 228 96 Z" fill="url(#horn)"/>
 
-    <!-- Kopf -->
-    <ellipse cx="200" cy="172" rx="112" ry="90" fill="url(#skin)"/>
-  </g>
+      <!-- Kopf -->
+      <ellipse cx="200" cy="172" rx="112" ry="90" fill="url(#skin)"/>
+      <ellipse cx="200" cy="172" rx="112" ry="90" fill="url(#shadeDown)" stroke="none"/>
+      <ellipse cx="200" cy="172" rx="112" ry="90" fill="none"/>
+    </g>
 
-  <!-- Gesicht -->
-  <g class="bob">
     <!-- Glanzlicht & Pünktchen auf der Stirn -->
-    <ellipse cx="150" cy="118" rx="38" ry="15" transform="rotate(-22 150 118)" fill="#fff" opacity="0.3"/>
-    <g fill="#55BC93">
-      <circle cx="200" cy="104" r="4"/><circle cx="186" cy="112" r="3"/><circle cx="214" cy="112" r="3"/>
+    <ellipse cx="148" cy="116" rx="40" ry="15" transform="rotate(-22 148 116)" fill="#fff" opacity="0.38"/>
+    <circle cx="190" cy="98" r="5" fill="#fff" opacity="0.4"/>
+    <g fill="#5CC49B">
+      <circle cx="200" cy="106" r="4"/><circle cx="186" cy="114" r="3"/><circle cx="214" cy="114" r="3"/>
     </g>
 
     <!-- Augen -->
     <g class="blink">
-      <ellipse cx="155" cy="184" rx="27" ry="31" fill="url(#eye)"/>
-      <path d="M136 201 Q155 220 174 201 Q155 211 136 201 Z" fill="#7FE6CF" opacity="0.85"/>
-      <circle cx="164" cy="171" r="11" fill="#fff"/>
-      <circle cx="145" cy="195" r="4.5" fill="#fff"/>
-      <circle cx="166" cy="197" r="2.2" fill="#fff"/>
+      <ellipse cx="155" cy="184" rx="28" ry="32" fill="#1C1530"/>
+      <ellipse cx="155" cy="190" rx="21" ry="24" fill="url(#iris)"/>
+      <ellipse cx="155" cy="190" rx="10" ry="13" fill="#140F24"/>
+      <path d="M136 202 Q155 222 174 202 Q155 213 136 202 Z" fill="#8BEBD6" opacity="0.9"/>
+      <circle cx="165" cy="170" r="11.5" fill="#fff"/>
+      <circle cx="144" cy="196" r="5" fill="#fff"/>
+      <circle cx="167" cy="198" r="2.4" fill="#fff"/>
     </g>
     <g class="blink">
-      <ellipse cx="245" cy="184" rx="27" ry="31" fill="url(#eye)"/>
-      <path d="M226 201 Q245 220 264 201 Q245 211 226 201 Z" fill="#7FE6CF" opacity="0.85"/>
-      <circle cx="254" cy="171" r="11" fill="#fff"/>
-      <circle cx="235" cy="195" r="4.5" fill="#fff"/>
-      <circle cx="256" cy="197" r="2.2" fill="#fff"/>
+      <ellipse cx="245" cy="184" rx="28" ry="32" fill="#1C1530"/>
+      <ellipse cx="245" cy="190" rx="21" ry="24" fill="url(#iris)"/>
+      <ellipse cx="245" cy="190" rx="10" ry="13" fill="#140F24"/>
+      <path d="M226 202 Q245 222 264 202 Q245 213 226 202 Z" fill="#8BEBD6" opacity="0.9"/>
+      <circle cx="255" cy="170" r="11.5" fill="#fff"/>
+      <circle cx="234" cy="196" r="5" fill="#fff"/>
+      <circle cx="257" cy="198" r="2.4" fill="#fff"/>
     </g>
-    <!-- Wimpern -->
-    <g stroke="#211A35" stroke-width="4" stroke-linecap="round" fill="none">
-      <path d="M130 170 L120 163"/><path d="M131 180 L120 178"/>
-      <path d="M270 170 L280 163"/><path d="M269 180 L280 178"/>
+    <!-- Wimpern & Brauen -->
+    <g stroke="#1C1530" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M129 170 L119 162"/><path d="M128 181 L117 179"/>
+      <path d="M271 170 L281 162"/><path d="M272 181 L283 179"/>
+    </g>
+    <g stroke="#3F9C7B" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M140 140 Q152 133 166 138"/>
+      <path d="M234 138 Q248 133 260 140"/>
     </g>
 
     <!-- Bäckchen -->
-    <ellipse cx="116" cy="216" rx="20" ry="12" fill="#FF9BB5" opacity="0.9"/>
-    <ellipse cx="284" cy="216" rx="20" ry="12" fill="#FF9BB5" opacity="0.9"/>
-    <g stroke="#FF7FA2" stroke-width="2.5" stroke-linecap="round">
-      <path d="M106 220 L110 212"/><path d="M114 220 L118 212"/><path d="M122 220 L126 212"/>
-      <path d="M274 220 L278 212"/><path d="M282 220 L286 212"/><path d="M290 220 L294 212"/>
+    <ellipse cx="114" cy="218" rx="21" ry="12.5" fill="#FF9BB5" opacity="0.9"/>
+    <ellipse cx="286" cy="218" rx="21" ry="12.5" fill="#FF9BB5" opacity="0.9"/>
+    <g stroke="#FF7CA0" stroke-width="2.5" stroke-linecap="round">
+      <path d="M104 222 L108 214"/><path d="M112 222 L116 214"/><path d="M120 222 L124 214"/>
+      <path d="M276 222 L280 214"/><path d="M284 222 L288 214"/><path d="M292 222 L296 214"/>
     </g>
+    <circle cx="124" cy="212" r="2.5" fill="#fff" opacity="0.8"/>
+    <circle cx="296" cy="212" r="2.5" fill="#fff" opacity="0.8"/>
+
+    <!-- Näschen -->
+    <ellipse cx="193" cy="206" rx="2.6" ry="1.8" fill="#2F7D63"/>
+    <ellipse cx="207" cy="206" rx="2.6" ry="1.8" fill="#2F7D63"/>
 
     <!-- Mündchen mit Zähnchen -->
-    <path d="M186 214 Q200 234 214 214 Q200 218 186 214 Z" fill="#8C3A55" stroke="#3A8F72" stroke-width="3.5" stroke-linejoin="round"/>
-    <path d="M193 223 Q200 217 207 223 Q204 229 200 229 Q196 229 193 223 Z" fill="#FF8FAB"/>
-    <path d="M191 215.5 L194.5 221 L197.5 216.3 Z" fill="#fff"/>
+    <path d="M185 216 Q200 237 215 216 Q200 220 185 216 Z" fill="#8C3A55" stroke="#2F7D63" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M192 226 Q200 219 208 226 Q205 232 200 232 Q195 232 192 226 Z" fill="#FF8FAB"/>
+    <path d="M190 217.5 L193.6 223.5 L196.8 218.4 Z" fill="#fff"/>
+   </g>
   </g>
 
   <!-- schwebendes Herzchen beim Winken -->
   <g class="float">
-    <use href="#heart" transform="translate(350 206) scale(.9)" fill="#FF8FAB"/>
+    <use href="#heart" transform="translate(352 206) scale(.9)" fill="#FF8FAB"/>
   </g>
 </svg>

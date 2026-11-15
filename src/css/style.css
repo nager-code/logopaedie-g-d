@@ -235,13 +235,20 @@ button:active{transform:translateY(4px)}
 
 /* ---------- Fips, der Drache ---------- */
 .dragon{
-  --dr-s1:#A8EED2; --dr-s2:#63C9A1; --dr-line:#3A8F72; --dr-mid:#6FD0AA; --dr-dot:#55BC93;
+  --dr-s1:#B4F2D9; --dr-s2:#7DD9B4; --dr-s3:#55BE96; --dr-line:#2F7D63; --dr-mid:#72D3AC; --dr-dot:#5CC49B; --dr-brow:#3F9C7B; --dr-glow:#C9F5E4;
   position:relative;display:inline-block;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent
 }
-.dragon.oops{--dr-s1:#D4E9FF; --dr-s2:#6FA6EE; --dr-line:#3B6CB5; --dr-mid:#8DBAF2; --dr-dot:#5E92DA}
+.dragon.oops{--dr-s1:#DCEBFF; --dr-s2:#93BFF5; --dr-s3:#6295E0; --dr-line:#2F5FA8; --dr-mid:#8DBAF2; --dr-dot:#6A9BE0; --dr-brow:#3F6FBF; --dr-glow:#D8E9FF}
 .dragon svg{width:100%;height:auto;display:block;overflow:visible}
 .dr-s1{stop-color:var(--dr-s1);transition:stop-color .5s}
 .dr-s2{stop-color:var(--dr-s2);transition:stop-color .5s}
+.dr-s3{stop-color:var(--dr-s3);transition:stop-color .5s}
+.dr-sh{stop-color:var(--dr-line)}
+.dr-gl{stop-color:var(--dr-glow)}
+.dr-sh-fill,.dr-nose{fill:var(--dr-line);transition:fill .5s}
+.dr-brows{stroke:var(--dr-brow);transition:stroke .5s}
+.dr-tilt{transform-origin:200px 258px;animation:drTilt 6s ease-in-out infinite}
+.buddy-dragon .dr-glow,.buddy-dragon .dr-sparks{display:none}
 .dr-outline,.dr-line-s{stroke:var(--dr-line);transition:stroke .5s}
 .dr-mid-s{stroke:var(--dr-mid);transition:stroke .5s}
 .dr-dot{fill:var(--dr-dot);transition:fill .5s}
@@ -282,11 +289,14 @@ button:active{transform:translateY(4px)}
 .dragon.oops .dr-all{animation:drShiver .08s linear 8, drSquish .6s .7s ease-in-out 2}
 .dragon.oops .dr-arm{transform:rotate(100deg)}
 .dragon.oops .dr-sparks{opacity:0}
+.dragon.oops .dr-brows{transform:translateY(-8px);transition:transform .3s,stroke .5s}
+.dragon.happy .dr-tilt,.dragon.giggle .dr-tilt{animation-duration:1.2s}
 
 /* fliegende Herzchen / Schneeflocken */
 .dr-fx{position:absolute;inset:0;pointer-events:none;line-height:1}
 .dr-fx span{position:absolute;top:35%;font-size:26px;animation:drFx 1.6s ease-out forwards}
 
+@keyframes drTilt{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(-2deg)}}
 @keyframes drBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @keyframes drTail{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
 @keyframes drFlapL{0%,100%{transform:rotate(0)}50%{transform:rotate(10deg)}}
@@ -310,12 +320,15 @@ button:active{transform:translateY(4px)}
 .hero-bubble{
   position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:2;
   background:#fff;border-radius:22px;padding:10px 16px;font-size:19px;font-weight:900;text-align:center;
-  box-shadow:0 5px 0 rgba(59,44,90,.12);white-space:nowrap;line-height:1.3;animation:bubbleIn .4s
+  box-shadow:0 5px 0 rgba(59,44,90,.12);width:max-content;max-width:min(330px,88vw);line-height:1.3;animation:bubbleIn .4s
 }
 .hero-bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
 @keyframes bubbleIn{0%{transform:translateX(-50%) scale(.5);opacity:0}70%{transform:translateX(-50%) scale(1.08)}100%{transform:translateX(-50%) scale(1);opacity:1}}
 .end-dragon{width:150px;margin:-10px auto 0}
 
 @media (prefers-reduced-motion: reduce){
-  .dr-bob,.dr-tail,.dr-wingL,.dr-wingR,.dr-blink,.dr-tw,.dr-swirl{animation:none}
+  .dr-bob,.dr-tail,.dr-wingL,.dr-wingR,.dr-blink,.dr-tw,.dr-swirl,.dr-tilt{animation:none}
 }
+
+/* Während einer Feier: keine Knöpfe im Spiel */
+body.partying #answers, body.partying #next, body.partying .card .speaker, body.partying .card .peek, body.partying .topbar button{visibility:hidden;pointer-events:none}

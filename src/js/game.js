@@ -81,7 +81,7 @@ function newGame(){
   renderRound();
 }
 
-function goHome(){ endParty(); stopAll(); setTimeout(greet, 300); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
+function goHome(){ partyAfter = null; endParty(); stopAll(); setTimeout(greet, 300); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
 
 function setBubble(text, cls){
   const b = $("bubble");
@@ -179,7 +179,7 @@ function answer(choice){
     card.classList.add("flip","is-right");
     stars++; updateStars(); confetti();
     streak++;
-    if (streak % STREAK_EVERY === 0) setTimeout(() => celebrate(streak), 1500);
+    partyDue = streak % STREAK_EVERY === 0;
   } else if (correct === false){
     setBubble(pick(OOPS), "bad");
     dragonDo("buddyDragon", "oops", 2600);
@@ -204,11 +204,15 @@ function answer(choice){
   renderProgress();
   show("next");
 
-  setTimeout(() => {
-    if (correct === false) playSeq(["#" + item.l, item.w]);
-    else if (correct === true) playSeq(["#ok", item.w]);
-    else playSeq([item.w]);
-  }, correct === null ? 400 : 900);
+  const seq = correct === false ? ["#" + item.l, item.w] : correct === true ? ["#ok", item.w] : [item.w];
+  if (partyDue){
+    // erst feiern, danach das Wort – nichts soll sich überlagern
+    partyDue = false;
+    const n = streak;
+    setTimeout(() => celebrate(n, seq), 800);
+  } else {
+    setTimeout(() => { if (!partyOn) playSeq(seq); }, correct === null ? 400 : 900);
+  }
 }
 
 function next(){
@@ -227,7 +231,7 @@ function showEnd(){
 }
 /* ================= Zwischendurch-Feier bei einer Serie ================= */
 const STREAK_EVERY = 3;
-let streak = 0, partyTimer = null, lastParty = -1;
+let streak = 0, partyTimer = null, lastParty = -1, partyDue = false, partyOn = false, partyAfter = null;
 const PARTIES = [
   {cls:"rocket",   html:`<div class="p-rocket">🚀</div><div class="p-trail">✨✨✨</div>`},
   {cls:"rainbow",  html:`<div class="p-rainbow"><i></i><i></i><i></i><i></i><i></i></div><div class="p-unicorn">🦄</div>`},
@@ -236,7 +240,10 @@ const PARTIES = [
   {cls:"balloons", html:`<div class="p-balloons"><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span></div>`},
   {cls:"fireworks",html:`<div class="p-fw"></div>`}
 ];
-function celebrate(n){
+function celebrate(n, afterSeq){
+  stopAll();                       // Sprachausgabe pausieren
+  partyOn = true; partyAfter = afterSeq || null;
+  document.body.classList.add("partying");
   let i; do { i = Math.floor(rnd() * PARTIES.length); } while (i === lastParty && PARTIES.length > 1);
   lastParty = i;
   const p = PARTIES[i], el = $("party");
@@ -262,7 +269,14 @@ function celebrate(n){
   clearTimeout(partyTimer);
   partyTimer = setTimeout(endParty, 2800);
 }
-function endParty(){ clearTimeout(partyTimer); $("party").className = "party hidden"; $("party").innerHTML = ""; }
+function endParty(){
+  clearTimeout(partyTimer);
+  $("party").className = "party hidden"; $("party").innerHTML = "";
+  document.body.classList.remove("partying");
+  const wasOn = partyOn; partyOn = false;
+  const seq = partyAfter; partyAfter = null;
+  if (wasOn && seq && !$("game").classList.contains("hidden")) setTimeout(() => playSeq(seq), 250);   // danach weiter
+}
 
 function updateStars(){
   const s = $("stars"); s.textContent = "⭐ " + stars;

@@ -1,16 +1,40 @@
 /* ================= Wörter ================= */
-const G_WORDS = [
-  ["Giraffe","🦒"],["Gabel","🍴"],["Gurke","🥒"],["Geschenk","🎁"],["Geist","👻"],
-  ["Gitarre","🎸"],["Glocke","🔔"],["Igel","🦔"],["Vogel","🐦"],["Tiger","🐯"],
-  ["Kugel","🔮"],["Auge","👁️"],["Geige","🎻"],["Garten","🏡"],["Gold","🥇"],["Ziege","🐐"]
+/* Übungsliste: 40 D-Wörter und 40 G-Wörter, nach Schwierigkeit geordnet (leicht → schwer).
+   D und G am Wortende klingen wie t und k – deshalb stehen sie hier nur am Anfang oder in der Mitte. */
+const D_LEVELS = [
+  {name:"D – Stufe 1: D am Wortanfang", words:[
+    ["Dach","🏠"],["Dose","🥫"],["Dusche","🚿"],["Dino","🦕"],["Daumen","👍"],
+    ["Delfin","🐬"],["Dorf","🏘️"],["Dame","👩"],["Donner","🌩️"],["Diamant","💎"],
+    ["Dieb","🦹"],["Dampfer","🛳️"],["Dirndl","👗"],["Dattel","🌴"],["Düse","🚀"],
+    ["Duft","🌸"],["Domino","🎲"],["Dübel","🔩"],["Dotter","🍳"],["Dorn","🌵"]]},
+  {name:"D – Stufe 2: D in der Wortmitte", words:[
+    ["Nudel","🍝"],["Pudel","🐩"],["Feder","🪶"],["Boden","🟫"],["Leder","👜"],
+    ["Nadel","🪡"],["Ruder","🚣"],["Rodel","🛷"],["Radio","📻"],["Wade","🦵"],
+    ["Schublade","🗄️"],["Limonade","🍋"],["Faden","🧵"],["Paddel","🛶"],["Bude","🛖"]]},
+  {name:"D – Stufe 3: schwer (DR oder K im Wort)", words:[
+    ["Drache","🐉"],["Drei","3️⃣"],["Dackel","🐕"],["Deckel","🫙"],["Knödel","🥟"]]}
 ];
-const D_WORDS = [
-  ["Dino","🦕"],["Drache","🐉"],["Daumen","👍"],["Delfin","🐬"],["Dose","🥫"],
-  ["Dusche","🚿"],["Donut","🍩"],["Nudeln","🍝"],["Pudel","🐩"],["Feder","🪶"],
-  ["Radio","📻"],["Schokolade","🍫"],["Dach","🏠"],["Decke","🛏️"],["Dampflok","🚂"],["Kinder","🧒"]
+const G_LEVELS = [
+  {name:"G – Stufe 1: G am Anfang mit a, o, u", words:[
+    ["Gummi","🍬"],["Gockel","🐓"],["Gurke","🥒"],["Gabel","🍴"],["Gaul","🐴"],
+    ["Gugelhupf","🍰"],["Gorilla","🦍"],["Gulasch","🍲"],["Gong","🥁"],["Gas","⛽"]]},
+  {name:"G – Stufe 2: G am Wortanfang", words:[
+    ["Geige","🎻"],["Gemüse","🥦"],["Giraffe","🦒"],["Gips","🩹"],["Geschenk","🎁"],
+    ["Gewitter","⛈️"],["Gitarre","🎸"],["Gans","🪿"],["Garten","🏡"],["Gold","🥇"]]},
+  {name:"G – Stufe 3: G in der Wortmitte", words:[
+    ["Auge","👁️"],["Vogel","🐦"],["Kugel","🔮"],["Magen","😋"],["Wagen","🚗"],
+    ["Igel","🦔"],["Hagel","🧊"],["Bagger","🏗️"],["Regen","🌧️"],["Nagel","💅"],
+    ["Bogen","🏹"],["Säge","🪚"],["Ziege","🐐"],["Tiger","🐯"],["Feige","🍑"]]},
+  {name:"G – Stufe 4: GR und GL am Anfang", words:[
+    ["Gras","🌱"],["Grille","🦗"],["Glas","🥛"],["Glocke","🔔"],["Glitzer","✨"]]}
 ];
+const D_WORDS = D_LEVELS.flatMap(l => l.words);
+const G_WORDS = G_LEVELS.flatMap(l => l.words);
+
+/* Hörpaare (Minimalpaare) für „Welches Bild?“ */
 const PAIRS = [
   [{w:"Nagel",e:"💅",l:"G"},{w:"Nadel",e:"🪡",l:"D"}],
+  [{w:"Bogen",e:"🏹",l:"G"},{w:"Boden",e:"🟫",l:"D"}],
   [{w:"Regen",e:"🌧️",l:"G"},{w:"reden",e:"🗣️",l:"D"}],
   [{w:"Wagen",e:"🚗",l:"G"},{w:"Waden",e:"🦵",l:"D"}],
   [{w:"Gaumen",e:"👄",l:"G"},{w:"Daumen",e:"👍",l:"D"}]
@@ -27,17 +51,18 @@ const GIGGLE = ["Hihi, das kitzelt! 😄","Ich bin Fips! 💚","Los, spielen wir
 const REC_SECTIONS = (() => {
   const seen = new Set();
   const uniq = arr => arr.filter(x => !seen.has(x.k) && seen.add(x.k));
+  const lvl = l => ({title: l.name, items: uniq(l.words.map(([w,e]) => ({k:w, e, t:w, word:true})))});
   return [
-    {title:"Wörter mit G", items: uniq(G_WORDS.map(([w,e]) => ({k:w, e, t:w, word:true})))},
-    {title:"Wörter mit D", items: uniq(D_WORDS.map(([w,e]) => ({k:w, e, t:w, word:true})))},
-    {title:"Wortpaare für „Welches Bild?“", items: uniq(PAIRS.flat().map(p => ({k:p.w, e:p.e, t:p.w, word:true})))},
+    ...G_LEVELS.map(lvl),
+    ...D_LEVELS.map(lvl),
+    {title:"Weitere Wörter für „Welches Bild?“", items: uniq(PAIRS.flat().map(p => ({k:p.w, e:p.e, t:p.w, word:true})))},
     {title:"Sätze (freiwillig)", note:"Damit hört dein Kind auch Lob und Hinweise mit deiner Stimme.", box:true, items: [
       {k:"#G",  e:"🟢", t:"„Das ist ein G.“"},
       {k:"#D",  e:"🔵", t:"„Das ist ein D.“"},
       {k:"#ok", e:"⭐", t:"„Super!“"},
       {k:"#end",e:"🎉", t:"„Super gemacht!“"}
     ]}
-  ];
+  ].filter(sec => sec.items.length);
 })();
 const REC_ITEMS = REC_SECTIONS.flatMap(s => s.items);
 

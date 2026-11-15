@@ -21,6 +21,7 @@ function playRec(k){
 }
 async function playSeq(keys){
   stopAll();
+  if (typeof partyOn !== "undefined" && partyOn) return;   // während einer Feier still sein
   for (const k of keys) if (recURL[k]) await playRec(k);
 }
 
