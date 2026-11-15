@@ -54,7 +54,14 @@ Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein p
 <details>
 <summary><b>🤫 Psst … ein Geheimnis</b></summary>
 
-Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei seiner **geheimen Muffin-Party**: Muffins antippen, sie fliegen in Fips’ Maul, und er wird mit jedem Muffin runder – bis ihm nach sechs Muffins der Bauch grummelt, er rot anläuft und einen riesigen Feuerstrahl rauslässt. Danach ist er wieder ganz der Alte.
+Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei seiner **geheimen Muffin-Party** auf einer Sommerwiese – mit Picknickdecke, Wimpel- und Lichterkette, Schmetterlingen und einer kleinen Spieluhr-Melodie:
+
+- 🧁 Muffins antippen oder mit dem Finger zu Fips ziehen – kommt einer näher, reißt er hungrig das Maul auf.
+- 🎈 Mit jedem Muffin wird Fips kugelrunder: Kugelbauch mit Bauchnabel, Pausbacken, Doppelkinn – und irgendwann bekommt er Schluckauf.
+- ✨ Ab und zu liegt ein **Goldmuffin** auf dem Teller, der macht doppelt satt.
+- 🤭 Bauch antippen: er wabbelt wie Wackelpudding.
+- 🔥 Nach sechs Muffins grummelt der Bauch, Fips läuft rot an und lässt einen riesigen Feuerstrahl raus – mit Feuerwerk am Himmel. Danach ist er wieder ganz der Alte.
+- 👩‍🍳 In der **Muffin-Küche** lassen sich Muffins selbst verzieren: Förmchen und Guss aussuchen, dann bunte Streusel, Schoko-Streusel, Zuckersterne, Herzen und Kirschen drüberrieseln lassen. Den fertigen Muffin bekommt Fips – und freut sich ganz besonders.
 
 </details>
 

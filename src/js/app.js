@@ -18,6 +18,7 @@ $("openRec").addEventListener("click", openRecorder);
 document.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => {
   const id = b.dataset.close;
   if (id === "recOverlay"){ closeMic(); stopAll(); }
+  if (id === "eggOverlay"){ closeEgg(); return; }
   hide(id);
   refreshCounts();
 }));
@@ -67,6 +68,13 @@ document.querySelectorAll(".home-title .tile").forEach(t => {
   t.setAttribute("role", "button"); t.setAttribute("tabindex", "0"); t.setAttribute("aria-label", "G und D tauschen");
   t.addEventListener("click", swapTiles);
   t.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); swapTiles(); } });
+});
+
+$("eggFips").addEventListener("click", eggPoke);
+$("eggMusicBtn").addEventListener("click", () => {
+  eggMusicOn = !eggMusicOn;
+  try { localStorage.setItem("eggMusic", eggMusicOn ? "on" : "off"); } catch(e){}
+  eggMusic(eggMusicOn);
 });
 
 /* Kitzeln: je öfter man schnell hintereinander tippt, desto mehr lacht Fips –

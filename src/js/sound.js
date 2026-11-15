@@ -113,6 +113,20 @@ function sfx(kind, lvl = 1){
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 400;
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.15); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
     o.connect(lp); lp.connect(g); g.connect(ctx.destination); o.start(t); lfo.start(t); o.stop(t + 1.25); lfo.stop(t + 1.25);
+  } else if (kind === "pop"){
+    // Feuerwerk: Zischen hoch, dann Plopp
+    tone(ctx, 500, t, 0.25, "sine", 0.08, 1600);
+    tone(ctx, 140, t + 0.26, 0.18, "triangle", 0.3, 60);
+    tone(ctx, 1800, t + 0.27, 0.25, "sine", 0.05, 2400);
+  } else if (kind === "boing"){
+    tone(ctx, 180, t, 0.5, "sine", 0.35, 420);
+    tone(ctx, 360, t + 0.02, 0.35, "triangle", 0.08, 700);
+  } else if (kind === "hic"){
+    tone(ctx, 700, t, 0.08, "square", 0.08, 1400);
+    tone(ctx, 1400, t + 0.06, 0.06, "sine", 0.12, 900);
+  } else if (kind === "sprinkle"){
+    // Streusel: ein paar winzige, helle Klicks
+    for (let i = 0; i < 3; i++) tone(ctx, 2200 + Math.random() * 1600, t + i * .03, .03, "sine", .05);
   } else if (kind === "swap"){
     // Wusch: zwei Töne, die aneinander vorbeigleiten
     tone(ctx, 520, t, 0.45, "sine", 0.22, 1040);
