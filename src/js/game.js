@@ -121,12 +121,12 @@ function renderRound(){
   const ans = $("answers");
   if (mode === "gd"){
     ans.innerHTML = `
-      <button class="letter G" data-l="G"><b>G</b><small>🦒</small></button>
-      <button class="letter D" data-l="D"><b>D</b><small>🦕</small></button>`;
+      <button class="letter G" data-l="G"><b>G</b><small>${pic("Giraffe","🦒")}</small></button>
+      <button class="letter D" data-l="D"><b>D</b><small>${pic("Dino","🦕")}</small></button>`;
     ans.querySelectorAll(".letter").forEach(b => b.addEventListener("click", () => answer(b.dataset.l)));
   } else {
     ans.innerHTML = cur.pair.map((p,i) => `
-      <button class="pic" data-i="${i}"><span class="e">${p.e}</span><span class="lbl"></span></button>`).join("");
+      <button class="pic" data-i="${i}"><span class="e">${pic(p.w, p.e)}</span><span class="lbl"></span></button>`).join("");
     ans.querySelectorAll(".pic").forEach(b => b.addEventListener("click", () => answer(+b.dataset.i)));
   }
   setTimeout(playCurrent, 350);
@@ -154,7 +154,7 @@ function answer(choice){
     });
   } else {
     const targetIdx = cur.pair.indexOf(cur.target);
-    if (choice !== undefined){ correct = (choice === targetIdx); chosenLabel = cur.pair[choice].e; }
+    if (choice !== undefined){ correct = (choice === targetIdx); chosenLabel = pic(cur.pair[choice].w, cur.pair[choice].e); }
     document.querySelectorAll(".pic").forEach((b,i) => {
       const p = cur.pair[i];
       b.querySelector(".lbl").innerHTML = highlight(p.w, p.l);
@@ -185,7 +185,7 @@ function answer(choice){
     streak = 0;
     explain = mode === "gd"
       ? `<div class="explain"><span class="chip ${chosenLabel} x">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.l}</span></div>`
-      : `<div class="explain"><span class="chip x" style="background:#eee">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.e}</span></div>`;
+      : `<div class="explain"><span class="chip pic-chip x">${chosenLabel}</span> ➜ <span class="chip pic-chip ${item.l}">${pic(item.w, item.e)}</span></div>`;
     card.classList.add("is-wrong");
     try { if (navigator.vibrate) navigator.vibrate([120,60,120]); } catch(e){}
   } else {
@@ -194,7 +194,7 @@ function answer(choice){
   }
 
   card.innerHTML = `
-    <div class="big-emoji">${item.e}</div>
+    <div class="big-emoji">${pic(item.w, item.e)}</div>
     <div class="word">${highlight(item.w, item.l)}</div>
     ${explain}`;
 

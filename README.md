@@ -12,6 +12,10 @@ Fips begleitet durchs Spiel: Auf der Startseite winkt er und begrüßt das Kind.
 
 40 Wörter mit D und 40 mit G, nach Schwierigkeit in Stufen geordnet (z. B. *D am Wortanfang*, *D in der Wortmitte*, *GR und GL am Anfang*). D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Beim Aufnehmen werden die leichten Wörter zuerst vorgeschlagen, abwechselnd mit G und D.
 
+## Bilder
+
+Jedes Wort hat ein eigenes, von Hand als SVG gezeichnetes Bild – alle im gleichen Stil wie Fips: weiche Farbverläufe, farbige Umrisse, Glanzlichter, und Tiere mit Fips-Augen und rosa Bäckchen. Die Bilder stehen in `src/js/pictures.js`.
+
 ## So wird gespielt
 
 Ein Wort wird vorgesprochen, das Kind tippt auf **G** oder **D**.
@@ -34,6 +38,7 @@ src/favicon.svg       Icon
 src/img/fips-*.svg    Fips in drei Posen: Begrüßung, Jubel, Hoppla
 src/css/style.css     Design und Animationen
 src/js/words.js       Wortlisten, Wortpaare, Mindestanzahl Wörter
+src/js/pictures.js    Gezeichnete Bilder zu allen Wörtern
 src/js/util.js        Hilfsfunktionen und Spielzustand
 src/js/dragon.js      Fips: zeigt je nach Gefühl die passende Pose
 src/js/storage.js     Aufnahmen speichern (IndexedDB), Stille abschneiden
@@ -43,7 +48,7 @@ src/js/recorder.js    Aufnahme-Studio
 src/js/app.js         Navigation und Start
 ```
 
-Neue Wörter kommen in `src/js/words.js` dazu. Lokal testen: `src/index.html` im Browser öffnen
+Neue Wörter kommen in `src/js/words.js` dazu, das passende Bild in `src/js/pictures.js` (ohne Bild wird das Emoji gezeigt). Lokal testen: `src/index.html` im Browser öffnen
 (das Mikrofon funktioniert nur über `https://` oder `localhost`, z. B. `python3 -m http.server -d src`).
 Bei jedem Push auf `main` veröffentlicht eine GitHub Action die Seite auf GitHub Pages.
 
