@@ -35,6 +35,40 @@ function greet(){
   dragonDo("homeDragon", "wave", 3600);
   heroSay(pick(HELLO), 4200);
 }
+/* G und D oben antippen: sie fliegen im Bogen übereinander und tauschen die Plätze */
+let swapping = false;
+function swapTiles(){
+  if (swapping) return;
+  const h = document.querySelector(".home-title h1"), [a, b] = h.querySelectorAll(".tile");
+  if (!a || !b || !a.animate){ return; }
+  swapping = true;
+  const dx = b.getBoundingClientRect().left - a.getBoundingClientRect().left;
+  const opts = { duration: 700, easing: "cubic-bezier(.45,0,.3,1)", fill: "forwards" };
+  const over = a.animate([
+    { transform: "translate(0,0) rotate(-6deg) scale(1)" },
+    { transform: `translate(${dx / 2}px,-58px) rotate(170deg) scale(1.18)`, offset: .5 },
+    { transform: `translate(${dx}px,0) rotate(366deg) scale(1)` }], opts);
+  const under = b.animate([
+    { transform: "translate(0,0) rotate(6deg) scale(1)" },
+    { transform: `translate(${-dx / 2}px,30px) rotate(-12deg) scale(.86)`, offset: .5 },
+    { transform: `translate(${-dx}px,0) rotate(-6deg) scale(1)` }], opts);
+  sfx("swap");
+  over.finished.then(() => {
+    // Plätze im Dokument tauschen und die Flug-Animation im selben Moment entfernen – kein Flackern
+    const ph = document.createElement("span");
+    h.replaceChild(ph, a); h.replaceChild(a, b); h.replaceChild(b, ph);
+    over.cancel(); under.cancel();
+    const t = h.querySelectorAll(".tile");
+    h.setAttribute("aria-label", `${t[0].textContent} oder ${t[1].textContent}?`);
+    swapping = false;
+  });
+}
+document.querySelectorAll(".home-title .tile").forEach(t => {
+  t.setAttribute("role", "button"); t.setAttribute("tabindex", "0"); t.setAttribute("aria-label", "G und D tauschen");
+  t.addEventListener("click", swapTiles);
+  t.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); swapTiles(); } });
+});
+
 /* Kitzeln: je öfter man schnell hintereinander tippt, desto mehr lacht Fips –
    kichern → lachen → er kugelt sich vor Lachen auf dem Boden */
 let tickles = 0, tickleTimer = null, rofl = false;

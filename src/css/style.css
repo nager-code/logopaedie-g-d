@@ -38,10 +38,12 @@ button{font-family:inherit;color:inherit}
 /* ---------- Start ---------- */
 .home-title{text-align:center;margin-top:22px}
 .home-title h1{margin:0;display:flex;align-items:center;justify-content:center;gap:10px;font-size:48px;font-weight:900;line-height:1}
-.home-title .tile{display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:22px;color:#fff;font-size:46px;animation:tileBob 3.2s ease-in-out infinite}
-.home-title .tile.lg{background:linear-gradient(160deg,#4fd68c,var(--g));box-shadow:0 6px 0 var(--g-dark);transform:rotate(-6deg)}
-.home-title .tile.ld{background:linear-gradient(160deg,#6aa9ff,var(--d));box-shadow:0 6px 0 var(--d-dark);transform:rotate(6deg);animation-delay:-1.6s;--r:6deg}
-.home-title .tile.lg{--r:-6deg}
+.home-title .tile{display:inline-flex;align-items:center;justify-content:center;width:68px;height:68px;border-radius:22px;color:#fff;font-size:46px;animation:tileBob 3.2s ease-in-out infinite;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* Neigung hängt am Platz, nicht am Buchstaben – nach dem Tauschen bleibt links −6°, rechts +6° */
+.home-title h1 .tile:first-child{--r:-6deg;transform:rotate(-6deg)} .home-title h1 .tile:nth-child(3){--r:6deg;transform:rotate(6deg)}
+.home-title .tile:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+.home-title .tile.lg{background:linear-gradient(160deg,#4fd68c,var(--g));box-shadow:0 6px 0 var(--g-dark)}
+.home-title .tile.ld{background:linear-gradient(160deg,#6aa9ff,var(--d));box-shadow:0 6px 0 var(--d-dark);animation-delay:-1.6s}
 .home-title .oder{font-size:30px;color:var(--ink);opacity:.8;margin:0 2px}
 .home-title .qm{color:var(--pink);font-size:52px;margin-left:-4px;animation:tileBob 3.2s ease-in-out -.8s infinite;--r:10deg;display:inline-block}
 .home-sub{margin:12px 0 0;font-size:16px;font-weight:800;color:var(--muted);letter-spacing:.3px}

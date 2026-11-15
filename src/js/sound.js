@@ -72,21 +72,36 @@ function sfx(kind, lvl = 1){
     n.forEach(([f, d], i) => tone(ctx, f, t + d, i === 3 ? 0.7 : 0.12, "square", 0.1));
     [[698.46],[880],[1046.5]].forEach(([f]) => tone(ctx, f, t + 0.42, 0.8, "triangle", 0.18));
   } else if (kind === "laugh"){
-    // Lachen: „hi-hi-hi“ (1), „ha-ha-ha“ (2), langes Losprusten (3) – Silben aus Ton + gefiltertem Hauch
+    // Zeichentrick-Lachen statt nachgemachter Stimme: hüpfende, wackelnde Töne
+    //   1 = Kichern (hohes Trillern) · 2 = Lachen (hüpfende Tonleiter) · 3 = Losprusten (lange Lachkaskade mit „Juhu“ am Ende)
     if (sfxLaughUntil > ctx.currentTime) return;        // nicht übereinander lachen
-    const n = lvl === 1 ? 4 : lvl === 2 ? 6 : 12, gap = lvl === 1 ? .1 : .14;
-    const base = lvl === 1 ? 1100 : lvl === 2 ? 620 : 560;
-    for (let i = 0; i < n; i++){
-      const st = t + i * gap + (lvl === 3 && i > 5 ? .12 : 0);
-      const f = base * (1 - i * (lvl === 3 ? .025 : .03)) * (1 + (i % 2) * .06);
-      const o = ctx.createOscillator(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
-      o.type = lvl === 1 ? "sine" : "sawtooth";
-      o.frequency.setValueAtTime(f * 1.12, st); o.frequency.exponentialRampToValueAtTime(f * .82, st + gap * .8);
-      bp.type = "bandpass"; bp.frequency.value = lvl === 1 ? 1800 : 1200; bp.Q.value = 2;
-      g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(lvl === 1 ? .25 : .35, st + .015); g.gain.exponentialRampToValueAtTime(0.0001, st + gap * .85);
-      o.connect(bp); bp.connect(g); g.connect(ctx.destination); o.start(st); o.stop(st + gap);
+    const note = (f, st, dur, type, vol, bend) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f, st); o.frequency.exponentialRampToValueAtTime(f * bend, st + dur);
+      lfo.frequency.value = 22; lg.gain.value = f * .035; lfo.connect(lg); lg.connect(o.frequency);   // leichtes Tremolo = „kichrig“
+      g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(vol, st + .012); g.gain.exponentialRampToValueAtTime(0.0001, st + dur);
+      o.connect(g); g.connect(ctx.destination); o.start(st); lfo.start(st); o.stop(st + dur + .02); lfo.stop(st + dur + .02);
+    };
+    let end = t;
+    if (lvl === 1){
+      [1568, 1760, 1568, 1976, 1760].forEach((f, i) => note(f, t + i * .075, .07, "sine", .2, 1.12));
+      end = t + 5 * .075;
+    } else if (lvl === 2){
+      const m = [1175, 1047, 1175, 988, 1047, 880, 988, 784];
+      m.forEach((f, i) => { note(f, t + i * .11, .1, "triangle", .26, .86); note(f * 2, t + i * .11, .06, "sine", .05, .9); });
+      end = t + m.length * .11;
+    } else {
+      const m = [1319, 1175, 1319, 1047, 1175, 988, 1047, 880, 988, 784, 880, 698, 784, 659];
+      m.forEach((f, i) => { const st = t + i * .1 + (i > 6 ? .08 : 0); note(f, st, .09, "triangle", .26, .85); note(f * 2, st, .05, "sine", .05, .9); });
+      const st = t + m.length * .1 + .2;                         // „Juhuuu“: Gleiten nach oben
+      note(523, st, .5, "triangle", .22, 3); note(784, st + .05, .45, "sine", .1, 2.5);
+      end = st + .5;
     }
-    sfxLaughUntil = t + n * gap + .2;
+    sfxLaughUntil = end + .1;
+  } else if (kind === "swap"){
+    // Wusch: zwei Töne, die aneinander vorbeigleiten
+    tone(ctx, 520, t, 0.45, "sine", 0.22, 1040);
+    tone(ctx, 1040, t + 0.03, 0.45, "triangle", 0.12, 520);
   } else if (kind === "giggle"){
     [880, 1046.5, 880, 1174.7].forEach((f, i) => tone(ctx, f, t + i * 0.08, 0.1, "sine", 0.18));
   } else if (kind === "fire"){
