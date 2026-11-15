@@ -784,7 +784,7 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .rec-cta .rc-go{flex:none;font-size:24px;opacity:.95}
 .menu button.rec-cta:active{transform:translateY(4px);box-shadow:0 3px 0 var(--g-dark)}
 @media (hover:hover) and (pointer:fine){ .menu button.rec-cta:hover{background:linear-gradient(160deg,#5ade96,#29b067)} }
-.menu-cta{margin-bottom:12px}
+.menu-cta{margin-bottom:26px}   /* unter dem Knopf liegt ein 7-px-Schatten – genug Luft bis zum Fortschritt */
 
 /* --- Muffin-Küche (im Easter Egg) --- */
 .egg-kitchen{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:10px;background:rgba(255,233,214,.75);animation:fadeIn .25s}
