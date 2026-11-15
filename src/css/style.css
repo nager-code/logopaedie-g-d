@@ -224,14 +224,22 @@ button:active{transform:translateY(4px)}
 
 /* ---------- Zwischendurch-Feier ---------- */
 .party{position:fixed;inset:0;z-index:25;overflow:hidden;background:rgba(255,246,214,.55);animation:fadeIn .3s;cursor:pointer}
-.p-badge{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);background:#fff;border-radius:32px;padding:16px 26px;text-align:center;box-shadow:0 10px 0 rgba(59,44,90,.15);animation:popIn .5s .2s both}
-.p-badge .p-fire{font-size:44px;display:block;animation:pulse .6s infinite}
-.p-badge b{font-size:64px;line-height:1;color:var(--pink-dark);display:block}
-.p-badge small{font-size:18px;font-weight:900;color:var(--ink)}
+.p-badge{position:absolute;left:50%;top:calc(13% + 256px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;width:max-content;max-width:94vw}
+.p-praise{font-size:46px;font-weight:900;line-height:1;color:var(--pink-dark);text-shadow:0 3px 0 #fff,0 -3px 0 #fff,3px 0 0 #fff,-3px 0 0 #fff,0 6px 0 rgba(201,24,74,.18);animation:praiseIn .5s .15s both,wobble 1.2s .7s ease-in-out infinite}
+.p-stars{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;max-width:min(380px,92vw)}
+.p-star{width:34px;height:34px;filter:drop-shadow(0 3px 0 rgba(168,117,0,.25));animation:starIn .45s calc(.35s + var(--i) * .16s) both,twinkle 1.6s calc(1s + var(--i) * .2s) ease-in-out infinite}
+.p-ribbon{position:relative;display:flex;align-items:center;gap:10px;padding:10px 24px 10px 12px;border-radius:999px;background:linear-gradient(180deg,#ff9cbc,var(--pink));color:#fff;font-size:21px;font-weight:900;white-space:nowrap;box-shadow:0 6px 0 var(--pink-dark);text-shadow:0 2px 0 rgba(201,24,74,.35);animation:praiseIn .5s .3s both}
+.p-ribbon::before,.p-ribbon::after{content:"";position:absolute;top:14px;width:30px;height:34px;background:var(--pink-dark);z-index:-1}
+.p-ribbon::before{left:-16px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,35% 50%)}
+.p-ribbon::after{right:-16px;clip-path:polygon(0 0,100% 0,65% 50%,100% 100%,0 100%)}
+.p-num{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b8,var(--sun));color:var(--ink);font-size:28px;text-shadow:none;box-shadow:0 3px 0 var(--sun-dark)}
+@keyframes praiseIn{0%{transform:scale(0) rotate(-8deg);opacity:0}70%{transform:scale(1.15) rotate(3deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes starIn{0%{transform:scale(0) rotate(-120deg);opacity:0}70%{transform:scale(1.3) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.12) rotate(8deg)}}
 
 /* Fips tanzt: außen die Bewegung über die Bühne, innen der Tanzschritt */
-.p-stage{position:absolute;left:50%;top:calc(5% + 200px);width:300px;height:70px;margin-left:-150px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,207,63,.55),rgba(255,207,63,0));animation:glow 1s ease-in-out infinite alternate}
-.p-dance{position:absolute;left:50%;top:5%;width:230px;margin-left:-115px}
+.p-stage{position:absolute;left:50%;top:calc(13% + 218px);width:300px;height:70px;margin-left:-150px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,207,63,.55),rgba(255,207,63,0));animation:glow 1s ease-in-out infinite alternate}
+.p-dance{position:absolute;left:50%;top:13%;width:250px;margin-left:-125px}
 .p-dance .p-dragon{width:100%;transform-origin:50% 90%}
 .pt-sway   .p-dragon{animation:dSway .45s ease-in-out infinite alternate}
 .pt-spin   .p-dragon{animation:dSpin 1.3s ease-in-out infinite}

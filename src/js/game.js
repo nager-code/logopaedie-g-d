@@ -231,6 +231,7 @@ function showEnd(){
 /* ================= Zwischendurch-Feier bei einer Serie ================= */
 const STREAK_EVERY = 3;
 let streak = 0, partyTimer = null, lastParty = -1, partyDue = false, partyOn = false, partyAfter = null;
+const PARTY_PRAISE = ["Juhu!","Wow!","Spitze!","Super!","Klasse!"];
 /* Jede Feier: Fips tanzt – jedes Mal ein anderer Tanzschritt */
 const PARTIES = ["sway","spin","hop","twist","steps"].map(cls => ({cls, html:
   `<div class="p-stage"></div><div class="p-dance"><div class="p-dragon" data-dragon></div></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span><span>🎶</span></div>`}));
@@ -242,7 +243,12 @@ function celebrate(n, afterSeq){
   lastParty = i;
   const p = PARTIES[i], el = $("party");
   el.className = "party pt-" + p.cls;
-  el.innerHTML = `${p.html}<div class="p-badge"><span class="p-fire">🔥</span><b>${n}</b><small>richtig hintereinander!</small></div>`;
+  const star = i => `<svg class="p-star" style="--i:${i}" viewBox="0 0 24 24"><path d="M12 2.5 L14.8 8.6 L21.4 9.3 L16.4 13.8 L17.9 20.4 L12 17 L6.1 20.4 L7.6 13.8 L2.6 9.3 L9.2 8.6 Z" fill="url(#pg-gold)" stroke="#A87500" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="10" cy="9.5" rx="1.8" ry="1.1" fill="#fff" opacity=".8"/></svg>`;
+  el.innerHTML = `${p.html}<div class="p-badge">
+    <div class="p-praise">${pick(PARTY_PRAISE)}</div>
+    <div class="p-stars">${Array.from({length: Math.min(n, 10)}, (_, i) => star(i)).join("")}</div>
+    <div class="p-ribbon"><span class="p-num">${n}</span><span>richtig hintereinander!</span></div>
+  </div>`;
   mountDragons(el);
   el.querySelectorAll("[data-dragon]").forEach(d => dragonDo(d, "happy", 0));
   dragonDo("buddyDragon", "happy", 2500);
