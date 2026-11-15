@@ -269,7 +269,9 @@ function eggEat(btn, at){
   eggFat = Math.min(EGG_FULL, eggFat + (gold ? 2 : 1));
   eggEaten++; eggLastAct = Date.now();
   eggPlay("nom", 450);
+  eggPlay("chew", 1350);                                   // kurz kauen …
   sfx("nom");
+  [.35, .62, .89, 1.16].forEach(d => setTimeout(() => sfx("chew"), d * 1000));
   eggCrumbs(at, gold);
   eggApplyFat();
   if (custom){ eggSay(pick(["Selbst verziert! Der ist der allerbeste! 🤩", "Mmmh, mit Streuseln! Danke! 💖", "Den hast du gemacht? Sooo lecker! 😍"])); eggPlay("glitter", 1400); setTimeout(() => sfx("right"), 250); }
@@ -410,6 +412,21 @@ async function openEgg(){
     const el = st.querySelector("svg");
     el.removeAttribute("width"); el.removeAttribute("height"); el.classList.add("fin-svg"); el.setAttribute("aria-label", "Fips");
     eggFatParts(el);
+    // Kau-Gesicht: Maul zu, Kiefer mahlt, eine Backe ist abwechselnd links und rechts voll
+    // (die Abdeckung über dem offenen Mund ist ein Ausschnitt des Kopfes – gleicher Farbverlauf, kein Fleck)
+    el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", `<g class="egg-chew">
+      <clipPath id="chewClip"><ellipse cx="200" cy="233" rx="31" ry="22"/></clipPath>
+      <g clip-path="url(#chewClip)">
+        <ellipse cx="200" cy="172" rx="112" ry="90" fill="url(#skinHead)"/>
+        <ellipse cx="200" cy="172" rx="112" ry="90" fill="url(#shadeDown)"/>
+      </g>
+      <ellipse class="chew-cheek l" cx="114" cy="220" rx="27" ry="17" fill="#FF9BB5"/>
+      <ellipse class="chew-cheek r" cx="286" cy="220" rx="27" ry="17" fill="#FF9BB5"/>
+      <g class="chew-jaw">
+        <path d="M184 230 Q192 238 200 232 Q208 238 216 230" fill="none" stroke="#2F7D63" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g class="chew-crumbs" fill="#A8714A"><circle cx="219" cy="240" r="2.6"/><circle cx="225" cy="246" r="2"/><circle cx="181" cy="243" r="2.2"/></g>
+    </g>`);
     // hungriges, offenes Maul (wird beim Füttern gezeigt)
     el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", `<g class="egg-mouth">
       <ellipse cx="200" cy="234" rx="24" ry="22" fill="#8C3A55" stroke="#2F7D63" stroke-width="4"/>

@@ -127,6 +127,9 @@ function sfx(kind, lvl = 1){
   } else if (kind === "sprinkle"){
     // Streusel: ein paar winzige, helle Klicks
     for (let i = 0; i < 3; i++) tone(ctx, 2200 + Math.random() * 1600, t + i * .03, .03, "sine", .05);
+  } else if (kind === "chew"){
+    // Kauen: weiches, tiefes Mampfen
+    tone(ctx, 150 + Math.random() * 30, t, 0.08, "triangle", 0.22, 95);
   } else if (kind === "swap"){
     // Wusch: zwei Töne, die aneinander vorbeigleiten
     tone(ctx, 520, t, 0.45, "sine", 0.22, 1040);
