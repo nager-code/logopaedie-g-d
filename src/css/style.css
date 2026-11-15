@@ -30,6 +30,7 @@ button{font-family:inherit;color:inherit}
 .hidden{display:none !important}
 
 .screen{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:14px 16px 120px;min-height:100vh;display:flex;flex-direction:column;gap:16px}
+#game.screen{gap:22px}
 
 /* ---------- Start ---------- */
 .home-title{text-align:center;margin-top:22px}
@@ -276,6 +277,17 @@ body.partying .buddy-dragon,body.partying .bubble{visibility:hidden}   /* hinter
   width:113.64%;max-width:none;height:auto;margin:-8.52% -5.68% -2.84% -7.95%}
 .dr-pose.on{display:block}
 .dragon.happy .dr-pose.on{animation:drPop .35s ease-out}
+/* Richtige Antwort: Fips duckt sich, springt mit einer Drehung hoch, landet federnd und wackelt vor Freude */
+.dragon.yay{transform-origin:50% 92%;will-change:transform;animation:drYay 1.25s cubic-bezier(.3,0,.4,1)}
+@keyframes drYay{
+  0%{transform:translate3d(0,0,0) scale(1,1)}
+  12%{transform:translate3d(0,0,0) scale(1.14,.84)}
+  38%{transform:translate3d(0,-30px,0) rotateY(180deg) scale(.94,1.08)}
+  58%{transform:translate3d(0,0,0) rotateY(360deg) scale(1.12,.88)}
+  68%{transform:translate3d(0,-6px,0) rotateY(360deg) scale(.97,1.04)}
+  78%{transform:translate3d(0,0,0) rotateY(360deg) rotate(-8deg)}
+  88%{transform:translate3d(0,0,0) rotateY(360deg) rotate(7deg)}
+  100%{transform:translate3d(0,0,0) rotateY(360deg) rotate(0)}}
 .dragon.giggle .dr-pose.on{animation:drWiggle .25s ease-in-out 4}
 .dragon.oops .dr-pose.on{animation:drShiver .08s linear 6}
 
@@ -391,7 +403,7 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 
 /* Kleine Handys (z. B. iPhone SE): alles etwas kompakter, damit der Weiter-Pfeil sichtbar bleibt */
 @media (max-height:740px){
-  #game.screen{gap:10px;padding-top:10px}
+  #game.screen{gap:18px;padding-top:10px}
   .buddy-dragon{width:92px}
   .bubble{font-size:19px;padding:10px 14px}
   .card{height:226px;padding:14px}
@@ -403,4 +415,19 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
   .letter b{font-size:68px}
   .letter small .pic-svg{width:30px;height:30px}
   .next{width:76px;height:76px;font-size:38px}
+}
+
+/* Sehr kleine Handys (z. B. 320 × 568) */
+@media (max-height:620px){
+  #game.screen{gap:12px;padding-top:6px}
+  .buddy-dragon{width:76px}
+  .bubble{font-size:17px;padding:8px 12px}
+  .card{height:196px;padding:10px}
+  .speaker{width:100px;height:100px;font-size:46px}
+  .big-emoji .pic-svg{width:96px;height:96px}
+  .card.is-wrong .big-emoji .pic-svg{width:60px;height:60px}
+  .word{font-size:clamp(26px,9vw,34px)}
+  .letter b{font-size:56px}
+  .letter small .pic-svg{width:26px;height:26px}
+  .next{width:64px;height:64px;font-size:32px}
 }

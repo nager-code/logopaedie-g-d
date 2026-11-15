@@ -179,7 +179,7 @@ function answer(choice){
 
   if (correct === true){
     setBubble("✅ " + pick(PRAISE), "good");
-    dragonDo("buddyDragon", "happy", 2000);
+    dragonDo("buddyDragon", "yay", 2000);
     sfx("right");
     card.classList.add("flip","is-right");
     stars++; updateStars(); confetti();
@@ -207,14 +207,14 @@ function answer(choice){
 
   results[round] = correct === true ? "ok" : correct === false ? "no" : "skip";
   renderProgress();
-  show("next");
+  if (!partyDue) show("next");   // bei fälliger Feier kommt der Pfeil erst mit Fips' Tanz – sonst tippt man die Feier weg
 
   const seq = correct === false ? ["#" + item.l, item.w] : correct === true ? ["#ok", item.w] : [item.w];
   if (partyDue){
     // erst feiern, danach das Wort – nichts soll sich überlagern
     partyDue = false;
     const n = streak;
-    later(() => celebrate(n, seq), 800);
+    later(() => { celebrate(n, seq); show("next"); }, 700);
   } else {
     later(() => { if (!partyOn) playSeq(seq); }, correct === null ? 400 : 900);
   }
