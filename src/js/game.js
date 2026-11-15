@@ -3,7 +3,16 @@ const hasRec = k => !!recURL[k];
 function recordedG(){ return G_WORDS.filter(([w]) => hasRec(w)); }
 function recordedD(){ return D_WORDS.filter(([w]) => hasRec(w)); }
 function recordedPairs(){ return PAIRS.filter(p => p.every(x => hasRec(x.w))); }
-function canPlay(m){ return m === "gd" ? recordedG().length >= 1 && recordedD().length >= 1 : recordedPairs().length >= 1; }
+function gdStatus(){
+  const g = recordedG().length, d = recordedD().length, n = g + d;
+  let missing = "";
+  if (n < MIN_WORDS) missing = `Noch ${MIN_WORDS - n} ${MIN_WORDS - n === 1 ? "Wort" : "Wörter"} aufnehmen`;
+  else if (!g) missing = "Noch ein Wort mit G aufnehmen";
+  else if (!d) missing = "Noch ein Wort mit D aufnehmen";
+  return {g, d, n, ok: !missing, missing};
+}
+function canPlay(m){ return m === "gd" ? gdStatus().ok : recordedPairs().length >= 1; }
+function dots(n, max){ return Array.from({length:max}, (_,i) => `<span class="gdot ${i < n ? "on" : ""}"></span>`).join(""); }
 
 function refreshCounts(){
   const words = REC_ITEMS.filter(i => i.word), have = words.filter(i => hasRec(i.k)).length;
@@ -11,13 +20,26 @@ function refreshCounts(){
   $("recBar").style.width = (100 * have / words.length) + "%";
   $("recSummary").textContent = have ? `${have} von ${words.length} Wörtern aufgenommen` : "Noch keine Wörter aufgenommen";
   // Startbildschirm
-  const g = recordedG().length, d = recordedD().length, p = recordedPairs().length;
-  const gdOK = canPlay("gd"), pOK = canPlay("pair");
+  const st = gdStatus(), p = recordedPairs().length;
+  const gdOK = st.ok, pOK = canPlay("pair");
   document.querySelector('.mode[data-mode="gd"]').classList.toggle("locked", !gdOK);
   document.querySelector('.mode[data-mode="pair"]').classList.toggle("locked", !pOK);
-  $("sub-gd").textContent = gdOK ? `Hör gut zu! (${g + d} Wörter)` : "🔒 Erst Wörter mit G und D aufnehmen";
-  $("sub-pair").textContent = pOK ? `Tipp das richtige Bild (${p} Paare)` : "🔒 Erst ein Wortpaar aufnehmen";
-  $("needRec").classList.toggle("hidden", gdOK || pOK);
+  $("sub-gd").textContent = gdOK ? `Hör gut zu! (${st.n} Wörter)` : `🔒 ${st.n} von ${MIN_WORDS} Wörtern`;
+  $("sub-pair").textContent = pOK ? `Tipp das richtige Bild (${p} ${p === 1 ? "Paar" : "Paare"})` : "🔒 Mind. 1 Wortpaar aufnehmen";
+
+  // Hinweis auf dem Startbildschirm
+  $("needRec").classList.toggle("hidden", gdOK);
+  $("needDots").innerHTML = dots(Math.min(st.n, MIN_WORDS), MIN_WORDS);
+  $("needText").innerHTML = st.n < MIN_WORDS
+    ? `<b>${st.n} von ${MIN_WORDS}</b> Wörtern aufgenommen`
+    : `${st.missing}.`;
+
+  // Ziel-Anzeige im Aufnahme-Studio
+  const goal = $("recGoal");
+  goal.classList.toggle("ok", gdOK);
+  goal.innerHTML = gdOK
+    ? `✅ <span><b>Genug zum Spielen!</b><br><small>Jedes weitere Wort macht das Spiel abwechslungsreicher.</small></span>`
+    : `🎯 <span><b>${st.missing}</b>, dann kann das Spiel starten.<br><span class="gdots">${dots(Math.min(st.n, MIN_WORDS), MIN_WORDS)}</span> <small>mind. ${MIN_WORDS} Wörter mit G und D</small></span>`;
 }
 
 /* ================= Spiel ================= */
@@ -38,7 +60,7 @@ function startGame(m){
 }
 
 function newGame(){
-  round = 0; results = []; answered = false;
+  round = 0; results = []; answered = false; streak = 0;
   if (mode === "gd"){
     const g = freshFirst(recordedG(), ROUNDS/2).map(([w,e]) => ({w,e,l:"G"}));
     const d = freshFirst(recordedD(), ROUNDS/2).map(([w,e]) => ({w,e,l:"D"}));
@@ -60,7 +82,7 @@ function newGame(){
   renderRound();
 }
 
-function goHome(){ stopAll(); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
+function goHome(){ endParty(); stopAll(); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); }
 
 function setBubble(text, cls){
   const b = $("bubble");
@@ -155,9 +177,12 @@ function answer(choice){
     sfx("right");
     card.classList.add("flip","is-right");
     stars++; updateStars(); confetti();
+    streak++;
+    if (streak % STREAK_EVERY === 0) setTimeout(() => celebrate(streak), 1500);
   } else if (correct === false){
     setBubble("❌ " + pick(OOPS), "bad");
     sfx("wrong");
+    streak = 0;
     explain = mode === "gd"
       ? `<div class="explain"><span class="chip ${chosenLabel} x">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.l}</span></div>`
       : `<div class="explain"><span class="chip x" style="background:#eee">${chosenLabel}</span> ➜ <span class="chip ${item.l}">${item.e}</span></div>`;
@@ -197,6 +222,42 @@ function showEnd(){
   sfx("right"); confetti(); setTimeout(confetti, 400);
   playSeq(["#end"]);
 }
+/* ================= Zwischendurch-Feier bei einer Serie ================= */
+const STREAK_EVERY = 3;
+let streak = 0, partyTimer = null, lastParty = -1;
+const PARTIES = [
+  {cls:"rocket",   html:`<div class="p-rocket">🚀</div><div class="p-trail">✨✨✨</div>`},
+  {cls:"rainbow",  html:`<div class="p-rainbow"><i></i><i></i><i></i><i></i><i></i></div><div class="p-unicorn">🦄</div>`},
+  {cls:"parade",   html:`<div class="p-parade"><span>🦕</span><span>🦒</span><span>🐬</span><span>🐯</span><span>🦔</span></div>`},
+  {cls:"owl",      html:`<div class="p-owl">🦉</div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span></div>`},
+  {cls:"balloons", html:`<div class="p-balloons"><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span></div>`},
+  {cls:"fireworks",html:`<div class="p-fw"></div>`}
+];
+function celebrate(n){
+  let i; do { i = Math.floor(rnd() * PARTIES.length); } while (i === lastParty && PARTIES.length > 1);
+  lastParty = i;
+  const p = PARTIES[i], el = $("party");
+  el.className = "party pt-" + p.cls;
+  el.innerHTML = `${p.html}<div class="p-badge"><span class="p-fire">🔥</span><b>${n}</b><small>richtig hintereinander!</small></div>`;
+  if (p.cls === "fireworks"){
+    const fw = el.querySelector(".p-fw");
+    for (let k = 0; k < 4; k++){
+      const x = 15 + rnd() * 70, y = 12 + rnd() * 45, items = ["✨","⭐","💥","🌟","💫"];
+      for (let j = 0; j < 12; j++){
+        const s = document.createElement("span");
+        const a = j / 12 * Math.PI * 2, d = 60 + rnd() * 40;
+        s.textContent = pick(items);
+        s.style.cssText = `left:${x}%;top:${y}%;--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;animation-delay:${k*0.35}s`;
+        fw.appendChild(s);
+      }
+    }
+  }
+  sfx("fanfare");
+  clearTimeout(partyTimer);
+  partyTimer = setTimeout(endParty, 2800);
+}
+function endParty(){ clearTimeout(partyTimer); $("party").className = "party hidden"; $("party").innerHTML = ""; }
+
 function updateStars(){
   const s = $("stars"); s.textContent = "⭐ " + stars;
   s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");

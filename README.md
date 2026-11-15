@@ -9,29 +9,33 @@ Ein kleines Lernspiel im Browser, mit dem Kinder üben, die Laute **G** und **D*
 - **G oder D?** – Ein Wort wird vorgesprochen, das Kind tippt auf **G** oder **D**.
 - **Welches Bild?** – Wortpaare wie *Nagel / Nadel* oder *Wagen / Waden*: Das Kind tippt auf das passende Bild.
 
-Richtige und falsche Antworten werden mit Farbe, Geräusch und Sprachausgabe zurückgemeldet. 👀 zeigt die Lösung.
+Richtige und falsche Antworten werden mit Farbe und Geräusch zurückgemeldet. Nach jeweils 3 richtigen Antworten hintereinander gibt es eine kleine Feier-Animation. 👀 zeigt die Lösung.
 
 ## Für Eltern
 
-Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Über **👪 Für Eltern → Wörter aufnehmen** sprechen Mama oder Papa die Wörter ein. Eine Anzeige zeigt dabei Lautstärke und Restzeit. Im Spiel kommen nur Wörter vor, die schon aufgenommen sind. Die Aufnahmen bleiben nur lokal im Browser gespeichert.
+Das Spiel verwendet **nur eigene Aufnahmen**, es gibt keine Computerstimme. Über **👪 Für Eltern → Wörter aufnehmen** sprechen Mama oder Papa die Wörter ein. Eine Anzeige zeigt dabei Lautstärke und Restzeit. Gespielt werden kann ab **5 aufgenommenen Wörtern** (mit G und D). Im Spiel kommen nur Wörter vor, die schon aufgenommen sind. Die Aufnahmen bleiben nur lokal im Browser gespeichert.
 
 ## Technik
 
 Reines HTML, CSS und JavaScript, ohne Abhängigkeiten und ohne Build-Schritt. Genutzt werden MediaRecorder, Web Audio und IndexedDB.
 
+Alles, was zum Spiel gehört, liegt in `src/`:
+
 ```
-index.html        Seitenaufbau
-css/style.css     Design
-js/words.js       Wortlisten und Wortpaare
-js/util.js        Hilfsfunktionen und Spielzustand
-js/storage.js     Aufnahmen speichern (IndexedDB), Stille abschneiden
-js/sound.js       Aufnahmen abspielen, Geräusche für richtig/falsch
-js/game.js        Spiellogik
-js/recorder.js    Aufnahme-Studio
-js/app.js         Navigation und Start
+src/index.html        Seitenaufbau
+src/favicon.svg       Icon
+src/css/style.css     Design und Animationen
+src/js/words.js       Wortlisten, Wortpaare, Mindestanzahl Wörter
+src/js/util.js        Hilfsfunktionen und Spielzustand
+src/js/storage.js     Aufnahmen speichern (IndexedDB), Stille abschneiden
+src/js/sound.js       Aufnahmen abspielen, Geräusche und Fanfare
+src/js/game.js        Spiellogik und Zwischendurch-Feiern
+src/js/recorder.js    Aufnahme-Studio
+src/js/app.js         Navigation und Start
 ```
 
-Neue Wörter kommen in `js/words.js` dazu.
+Neue Wörter kommen in `src/js/words.js` dazu. Lokal testen: `src/index.html` im Browser öffnen
+(das Mikrofon funktioniert nur über `https://` oder `localhost`, z. B. `python3 -m http.server -d src`).
 Bei jedem Push auf `main` veröffentlicht eine GitHub Action die Seite auf GitHub Pages.
 
 ## Lizenz

@@ -16,7 +16,9 @@
     <h1><span class="lg">G</span> oder <span class="ld">D</span>?</h1>
   </div>
   <div class="needrec hidden" id="needRec">
-    🎙️ Bevor es losgeht, nehmen Mama oder Papa die Wörter mit ihrer Stimme auf.<br>
+    🎙️ Bevor es losgeht, nehmen Mama oder Papa <b>mindestens 5</b> Wörter mit ihrer Stimme auf.
+    <div class="gdots big" id="needDots"></div>
+    <div id="needText" class="needtext"></div>
     <button class="bigbtn mini" id="needRecBtn">Wörter aufnehmen</button>
   </div>
   <div class="modes">
@@ -49,6 +51,9 @@
   <div class="answers" id="answers"></div>
   <button class="next hidden" id="next" aria-label="Weiter">➜</button>
 </section>
+
+<!-- Zwischendurch-Feier -->
+<div class="party hidden" id="party"></div>
 
 <!-- ================= Ende ================= -->
 <div class="overlay hidden" id="endOverlay">
@@ -88,6 +93,7 @@
     <h2 style="text-align:left;margin-right:46px">🎙️ Wörter aufnehmen</h2>
     <div class="rec-progress"><div class="recbar"><i id="recBar"></i></div><span class="small" id="recCount"></span></div>
     <div class="warn hidden" id="recWarn"></div>
+    <div class="goal" id="recGoal"></div>
 
     <div class="studio" id="studio">
       <div class="st-emoji" id="stEmoji"></div>

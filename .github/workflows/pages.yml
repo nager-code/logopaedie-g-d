@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "src/**"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -24,19 +27,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Prepare site
-        run: |
-          mkdir -p _site
-          cp -r index.html favicon.svg css js _site/
-          touch _site/.nojekyll
-
       - name: Configure Pages
         uses: actions/configure-pages@v6
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: _site
+          path: src
 
       - name: Deploy
         id: deployment

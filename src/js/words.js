@@ -16,6 +16,7 @@ const PAIRS = [
   [{w:"Gaumen",e:"👄",l:"G"},{w:"Daumen",e:"👍",l:"D"}]
 ];
 const ROUNDS = 10;
+const MIN_WORDS = 5;          // so viele Wörter (G + D) braucht „G oder D?“ mindestens
 const MAX_REC_MS = 4000;
 const PRAISE = ["Super!","Toll gemacht!","Klasse!","Spitze!","Richtig!"];
 const OOPS = ["Hoppla!","Fast!","Nochmal hinhören!"];
