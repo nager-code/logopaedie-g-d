@@ -224,20 +224,16 @@ function showEnd(){
   $("endText").innerHTML = `<b>${ok} von ${n}</b> richtig!<br>${ok >= n*0.8 ? "Du bist ein Hör-Profi! 🏆" : ok >= n/2 ? "Richtig gut! 👏" : "Weiter üben – du schaffst das! 💪"}`;
   show("endOverlay");
   dragonDo("endDragon", ok >= n/2 ? "happy" : "wave", 0);
+  $("endDragon").classList.toggle("dancing", ok >= n/2);   // gutes Ergebnis: Fips tanzt
   sfx("right"); confetti(); setTimeout(confetti, 400);
   playSeq(["#end"]);
 }
 /* ================= Zwischendurch-Feier bei einer Serie ================= */
 const STREAK_EVERY = 3;
 let streak = 0, partyTimer = null, lastParty = -1, partyDue = false, partyOn = false, partyAfter = null;
-const PARTIES = [
-  {cls:"rocket",   html:`<div class="p-rocket">🚀</div><div class="p-trail">✨✨✨</div>`},
-  {cls:"rainbow",  html:`<div class="p-rainbow"><i></i><i></i><i></i><i></i><i></i></div><div class="p-unicorn">🦄</div>`},
-  {cls:"parade",   html:`<div class="p-parade"><span>🦕</span><span>🦒</span><span>🐬</span><span>🐯</span><span>🦔</span></div>`},
-  {cls:"dragon",   html:`<div class="p-dragon" data-dragon></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span></div>`},
-  {cls:"balloons", html:`<div class="p-balloons"><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span></div>`},
-  {cls:"fireworks",html:`<div class="p-fw"></div>`}
-];
+/* Jede Feier: Fips tanzt – jedes Mal ein anderer Tanzschritt */
+const PARTIES = ["sway","spin","hop","twist","steps"].map(cls => ({cls, html:
+  `<div class="p-stage"></div><div class="p-dance"><div class="p-dragon" data-dragon></div></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span><span>🎶</span></div>`}));
 function celebrate(n, afterSeq){
   stopAll();                       // Sprachausgabe pausieren
   partyOn = true; partyAfter = afterSeq || null;
@@ -250,19 +246,6 @@ function celebrate(n, afterSeq){
   mountDragons(el);
   el.querySelectorAll("[data-dragon]").forEach(d => dragonDo(d, "happy", 0));
   dragonDo("buddyDragon", "happy", 2500);
-  if (p.cls === "fireworks"){
-    const fw = el.querySelector(".p-fw");
-    for (let k = 0; k < 4; k++){
-      const x = 15 + rnd() * 70, y = 12 + rnd() * 45, items = ["✨","⭐","💥","🌟","💫"];
-      for (let j = 0; j < 12; j++){
-        const s = document.createElement("span");
-        const a = j / 12 * Math.PI * 2, d = 60 + rnd() * 40;
-        s.textContent = pick(items);
-        s.style.cssText = `left:${x}%;top:${y}%;--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;animation-delay:${k*0.35}s`;
-        fw.appendChild(s);
-      }
-    }
-  }
   sfx("fanfare");
   clearTimeout(partyTimer);
   partyTimer = setTimeout(endParty, 2800);
@@ -281,7 +264,7 @@ function updateStars(){
   s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
 }
 function confetti(){
-  const items = ["⭐","🎉","✨","🌟","🎈","💛"];
+  const items = ["⭐","✨","🌟","💚","💛"];
   for (let i=0;i<18;i++){
     const el = document.createElement("span");
     el.className = "confetti"; el.textContent = pick(items);

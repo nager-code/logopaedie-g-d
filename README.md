@@ -20,7 +20,7 @@ Jedes Wort hat ein eigenes, von Hand als SVG gezeichnetes Bild – alle im gleic
 
 Ein Wort wird vorgesprochen, das Kind tippt auf **G** oder **D**.
 
-Richtige und falsche Antworten werden mit Farbe und Geräusch zurückgemeldet. Nach jeweils 3 richtigen Antworten hintereinander gibt es eine kleine Feier-Animation. Währenddessen sind die Knöpfe ausgeblendet und die Wiedergabe pausiert, danach geht es weiter. 👀 zeigt die Lösung.
+Richtige und falsche Antworten werden mit Farbe und Geräusch zurückgemeldet. Nach jeweils 3 richtigen Antworten hintereinander tanzt Fips – jedes Mal mit einem anderen Tanzschritt. Währenddessen sind die Knöpfe ausgeblendet und die Wiedergabe pausiert, danach geht es weiter. 👀 zeigt die Lösung.
 
 ## Für Eltern
 
