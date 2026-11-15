@@ -831,3 +831,19 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 @keyframes chewCrumbs{0%,60%{opacity:1;transform:none}100%{opacity:0;transform:translateY(14px)}}
 .egg-fips.chew .fin-svg .tilt{animation:chewHead .27s ease-in-out infinite}
 @keyframes chewHead{0%,100%{translate:0 0}50%{translate:0 2px}}
+/* Kitzeln: Der Schatten im Fips-Bild würde sich mitdrehen – also ausblenden (Maske am unteren Bildrand)
+   und stattdessen einen eigenen Schatten auf den Boden legen, der liegen bleibt und mitreagiert */
+.dragon.giggle .dr-pose.on,.dragon.laugh .dr-pose.on,.dragon.rofl .dr-pose.on{
+  -webkit-mask-image:linear-gradient(to bottom,#000 91.6%,transparent 93.4%);mask-image:linear-gradient(to bottom,#000 91.6%,transparent 93.4%)}
+.dragon.giggle::after,.dragon.laugh::after,.dragon.rofl::after{content:"";position:absolute;left:24.1%;width:49.5%;bottom:.8%;height:5.6%;border-radius:50%;background:#2B4A40;opacity:.14;pointer-events:none;z-index:-1}
+.dragon.laugh::after{animation:shLaugh .2s ease-in-out 7}
+@keyframes shLaugh{0%,50%,100%{transform:scale(1);opacity:.14}25%,75%{transform:scale(.82);opacity:.1}}
+.dragon.rofl::after{animation:shRofl 3s ease-in-out}
+@keyframes shRofl{
+  0%{transform:none;opacity:.14}
+  8%{transform:scale(.7);opacity:.08}
+  18%,66%{transform:translateX(16%) scale(1.25,1.3);opacity:.17}
+  24%,36%,48%,60%{transform:translateX(16%) scale(1.2,1.25)}
+  30%,42%,54%{transform:translateX(17%) scale(1.3,1.35)}
+  80%{transform:scale(.78);opacity:.09}
+  90%,100%{transform:none;opacity:.14}}
