@@ -105,7 +105,7 @@ const K_KINDS = [
   {k:"stern",  label:"Sterne",  icon:"⭐"},
   {k:"herz",   label:"Herzen",         icon:"💗"},
   {k:"kirsche",label:"Kirsche",        icon:"🍒"},
-  {k:"punkte", label:"Linsen",  icon:"🔴", more:true},
+  {k:"punkte", label:"Linsen",  icon:`<svg class="k-ico" viewBox="0 0 28 28">${[[8,9,"#E8455F"],[19,8,"#FFD54A"],[14,15,"#6295E0"],[7,20,"#55BE96"],[20,20,"#9474D8"]].map(([x,y,c]) => `<circle cx="${x}" cy="${y}" r="5" fill="${c}"/><circle cx="${x - 1.6}" cy="${y - 1.7}" r="1.4" fill="#fff" opacity=".7"/>`).join("")}</svg>`, more:true},
   {k:"blume",  label:"Blumen",  icon:"🌼", more:true},
   {k:"perle",  label:"Perlen",  icon:"⚪", more:true},
   {k:"kerze",  label:"Kerze",   icon:"🕯️", more:true}
@@ -119,7 +119,7 @@ function kItem(it){
   if (t === "punkte") return `<g><circle cx="${x}" cy="${y}" r="1.7" fill="${c}"/><circle cx="${x - .5}" cy="${y - .55}" r=".5" fill="#fff" opacity=".7"/></g>`;
   if (t === "perle") return `<g><circle cx="${x}" cy="${y}" r="1.15" fill="#E9EEF6" stroke="#AEB7C6" stroke-width=".35"/><circle cx="${x - .35}" cy="${y - .4}" r=".35" fill="#fff"/></g>`;
   if (t === "blume") return `<g transform="translate(${x} ${y}) rotate(${r})">${[0,72,144,216,288].map(a => `<ellipse rx="1.5" ry="2.3" cy="-2" transform="rotate(${a})" fill="${c}"/>`).join("")}<circle r="1.3" fill="#FFD54A"/></g>`;
-  if (t === "kerze") return `<g transform="translate(${x} ${y})"><rect x="-2.2" y="-15" width="4.4" height="15" rx="1.2" fill="#FFF6F8" stroke="#E86A8E" stroke-width=".8"/><path d="M-2.2 -11 L2.2 -13.5 M-2.2 -6 L2.2 -8.5 M-2.2 -1 L2.2 -3.5" stroke="#FF88A8" stroke-width="1.2"/><path d="M0 -15 V-17" stroke="#4A2E3A" stroke-width=".7"/><path class="k-flame" d="M0 -23.5 Q3 -19.5 0 -16.8 Q-3 -19.5 0 -23.5 Z" fill="#FFB13B"/><path d="M0 -21.5 Q1.4 -19 0 -17.6 Q-1.4 -19 0 -21.5 Z" fill="#FFF6C0"/></g>`;
+  if (t === "kerze") return `<g transform="translate(${x} ${y}) scale(.75)"><rect x="-2.2" y="-15" width="4.4" height="15" rx="1.2" fill="#FFF6F8" stroke="#E86A8E" stroke-width=".8"/><path d="M-2.2 -11 L2.2 -13.5 M-2.2 -6 L2.2 -8.5 M-2.2 -1 L2.2 -3.5" stroke="#FF88A8" stroke-width="1.2"/><path d="M0 -15 V-17" stroke="#4A2E3A" stroke-width=".7"/><path class="k-flame" d="M0 -23.5 Q3 -19.5 0 -16.8 Q-3 -19.5 0 -23.5 Z" fill="#FFB13B"/><path d="M0 -21.5 Q1.4 -19 0 -17.6 Q-1.4 -19 0 -21.5 Z" fill="#FFF6C0"/></g>`;
   if (t === "herz") return `<path transform="translate(${x} ${y}) rotate(${r}) scale(.5)" d="M0 4 C-7 -1 -5 -7 0 -3 C5 -7 7 -1 0 4 Z" fill="${c}"/>`;
   return `<g transform="translate(${x} ${y})"><path d="M0 -4 Q2 -10 7 -11" fill="none" stroke="#3E7D22" stroke-width="1.6"/><circle r="4.5" fill="url(#pg-red)" stroke="#A8243C" stroke-width="1.5"/><ellipse cx="-1.5" cy="-1.6" rx="1.3" ry=".9" fill="#fff" opacity=".8"/></g>`;
 }
@@ -129,7 +129,7 @@ function customMuffinSvg(m){
     <path d="M21 32 L22 55 M30 32 V56 M39 32 L38 55" stroke="${pln(m.cup)}" stroke-width="1.8" fill="none"/>
     <path class="k-top" d="M8 33 Q5 12 30 9 Q55 12 52 33 Q46 37 40 33 Q35 38 30 33 Q25 38 20 33 Q14 37 8 33 Z" ${pf(m.top)}/>
     <ellipse cx="18" cy="18" rx="5" ry="2.5" transform="rotate(-30 18 18)" fill="#fff" opacity=".55"/>
-    <g stroke="none">${m.items.map(kItem).join("")}</g>
+    <g stroke="none">${m.items.filter(i => i.t !== "kirsche" && i.t !== "kerze").map(kItem).join("")}${m.items.filter(i => i.t === "kirsche" || i.t === "kerze").map(kItem).join("")}</g>
   </g></svg>`;
 }
 function kRender(){
@@ -152,7 +152,9 @@ function kSprinkle(ev){
   if (kKind === "kirsche" && kMuffin.items.filter(i => i.t === "kirsche").length >= 3) return;
   let added = 0;
   for (let i = 0; i < n * 3 && added < n; i++){
-    const x = p.x + (n > 1 ? rnd() * 10 - 5 : 0), y = p.y + (n > 1 ? rnd() * 7 - 3.5 : 0);
+    const x = p.x + (n > 1 ? rnd() * 10 - 5 : 0);
+    // die Kerze ragt nach oben – ganz oben angetippt rutscht sie ein Stück tiefer, damit die Flamme nicht abgeschnitten wird
+    const y = kKind === "kerze" ? Math.max(p.y, 19) : p.y + (n > 1 ? rnd() * 7 - 3.5 : 0);
     const pt = svg.createSVGPoint(); pt.x = x; pt.y = y;
     if (!top.isPointInFill(pt) || y > 31) continue;
     const c = kKind === "bunt" ? pick(["#FF88A8","#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FFB062"])
@@ -164,7 +166,9 @@ function kSprinkle(ev){
     added++;
   }
   if (added && kKind === "kerze"){ const last = kMuffin.items[kMuffin.items.length - 1]; kMuffin.items = kMuffin.items.filter(i => i.t !== "kerze" || i === last); }   // nur eine Kerze – sie zieht um
-  if (kMuffin.items.length > 220) kMuffin.items.splice(0, kMuffin.items.length - 220);
+  // erst ab 600 Teilchen verschwinden die ältesten Streusel wieder – Kirschen und Kerze bleiben immer
+  let over = kMuffin.items.length - 600;
+  if (over > 0) kMuffin.items = kMuffin.items.filter(i => i.t === "kirsche" || i.t === "kerze" || over-- <= 0);
   if (added){ kRender(); sfx("sprinkle"); }
   return added;
 }

@@ -808,6 +808,7 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .k-kinds button{flex:1;min-width:0;border:3px solid transparent;background:#fff;border-radius:14px;padding:3px 2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 3px 0 rgba(59,44,90,.1)}
 .k-kinds button span{font-size:22px;line-height:1.1}
 .k-kinds button small{font-size:9px;font-weight:800;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.k-kinds button .k-ico{width:1.1em;height:1.1em;display:block}
 .k-kinds button.on{border-color:var(--pink);transform:translateY(-2px)}
 .k-row{display:flex;flex-direction:column;align-items:center;gap:4px;margin:6px 0;background:rgba(255,255,255,.75);border-radius:24px;padding:5px 12px 9px}
 .k-row b{font-size:14px;font-weight:900}
