@@ -20,6 +20,62 @@ const EGG_IDLE_SAY = ["Ich hab noch Hunger! 😋", "Zieh mir einen Muffin her! �
 const EGG_KINDS = [["pink","brown","chips"],["blue","pink","sprinkles"],["yellow","wood","cherry"],["purple","cream","sprinkles"],["leaf","brown","cherry"],["orange","cream","chips"],["red","pink","cherry"]];
 const EGG_GOLD = ["gold","gold","stars"];
 
+/* ---------- Feuer je nach Muffin-Sorte: die Sorte, die Fips seit dem letzten Feuer am meisten gegessen hat, färbt es ----------
+   Farben: outer = Flammenrand (gelb → rot), mid/core = innen, puff = Feuerbälle (hell → dunkel), spark = Funken */
+const EGG_FLAMES = {
+  feuer:  {say:"FEUER! 🔥🔥🔥",            outer:["#FFE45C","#FFB13B","#FF7A3D","#E8455F"], mid:["#FFF6C0","#FFD54A","#FF9A3D"], puff:[["#FFFBE0","#FFD54A","#FF8A3D","#E8455F"]], spark:"#FFF3A0", stroke:"#F06A3A", sky:["#FFD54A","#FFB062","#FF88A8"]},
+  schoko: {say:"SCHOKO-FEUER! 🍫🔥",       outer:["#FFE0B0","#D9A06A","#A8714A","#6E4429"], mid:["#FFF4E2","#E9C08E","#B98250"], puff:[["#FFF4E2","#D9A06A","#A8714A","#5A3A2E"]], spark:"#FFE8C6", stroke:"#8F5A2B", sky:["#C9946A","#EDBA80","#FFE8C6"]},
+  kirsch: {say:"KIRSCH-FEUER! 🍒🔥",       outer:["#FFC2D0","#FF7A8E","#E8455F","#A8243C"], mid:["#FFE6EE","#FF9DB2","#E8455F"], puff:[["#FFE6EE","#FF7A8E","#E8455F","#A8243C"]], spark:"#FFE6EE", stroke:"#C8304C", sky:["#FF7A8E","#E8455F","#FFB3C8"]},
+  herz:   {say:"HERZCHEN-FEUER! 💖🔥",     outer:["#FFE6EE","#FFB3C8","#FF88A8","#C9507A"], mid:["#FFF5F8","#FFCCDA","#FF88A8"], puff:[["#FFF5F8","#FFB3C8","#FF88A8","#C9507A"]], spark:"#FFFFFF", stroke:"#E0608A", sky:["#FF88A8","#FFB3C8","#C0A4F0"]},
+  blau:   {say:"BLAUBEER-FEUER! 🫐🔥",     outer:["#DCF4FF","#93BFF5","#6295E0","#2F5FA8"], mid:["#F4FBFF","#BDEBFA","#7FB4F0"], puff:[["#F4FBFF","#93BFF5","#6295E0","#2F5FA8"]], spark:"#E3F7FF", stroke:"#4A7FD0", sky:["#93BFF5","#8FD6F5","#C0A4F0"]},
+  lila:   {say:"ZAUBER-FEUER! 🔮🔥",       outer:["#EFE5FF","#C0A4F0","#9474D8","#5E449E"], mid:["#FAF6FF","#D9C8F8","#A98AE6"], puff:[["#FAF6FF","#C0A4F0","#9474D8","#5E449E"]], spark:"#FFF3A0", stroke:"#7A5CC4", sky:["#C0A4F0","#FF88A8","#93BFF5"]},
+  gold:   {say:"GOLD-FEUER! ✨🔥✨",       outer:["#FFFBE0","#FFE45C","#FFD54A","#E8A800"], mid:["#FFFFFF","#FFF6BF","#FFD54A"], puff:[["#FFFFFF","#FFF6BF","#FFD54A","#E8A800"]], spark:"#FFFFFF", stroke:"#E8A800", sky:["#FFD54A","#FFF6BF","#FFE45C"]},
+  bunt:   {say:"REGENBOGEN-FEUER! 🌈🔥",   outer:["#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FF88A8"], mid:["#FFFFFF","#FFF6C0","#FFB3C8"],
+           puff:[["#FFF6C0","#FFD54A","#FFB062","#F28C2E"],["#E9FFF4","#7DD9B4","#55BE96","#2F7D63"],["#DCEBFF","#93BFF5","#6295E0","#2F5FA8"],["#EFE5FF","#C0A4F0","#9474D8","#5E449E"],["#FFE6EE","#FF88A8","#E8455F","#A8243C"]],
+           spark:"#FFFFFF", stroke:"#C0A4F0", sky:["#FF88A8","#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FFB062"]}
+};
+const EGG_DECO_FLAME = {chips:"schoko", cherry:"kirsch", sprinkles:"bunt", stars:"gold"};
+const EGG_KIND_FLAME = {bunt:"bunt", schoko:"schoko", stern:"gold", herz:"herz", kirsche:"kirsch"};
+const EGG_TOP_FLAME  = {brown:"schoko", pink:"herz", blue:"blau", purple:"lila", wood:"feuer", cream:"feuer"};
+let eggFlavors = [];   // Sorten seit dem letzten Feuer (die neueste zuletzt)
+/* Selbst verzierte Muffins: die meiste Deko zählt; ohne Deko die Farbe vom Guss */
+function eggCustomFlavor(m){
+  const n = {}; m.items.forEach(i => n[i.t] = (n[i.t] || 0) + (i.t === "kirsche" ? 12 : i.t === "herz" || i.t === "stern" ? 2 : 1));
+  const best = Object.keys(n).sort((a, b) => n[b] - n[a])[0];
+  return best ? EGG_KIND_FLAME[best] : EGG_TOP_FLAME[m.top] || "feuer";
+}
+/* Meiste Sorte gewinnt; bei Gleichstand die, die Fips zuletzt gegessen hat */
+function eggFlameKind(){
+  const n = {}; let best = "feuer", bestN = 0;
+  eggFlavors.forEach(f => { n[f] = (n[f] || 0) + 1; if (n[f] >= bestN){ bestN = n[f]; best = f; } });
+  return EGG_FLAMES[best] ? best : "feuer";
+}
+function eggFlameDefs(k){
+  const t = EGG_FLAMES[k], id = "egF-" + k;
+  const stops = (cs, ops = []) => cs.map((c, i) => `<stop offset="${(i / (cs.length - 1)).toFixed(2)}" stop-color="${c}"${ops[i] != null ? ` stop-opacity="${ops[i]}"` : ""}/>`).join("");
+  const o = t.outer, last = o.length - 1;
+  return `<defs>
+    <linearGradient id="${id}-o" x1="0" y1="0" x2="1" y2="0">${stops(o, o.map((_, i) => i === last ? .6 : null))}</linearGradient>
+    <linearGradient id="${id}-m" x1="0" y1="0" x2="1" y2="0">${stops(t.mid, [null, null, .8])}</linearGradient>
+    <linearGradient id="${id}-c" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="${t.mid[0]}"/><stop offset="1" stop-color="${t.mid[1]}" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${id}-h" cx=".5" cy=".5" r=".5"><stop offset=".4" stop-color="${o[1]}" stop-opacity=".55"/><stop offset="1" stop-color="${o[2]}" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${id}-bo" cx=".5" cy=".5" r=".5"><stop offset=".35" stop-color="${o[0]}"/><stop offset=".75" stop-color="${o[Math.min(2, last)]}"/><stop offset="1" stop-color="${o[last]}"/></radialGradient>
+    <radialGradient id="${id}-bm" cx=".5" cy=".5" r=".5"><stop offset=".2" stop-color="${t.mid[0]}"/><stop offset="1" stop-color="${t.mid[1]}"/></radialGradient>
+    <radialGradient id="${id}-bc" cx=".45" cy=".45" r=".55"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="${t.mid[0]}"/><stop offset="1" stop-color="${t.mid[1]}"/></radialGradient>
+    <radialGradient id="${id}-g" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="${t.mid[1]}"/><stop offset="1" stop-color="${o[2]}"/></radialGradient>
+  </defs>`;
+}
+/* den eben eingesetzten Feueratem umfärben */
+function eggColorFlame(svg, fb, k){
+  const t = EGG_FLAMES[k], id = "egF-" + k, u = s => `url(#${id}-${s})`;
+  if (!document.getElementById(id + "-o")) svg.insertAdjacentHTML("afterbegin", eggFlameDefs(k));
+  fb.style.setProperty("--fbo", u("o")); fb.style.setProperty("--fbm", u("m")); fb.style.setProperty("--fbc", u("c")); fb.style.setProperty("--fbs", t.spark);
+  fb.querySelectorAll(".fb-puff").forEach((c, i) => t.puff[i % t.puff.length].forEach((col, j) => c.style.setProperty("--fp" + (j + 1), col)));
+  const set = (sel, a, v) => { const e = fb.querySelector(sel); e && e.setAttribute(a, v); };
+  set(".fb-halo", "fill", u("h")); set(".fb-ring", "fill", u("bo")); set(".fb-ring", "stroke", t.stroke); set(".fb-ring2", "fill", u("bm"));
+  set(".fb-ball ellipse", "fill", u("bc")); set(".fb-mouth ellipse", "fill", u("g"));
+}
+
 function muffinSvg([cup, top, deco]){
   const decos = {
     chips: `<g fill="#4A2E3A"><circle cx="20" cy="22" r="2.2"/><circle cx="31" cy="17" r="2.2"/><circle cx="40" cy="24" r="2.2"/><circle cx="26" cy="27" r="1.8"/><circle cx="36" cy="14" r="1.6"/></g>`,
@@ -114,7 +170,7 @@ function kOpen(){ if (eggBusy) return; if (!kMuffin) kNew(); else kRender(); $("
 /* Fertig: der selbst verzierte Muffin kommt auf den Teller (vorne) */
 function kDone(){
   const btn = $("eggTray").querySelector(".egg-muffin");
-  btn.dataset.gold = ""; btn.dataset.custom = JSON.stringify(kMuffin);
+  btn.dataset.gold = ""; btn.dataset.custom = JSON.stringify(kMuffin); btn.dataset.flavor = eggCustomFlavor(kMuffin);
   btn.classList.remove("golden"); btn.classList.add("custom");
   btn.innerHTML = customMuffinSvg(kMuffin);
   btn.style.animation = "none"; void btn.offsetWidth; btn.style.animation = "";
@@ -202,7 +258,9 @@ function eggFill(btn){
   const gold = rnd() < .16;
   btn.dataset.gold = gold ? "1" : "";
   btn.classList.toggle("golden", gold);
-  btn.innerHTML = muffinSvg(gold ? EGG_GOLD : pick(EGG_KINDS));
+  const kind = gold ? EGG_GOLD : pick(EGG_KINDS);
+  btn.dataset.flavor = EGG_DECO_FLAME[kind[2]] || "feuer";
+  btn.innerHTML = muffinSvg(kind);
 }
 function eggTray(){
   $("eggTray").innerHTML = Array.from({length:5}, (_, i) => `<button class="egg-muffin" aria-label="Muffin für Fips"></button>`).join("");
@@ -298,6 +356,8 @@ function eggEat(btn, at){
   f.classList.remove("hungry");
   eggFat = Math.min(EGG_FULL, eggFat + (gold ? 2 : 1));
   eggEaten++; eggLastAct = Date.now();
+  const fl = btn.dataset.flavor || "feuer";
+  eggFlavors.push(fl); if (gold) eggFlavors.push(fl);     // Goldmuffin zählt doppelt (macht auch doppelt satt)
   eggPlay("nom", 450);
   eggPlay("chew", 1350);                                   // kurz kauen …
   sfx("nom");
@@ -331,21 +391,23 @@ function eggFire(){
   f.classList.add("rumble");
   eggT(() => {
     f.classList.remove("rumble"); f.classList.add("fire");
-    eggSay("FEUER! 🔥🔥🔥");
+    const kind = eggFlameKind();
+    eggSay(EGG_FLAMES[kind].say);
     const svg = f.querySelector("svg"), head = svg && svg.querySelector(".tilt");
     if (head && head.insertAdjacentHTML){
       if (!svg.querySelector("#fbOuter")) svg.insertAdjacentHTML("afterbegin", FIN_BREATH_DEFS);
       head.insertAdjacentHTML("beforeend", finBreath(0, .25));
       const fb = head.querySelector(".fb");
       fb.style.setProperty("--len", "560"); fb.style.setProperty("--k", "5.6"); fb.style.setProperty("--ang", "-32deg");
+      if (kind !== "feuer") eggColorFlame(svg, fb, kind);
     }
     sfx("fire");
     $("eggOverlay").classList.add("lit");                 // Lichterkette blinkt
-    eggT(eggFireworks, 700);
+    eggT(() => eggFireworks(EGG_FLAMES[kind].sky), 700);
     eggT(() => {
       f.classList.remove("fire");
       head && head.querySelectorAll(".fb").forEach(g => g.remove());
-      eggFat = 0; eggFires++; eggApplyFat();
+      eggFat = 0; eggFires++; eggFlavors = []; eggApplyFat();
       eggPlay("nom", 450);
       eggSay(pick(["Puh! Das tat gut! 😅 Noch mal?", "Uff, wieder ganz schlank! 😎", "Hihi, ein Feuerwerk für dich! 🎆"]));
       sfx("giggle");
@@ -354,10 +416,10 @@ function eggFire(){
     }, 1700);
   }, 1300);
 }
-function eggFireworks(){
+function eggFireworks(cols = FIN_COLORS){
   const sky = $("eggSky"); if (!sky) return;
   for (let b = 0; b < 4; b++){
-    const x = 12 + rnd() * 76, y = 8 + rnd() * 30, c = pick(FIN_COLORS), d = b * .35;
+    const x = 12 + rnd() * 76, y = 8 + rnd() * 30, c = pick(cols), d = b * .35;
     for (let i = 0; i < 12; i++){
       const a = i / 12 * Math.PI * 2, s = document.createElement("span");
       s.className = "fx"; s.innerHTML = FIN_STAR(c);
@@ -432,7 +494,7 @@ let kReady = false;
 async function openEgg(){
   if (!kReady){ kInit(); kReady = true; }
   $("eggKitchen").classList.add("hidden");
-  eggFat = 0; eggBusy = false; eggEaten = 0; eggFires = 0; eggLastAct = Date.now();
+  eggFat = 0; eggBusy = false; eggEaten = 0; eggFires = 0; eggFlavors = []; eggLastAct = Date.now();
   $("eggScene").innerHTML = eggScene();
   const st = $("eggFips");
   st.className = "egg-fips";
