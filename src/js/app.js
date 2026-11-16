@@ -98,6 +98,7 @@ $("bkFile").addEventListener("change", async e => {
    kichern → lachen → er kugelt sich vor Lachen auf dem Boden */
 let tickles = 0, tickleTimer = null, rofl = false, eggTaps = 0, eggTimer = null;
 $("homeDragon").addEventListener("click", () => {
+  if (wakeUp()) return;                               // schlief gerade – erst mal aufwachen
   // Easter Egg: ganz oft ohne Pause kitzeln (auch während er sich am Boden kugelt) → Muffin-Party
   eggTaps++;
   clearTimeout(eggTimer);
@@ -127,6 +128,33 @@ $("homeDragon").addEventListener("click", () => {
     sfx("giggle");
   }
 });
+
+/* Passiert auf der Startseite eine Weile nichts, schläft Fips ein. Antippen weckt ihn (er erschrickt kurz). */
+const SLEEP_AFTER = 45000;
+let sleepTimer = null, asleep = false;
+function homeVisible(){ return !$("home").classList.contains("hidden") && !document.hidden; }
+function armSleep(){
+  clearTimeout(sleepTimer);
+  sleepTimer = setTimeout(() => {
+    if (!homeVisible()){ armSleep(); return; }
+    asleep = true;
+    $("heroBubble").classList.add("hidden");
+    dragonDo("homeDragon", "sleep", 0);
+  }, SLEEP_AFTER);
+}
+function wakeUp(){
+  if (!asleep) return false;
+  asleep = false; armSleep();
+  dragonDo("homeDragon", "startle", 1100);
+  heroSay(pick(["Huch! 😳<br>Ich hab nur kurz die Augen zugemacht!","Oh! Hab ich geschnarcht? 😅","Uaaah … 🥱<br>Da bin ich wieder!"]), 3000);
+  setTimeout(() => { if (!asleep) dragonDo("homeDragon", "wave", 2000); }, 1100);
+  return true;
+}
+["pointerdown", "keydown"].forEach(ev => document.addEventListener(ev, e => {
+  if (asleep && !e.target.closest("#homeDragon")) wakeUp();   // Tippen irgendwo weckt ihn auch
+  else if (!asleep) armSleep();
+}, true));
+armSleep();
 
 mountDragons();
 refreshCounts();

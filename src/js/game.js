@@ -103,7 +103,15 @@ function renderProgress(){
   }).join("");
 }
 function currentWord(){ return mode === "gd" ? cur.w : cur.target.w; }
-function playCurrent(){ playSeq([currentWord()]); }
+/* Beim Vorspielen hört Fips genau zu, danach überlegt er mit, bis das Kind antwortet */
+let listenTok = 0;
+function playCurrent(){
+  const tok = ++listenTok;
+  if (!answered) dragonDo("buddyDragon", "listen", 0);
+  playSeq([currentWord()]).then(() => {
+    if (tok === listenTok && !answered && !partyOn) dragonDo("buddyDragon", "think", 0);
+  });
+}
 
 /* Verzögerte Aktionen einer Runde – beim Weiterschalten werden sie verworfen,
    damit nie das Wort der vorigen Runde nachkommt */
@@ -201,6 +209,7 @@ function answer(choice){
     try { if (navigator.vibrate) navigator.vibrate([120,60,120]); } catch(e){}
   } else {
     setBubble("👀 Schau mal!");
+    dragonDo("buddyDragon", "wow", 2200);
     card.classList.add("flip","is-seen");
   }
 

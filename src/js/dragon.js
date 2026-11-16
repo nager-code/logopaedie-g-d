@@ -6,10 +6,16 @@ const DRAGON_POSES = {
   hello: { src: "img/fips-begruessung.svg", alt: `${DRAGON_NAME} winkt` },
   cheer: { src: "img/fips-jubel.svg",       alt: `${DRAGON_NAME} jubelt` },
   oops:  { src: "img/fips-hoppla.svg",      alt: `${DRAGON_NAME} kratzt sich am Kopf` },
-  dance: { src: "img/fips-tanz.svg",        alt: `${DRAGON_NAME} tanzt` }
+  dance: { src: "img/fips-tanz.svg",        alt: `${DRAGON_NAME} tanzt` },
+  listen:{ src: "img/fips-zuhoeren.svg",    alt: `${DRAGON_NAME} hört genau zu` },
+  think: { src: "img/fips-nachdenken.svg",  alt: `${DRAGON_NAME} überlegt` },
+  wow:   { src: "img/fips-staunen.svg",     alt: `${DRAGON_NAME} staunt` },
+  sleep: { src: "img/fips-schlafen.svg",    alt: `${DRAGON_NAME} schläft` },
+  startle:{ src: "img/fips-erschrocken.svg", alt: `${DRAGON_NAME} ist erschrocken` }
 };
 /* Gefühl → Pose (ohne Gefühl: Begrüßungs-Pose) */
-const DRAGON_STATE_POSE = { wave: "hello", happy: "cheer", yay: "dance", giggle: "cheer", oops: "oops", dance: "dance", laugh: "cheer", rofl: "cheer" };
+const DRAGON_STATE_POSE = { wave: "hello", happy: "cheer", yay: "dance", giggle: "cheer", oops: "oops", dance: "dance", laugh: "cheer", rofl: "cheer",
+  listen: "listen", think: "think", wow: "wow", sleep: "sleep", startle: "startle" };
 const DRAGON_STATES = Object.keys(DRAGON_STATE_POSE);
 
 const DRAGON_FX = {
@@ -19,7 +25,9 @@ const DRAGON_FX = {
   wave:  ["✨","💖"],
   giggle:["💗","✨"],
   laugh: ["😆","💗","✨","Ha!"],
-  rofl:  ["😂","🤣","💗","Ha!","Hi!"]
+  rofl:  ["😂","🤣","💗","Ha!","Hi!"],
+  wow:   ["✨","⭐"],
+  startle:["❗","❕"]
 };
 
 /* Alle Platzhalter mit data-dragon füllen */
@@ -43,7 +51,7 @@ function showPose(el, state){
   });
 }
 
-/* Drache zeigt ein Gefühl: happy | oops | wave | giggle  (ms = 0 → bleibt so) */
+/* Drache zeigt ein Gefühl: happy | oops | wave | giggle | listen | think | sleep …  (ms = 0 → bleibt so) */
 function dragonDo(el, state, ms = 1800){
   if (typeof el === "string") el = $(el);
   if (!el) return;

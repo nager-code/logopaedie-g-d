@@ -49,7 +49,11 @@ Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen –
 
 ## 🐉 Fips, der kleine Drache
 
-Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein paarmal antippen: er kichert – öfter: er lacht laut – ganz oft: er kugelt sich vor Lachen auf dem Boden), freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
+Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein paarmal antippen: er kichert – öfter: er lacht laut – ganz oft: er kugelt sich vor Lachen auf dem Boden), freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in neun Posen gezeichnet – Begrüßung, Jubel, Hoppla, Tanz, Zuhören, Nachdenken, Staunen, Schlafen und Erschrocken:
+
+- 👂 Während ein Wort vorgespielt wird, hört Fips genau zu – danach überlegt er mit, bis das Kind antwortet.
+- 👀 Wird die Lösung aufgedeckt, staunt er.
+- 💤 Passiert auf der Startseite eine Weile nichts, schläft er ein. Antippen weckt ihn – er erschrickt kurz und winkt dann wieder.
 
 <details>
 <summary><b>🤫 Psst … ein Geheimnis</b></summary>
@@ -95,7 +99,7 @@ Reines HTML, CSS und JavaScript – ohne Abhängigkeiten und ohne Build-Schritt.
 src/                    alles, was veröffentlicht wird
   index.html            Seitenaufbau, Vorschau fürs Teilen (Open Graph)
   favicon.svg           Icon
-  img/fips-*.svg        Fips in vier Posen: Begrüßung, Jubel, Hoppla, Tanz
+  img/fips-*.svg        Fips in neun Posen (Begrüßung, Jubel, Hoppla, Tanz, Zuhören, Nachdenken, …)
   img/share.png         Vorschaubild fürs Teilen (1200 × 630)
   img/apple-touch-icon.png  Icon für den Home-Bildschirm
   css/style.css         Design und Animationen
@@ -112,6 +116,7 @@ src/                    alles, was veröffentlicht wird
   js/recorder.js        Aufnahme-Studio
   js/app.js             Navigation und Start
 docs/                   Screenshots für diese README
+assets/fips-drache/     Maskottchen-Paket: 15 Posen als SVG und PNG, Vorschau, Python-Generator
 tools/                  Vorlagen und Skript für Vorschaubild, Icon und Screenshots
 ```
 

@@ -281,7 +281,7 @@ body.partying .buddy-dragon,body.partying .bubble{visibility:hidden}   /* hinter
 @keyframes popIn{0%{transform:translate(-50%,-50%) scale(0)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
 
 /* ---------- Fips, der Drache ---------- */
-/* drei Posen als Bilder (img/fips-*.svg), immer nur eine sichtbar */
+/* Posen als Bilder (img/fips-*.svg), immer nur eine sichtbar */
 .dragon{position:relative;display:inline-block;line-height:0;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
 .dr-pose{display:none;pointer-events:none;
   /* Bild ist 400×400, sichtbar sein soll der Ausschnitt 28 30 352×360 */
