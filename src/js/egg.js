@@ -161,6 +161,20 @@ function eggScene(){
 /* ---------- Zustand ---------- */
 let eggFat = 0, eggBusy = false, eggEaten = 0, eggFires = 0, eggLastAct = 0, eggIdleTimer = null;
 let eggMusicOn = true, eggMusicTimer = null;
+/* Alle Ablauf-Timer der Party laufen über eggT – so lassen sie sich beim Sperren des Handys gemeinsam abbrechen */
+let eggTimers = new Set(), eggDragEnd = null, eggGen = 0;   // eggGen zählt hoch, sobald alles abgebrochen wird
+function eggT(fn, ms){
+  const id = setTimeout(() => { eggTimers.delete(id); fn(); }, ms);
+  eggTimers.add(id); return id;
+}
+/* Animation fertig → fn. Auch wenn der Browser die Animation abbricht (z. B. Handy gesperrt)
+   oder sie hängen bleibt: fn läuft garantiert genau einmal, sonst bliebe Fips für immer „beschäftigt“. */
+function eggAnimDone(anim, ms, fn){
+  let done = false; const gen = eggGen;
+  const go = () => { if (!done && gen === eggGen){ done = true; fn(); } };
+  anim.finished.then(go, go);
+  eggT(go, ms + 400);
+}
 try { eggMusicOn = localStorage.getItem("eggMusic") !== "off"; } catch(e){}
 
 function eggSay(text){
@@ -211,6 +225,16 @@ function eggDrag(btn){
     e.preventDefault();
     const r0 = btn.getBoundingClientRect(), sx = e.clientX, sy = e.clientY;
     let ghost = null;
+    const end = () => {
+      window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", cancel);
+      eggDragEnd = null;
+    };
+    // abgebrochen (Anruf, Handy gesperrt …): Muffin einfach zurück auf den Teller
+    const cancel = () => {
+      end();
+      if (ghost){ ghost.remove(); ghost = null; }
+      btn.classList.remove("gone"); $("eggFips").classList.remove("hungry");
+    };
     const move = ev => {
       const dx = ev.clientX - sx, dy = ev.clientY - sy;
       if (!ghost && Math.hypot(dx, dy) > 8){
@@ -225,22 +249,26 @@ function eggDrag(btn){
       }
     };
     const up = ev => {
-      window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up);
+      end();
       if (!ghost){ eggFeed(btn); return; }               // nur angetippt
       const m = eggMouth(), gr = ghost.getBoundingClientRect();
       const cx = gr.left + gr.width / 2, cy = gr.top + gr.height / 2;
       if (Math.hypot(cx - m.x, cy - m.y) < 110){         // nah genug am Maul → happs!
         eggBusy = true;
         const t0 = ghost.style.transform;
-        ghost.animate([{ transform: t0 }, { transform: `translate(${ev.clientX - sx + m.x - cx}px,${ev.clientY - sy + m.y - cy}px) scale(.3) rotate(40deg)` }],
-          { duration: 220, easing: "ease-in" }).finished.then(() => { ghost.remove(); eggEat(btn, m); });
+        const g = ghost;
+        eggAnimDone(g.animate([{ transform: t0 }, { transform: `translate(${ev.clientX - sx + m.x - cx}px,${ev.clientY - sy + m.y - cy}px) scale(.3) rotate(40deg)` }],
+          { duration: 220, easing: "ease-in" }), 220, () => { g.remove(); eggEat(btn, m); });
       } else {                                           // zurück auf den Teller
         $("eggFips").classList.remove("hungry");
-        ghost.animate([{ transform: ghost.style.transform }, { transform: "translate(0,0) scale(1)" }], { duration: 300, easing: "cubic-bezier(.3,1.4,.5,1)" })
-          .finished.then(() => { ghost.remove(); btn.classList.remove("gone"); });
+        const g = ghost;
+        eggAnimDone(g.animate([{ transform: g.style.transform }, { transform: "translate(0,0) scale(1)" }], { duration: 300, easing: "cubic-bezier(.3,1.4,.5,1)" }),
+          300, () => { g.remove(); btn.classList.remove("gone"); });
       }
     };
-    window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+    if (eggDragEnd) eggDragEnd();                    // ein alter, nie beendeter Zug darf nicht weiterlaufen
+    eggDragEnd = cancel;
+    window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", cancel);
   });
 }
 
@@ -260,8 +288,8 @@ function eggFeed(btn){
     { transform: `translate(${dx}px,${dy}px) rotate(360deg) scale(.35)` }
   ], { duration: 650, easing: "cubic-bezier(.4,0,.6,1)" });
   sfx("whoosh");
-  setTimeout(() => $("eggFips").classList.add("hungry"), 300);   // Maul auf, gleich kommt er!
-  anim.finished.then(() => { fly.remove(); eggEat(btn, to); });
+  eggT(() => $("eggFips").classList.add("hungry"), 300);   // Maul auf, gleich kommt er!
+  eggAnimDone(anim, 650, () => { fly.remove(); eggEat(btn, to); });
 }
 
 function eggEat(btn, at){
@@ -273,15 +301,15 @@ function eggEat(btn, at){
   eggPlay("nom", 450);
   eggPlay("chew", 1350);                                   // kurz kauen …
   sfx("nom");
-  [.35, .62, .89, 1.16].forEach(d => setTimeout(() => sfx("chew"), d * 1000));
+  [.35, .62, .89, 1.16].forEach(d => eggT(() => sfx("chew"), d * 1000));
   eggCrumbs(at, gold);
   eggApplyFat();
   if (custom){ eggSay(pick(["Selbst verziert! Der ist der allerbeste! 🤩", "Mmmh, mit Streuseln! Danke! 💖", "Den hast du gemacht? Sooo lecker! 😍"])); eggPlay("glitter", 1400); setTimeout(() => sfx("right"), 250); }
   else if (gold){ eggSay(pick(EGG_GOLD_SAY)); eggPlay("glitter", 1400); setTimeout(() => sfx("right"), 250); }
   else eggSay(EGG_SAY[Math.min(eggFat, EGG_SAY.length - 1)]);
-  setTimeout(() => { eggFill(btn); btn.classList.remove("gone"); }, 900);   // neuer Muffin auf dem Teller
-  if (eggFat >= EGG_FULL) setTimeout(eggFire, 800);
-  else setTimeout(() => { eggBusy = false; }, 250);
+  eggT(() => { eggFill(btn); btn.classList.remove("gone"); }, 900);   // neuer Muffin auf dem Teller
+  if (eggFat >= EGG_FULL) eggT(eggFire, 800);
+  else eggT(() => { eggBusy = false; }, 250);
 }
 
 function eggCrumbs(p, gold){
@@ -301,7 +329,7 @@ function eggFire(){
   eggSay("Hui … 😵‍💫");
   sfx("rumble");
   f.classList.add("rumble");
-  setTimeout(() => {
+  eggT(() => {
     f.classList.remove("rumble"); f.classList.add("fire");
     eggSay("FEUER! 🔥🔥🔥");
     const svg = f.querySelector("svg"), head = svg && svg.querySelector(".tilt");
@@ -313,8 +341,8 @@ function eggFire(){
     }
     sfx("fire");
     $("eggOverlay").classList.add("lit");                 // Lichterkette blinkt
-    setTimeout(eggFireworks, 700);
-    setTimeout(() => {
+    eggT(eggFireworks, 700);
+    eggT(() => {
       f.classList.remove("fire");
       head && head.querySelectorAll(".fb").forEach(g => g.remove());
       eggFat = 0; eggFires++; eggApplyFat();
@@ -322,7 +350,7 @@ function eggFire(){
       eggSay(pick(["Puh! Das tat gut! 😅 Noch mal?", "Uff, wieder ganz schlank! 😎", "Hihi, ein Feuerwerk für dich! 🎆"]));
       sfx("giggle");
       eggBusy = false; eggLastAct = Date.now();
-      setTimeout(() => $("eggOverlay").classList.remove("lit"), 2600);
+      eggT(() => $("eggOverlay").classList.remove("lit"), 2600);
     }, 1700);
   }, 1300);
 }
@@ -337,7 +365,7 @@ function eggFireworks(){
       sky.appendChild(s); setTimeout(() => s.remove(), 2600);
     }
   }
-  setTimeout(() => sfx("pop"), 0); setTimeout(() => sfx("pop"), 350); setTimeout(() => sfx("pop"), 700); setTimeout(() => sfx("pop"), 1050);
+  eggT(() => sfx("pop"), 0); eggT(() => sfx("pop"), 350); eggT(() => sfx("pop"), 700); eggT(() => sfx("pop"), 1050);
 }
 
 /* ---------- Kleinigkeiten: Bauch antippen, Schluckauf, Langeweile ---------- */
@@ -442,9 +470,42 @@ async function openEgg(){
   show("eggOverlay");
   sfx("fanfare");
   clearInterval(eggIdleTimer); eggIdleTimer = setInterval(eggIdle, 2200);
-  setTimeout(() => eggMusic(true), 1200);
+  eggT(() => eggMusic(true), 1200);
 }
+/* Alles, was gerade läuft, sauber abbrechen: fliegende/gezogene Muffins, Feuerstrahl, Timer.
+   Fips bleibt so rund, wie er war – nur ist er danach wieder bereit für den nächsten Muffin. */
+function eggReset(){
+  eggGen++;
+  if (eggDragEnd) eggDragEnd();
+  eggTimers.forEach(clearTimeout); eggTimers.clear();
+  document.querySelectorAll(".egg-fly,.egg-crumb").forEach(el => el.remove());
+  const sky = $("eggSky"); if (sky) sky.innerHTML = "";
+  const f = $("eggFips");
+  ["hungry","rumble","fire","nom","chew","glitter","jiggle","hic"].forEach(c => f.classList.remove(c));
+  f.querySelectorAll(".fb").forEach(g => g.remove());
+  $("eggOverlay").classList.remove("lit");
+  $("eggTray").querySelectorAll(".egg-muffin.gone").forEach(b => { eggFill(b); b.classList.remove("gone"); });
+  if (eggFat >= EGG_FULL) eggFat = 0;               // Feuerstrahl wurde unterbrochen → wieder schlank
+  eggApplyFat();
+  eggBusy = false; eggLastAct = Date.now();
+}
+function eggOpen(){ return !$("eggOverlay").classList.contains("hidden"); }
+/* Handy gesperrt / App gewechselt: anhalten. Zurück: weiter, wo man war. */
+document.addEventListener("visibilitychange", () => {
+  if (!eggOpen()) return;
+  if (document.hidden){
+    eggReset();
+    clearInterval(eggIdleTimer); eggIdleTimer = null;
+    eggMusic(false);
+  } else {
+    eggReset();
+    clearInterval(eggIdleTimer); eggIdleTimer = setInterval(eggIdle, 2200);
+    eggSay(pick(["Da bist du ja wieder! 😊", "Hallo! Hast du noch Muffins? 🧁"]));
+    eggT(() => eggMusic(true), 600);
+  }
+});
 function closeEgg(){
+  eggReset();
   clearInterval(eggIdleTimer); eggIdleTimer = null;
   eggMusic(false);
   hide("eggOverlay");

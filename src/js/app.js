@@ -4,7 +4,12 @@ function openParents(){
   $("diag").textContent = `Version ${APP_VERSION} · Speicher: ${dbOK ? "ok" : "nicht dauerhaft"}`;
   show("parentsOverlay");
 }
-document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => startGame(b.dataset.mode)));
+// Liegt gerade ein Fenster (Muffin-Party, Eltern, Aufnahme …) über dem Startbildschirm, dürfen die Spiel-Knöpfe
+// darunter nicht reagieren – z. B. wenn ein Tipp nach dem Entsperren des Handys „durchrutscht“
+document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () => {
+  if (document.querySelector(".overlay:not(.hidden)") || $("home").classList.contains("hidden")) return;
+  startGame(b.dataset.mode);
+}));
 $("homeBtn").addEventListener("click", goHome);
 $("endHome").addEventListener("click", goHome);
 $("restartBtn").addEventListener("click", () => { hide("endOverlay"); stars = 0; $("stars").textContent = "⭐ 0"; newGame(); });
