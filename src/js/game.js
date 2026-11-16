@@ -243,7 +243,7 @@ let streak = 0, partyTimer = null, lastParty = -1, partyDue = false, partyOn = f
 const PARTY_PRAISE = ["Juhu!","Wow!","Spitze!","Super!","Klasse!"];
 /* Jede Feier: Fips tanzt – jedes Mal ein anderer Tanzschritt */
 const PARTIES = ["sway","spin","hop","twist","steps"].map(cls => ({cls, html:
-  `<div class="p-stage"></div><div class="p-dance"><div class="p-dragon" data-dragon></div></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span><span>🎶</span></div>`}));
+  `<div class="p-floor"><div class="p-stage"></div><div class="p-dance"><div class="p-dragon" data-dragon></div></div></div><div class="p-notes"><span>🎵</span><span>🎶</span><span>🎵</span><span>🎶</span></div>`}));
 function celebrate(n, afterSeq){
   stopAll();                       // Sprachausgabe pausieren
   partyOn = true; partyAfter = afterSeq || null;
