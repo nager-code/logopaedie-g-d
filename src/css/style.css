@@ -820,6 +820,38 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .k-btn{border:0;border-radius:999px;padding:11px 14px;font-size:15px;white-space:nowrap;font-weight:900;background:var(--pink);color:#fff;box-shadow:0 6px 0 var(--pink-dark);cursor:pointer}
 .k-btn.ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 rgba(59,44,90,.15)}
 .k-btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--pink-dark)}
+/* Handy: Spalten-Hüllen sind unsichtbar, Zusatz-Auswahl ausgeblendet */
+.k-left,.k-right{display:contents}
+@media (max-width:899px),(max-height:599px){ .k-more{display:none !important} }
+.k-tools{display:flex;gap:10px;justify-content:center}
+.k-btn.small{padding:8px 14px;font-size:14px;box-shadow:0 4px 0 rgba(59,44,90,.15)}
+.k-btn:disabled{opacity:.45;cursor:default}
+.k-muffin .k-flame{transform-box:fill-box;transform-origin:50% 100%;animation:kFlame .35s ease-in-out infinite alternate}
+@keyframes kFlame{from{transform:scale(.9,1.05) rotate(-4deg)}to{transform:scale(1.05,.92) rotate(4deg)}}
+/* Desktop: große Küche – Muffin links, viel mehr Auswahl rechts */
+@media (min-width:900px) and (min-height:600px){
+  .k-panel{max-width:900px;padding:22px 26px 24px;display:grid;grid-template-columns:minmax(300px,1fr) minmax(380px,1.15fr);column-gap:26px;align-items:center;
+    background:linear-gradient(90deg,rgba(255,255,255,.7) 2px,transparent 2px) 0 0/34px 34px,linear-gradient(0deg,rgba(255,255,255,.7) 2px,transparent 2px) 0 0/34px 34px,#dff2ff}
+  .k-title{grid-column:1 / -1;font-size:30px;margin-bottom:10px}
+  .k-left,.k-right{display:flex;flex-direction:column;min-width:0}
+  .k-left{align-items:center;gap:8px}
+  .k-muffin-wrap{width:min(340px,34vw,52vh)}
+  .k-hint{font-size:15px;margin:4px 0}
+  .k-kinds{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+  .k-kinds button{padding:6px 2px;border-radius:16px}
+  .k-kinds button span{font-size:28px}
+  .k-kinds button small{font-size:12px}
+  .k-row{margin:6px 0 8px;padding:8px 14px 12px}
+  .k-row b{font-size:16px}
+  .k-swatches{flex-wrap:wrap;gap:10px}
+  .k-swatches button{flex:0 0 46px;width:46px;max-width:none}
+  .k-actions{margin-top:12px}
+  .k-btn{font-size:17px;padding:13px 20px}
+}
+@media (hover:hover) and (pointer:fine){
+  .k-kinds button:hover,.k-swatches button:hover{transform:translateY(-2px)}
+  .k-btn:not(:disabled):hover{filter:brightness(1.05)}
+}
 .egg-muffin.custom::after{content:"💖";position:absolute;right:-4px;top:-6px;font-size:16px}
 .panel p.diag{margin:12px 0 0;font-size:11px;line-height:1.3;font-weight:700;color:var(--muted);opacity:.7;text-align:center}
 /* Easter Egg: Fips kaut nach jedem Muffin */

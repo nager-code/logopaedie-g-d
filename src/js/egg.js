@@ -29,18 +29,19 @@ const EGG_FLAMES = {
   herz:   {say:"HERZCHEN-FEUER! 💖🔥",     outer:["#FFE6EE","#FFB3C8","#FF88A8","#C9507A"], mid:["#FFF5F8","#FFCCDA","#FF88A8"], puff:[["#FFF5F8","#FFB3C8","#FF88A8","#C9507A"]], spark:"#FFFFFF", stroke:"#E0608A", sky:["#FF88A8","#FFB3C8","#C0A4F0"]},
   blau:   {say:"BLAUBEER-FEUER! 🫐🔥",     outer:["#DCF4FF","#93BFF5","#6295E0","#2F5FA8"], mid:["#F4FBFF","#BDEBFA","#7FB4F0"], puff:[["#F4FBFF","#93BFF5","#6295E0","#2F5FA8"]], spark:"#E3F7FF", stroke:"#4A7FD0", sky:["#93BFF5","#8FD6F5","#C0A4F0"]},
   lila:   {say:"ZAUBER-FEUER! 🔮🔥",       outer:["#EFE5FF","#C0A4F0","#9474D8","#5E449E"], mid:["#FAF6FF","#D9C8F8","#A98AE6"], puff:[["#FAF6FF","#C0A4F0","#9474D8","#5E449E"]], spark:"#FFF3A0", stroke:"#7A5CC4", sky:["#C0A4F0","#FF88A8","#93BFF5"]},
+  gruen:  {say:"PISTAZIEN-FEUER! 💚🔥",     outer:["#E9FFD6","#96D965","#66B53C","#3E7D22"], mid:["#F7FFEE","#C8F5A0","#7DD9B4"], puff:[["#F7FFEE","#96D965","#66B53C","#3E7D22"]], spark:"#FFF3A0", stroke:"#55A33A", sky:["#96D965","#7DD9B4","#FFD54A"]},
   gold:   {say:"GOLD-FEUER! ✨🔥✨",       outer:["#FFFBE0","#FFE45C","#FFD54A","#E8A800"], mid:["#FFFFFF","#FFF6BF","#FFD54A"], puff:[["#FFFFFF","#FFF6BF","#FFD54A","#E8A800"]], spark:"#FFFFFF", stroke:"#E8A800", sky:["#FFD54A","#FFF6BF","#FFE45C"]},
   bunt:   {say:"REGENBOGEN-FEUER! 🌈🔥",   outer:["#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FF88A8"], mid:["#FFFFFF","#FFF6C0","#FFB3C8"],
            puff:[["#FFF6C0","#FFD54A","#FFB062","#F28C2E"],["#E9FFF4","#7DD9B4","#55BE96","#2F7D63"],["#DCEBFF","#93BFF5","#6295E0","#2F5FA8"],["#EFE5FF","#C0A4F0","#9474D8","#5E449E"],["#FFE6EE","#FF88A8","#E8455F","#A8243C"]],
            spark:"#FFFFFF", stroke:"#C0A4F0", sky:["#FF88A8","#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FFB062"]}
 };
 const EGG_DECO_FLAME = {chips:"schoko", cherry:"kirsch", sprinkles:"bunt", stars:"gold"};
-const EGG_KIND_FLAME = {bunt:"bunt", schoko:"schoko", stern:"gold", herz:"herz", kirsche:"kirsch"};
-const EGG_TOP_FLAME  = {brown:"schoko", pink:"herz", blue:"blau", purple:"lila", wood:"feuer", cream:"feuer"};
+const EGG_KIND_FLAME = {bunt:"bunt", schoko:"schoko", stern:"gold", herz:"herz", kirsche:"kirsch", punkte:"bunt", blume:"herz", perle:"blau", kerze:"feuer"};
+const EGG_TOP_FLAME  = {brown:"schoko", pink:"herz", blue:"blau", purple:"lila", wood:"feuer", cream:"feuer", yellow:"gold", leaf:"gruen", red:"kirsch", orange:"feuer", white:"feuer"};
 let eggFlavors = [];   // Sorten seit dem letzten Feuer (die neueste zuletzt)
 /* Selbst verzierte Muffins: die meiste Deko zählt; ohne Deko die Farbe vom Guss */
 function eggCustomFlavor(m){
-  const n = {}; m.items.forEach(i => n[i.t] = (n[i.t] || 0) + (i.t === "kirsche" ? 12 : i.t === "herz" || i.t === "stern" ? 2 : 1));
+  const n = {}; m.items.forEach(i => n[i.t] = (n[i.t] || 0) + (i.t === "kirsche" || i.t === "kerze" ? 12 : i.t === "herz" || i.t === "stern" || i.t === "blume" ? 2 : 1));
   const best = Object.keys(n).sort((a, b) => n[b] - n[a])[0];
   return best ? EGG_KIND_FLAME[best] : EGG_TOP_FLAME[m.top] || "feuer";
 }
@@ -95,18 +96,30 @@ function muffinSvg([cup, top, deco]){
 /* ---------- Muffin-Küche: selbst verzieren ---------- */
 const K_CUPS = ["pink","blue","yellow","purple","leaf","orange"];
 const K_TOPS = ["brown","pink","cream","wood","blue","purple"];
+/* Am großen Bildschirm (Desktop) gibt es mehr Auswahl – auf dem Handy bleiben diese Knöpfe ausgeblendet (.k-more) */
+const K_CUPS_MORE = ["red","green","water","gold","white"];
+const K_TOPS_MORE = ["yellow","leaf","red","orange","white"];
 const K_KINDS = [
   {k:"bunt",   label:"Bunt",    icon:"🌈"},
   {k:"schoko", label:"Schoko",  icon:"🍫"},
   {k:"stern",  label:"Sterne",  icon:"⭐"},
   {k:"herz",   label:"Herzen",         icon:"💗"},
-  {k:"kirsche",label:"Kirsche",        icon:"🍒"}
+  {k:"kirsche",label:"Kirsche",        icon:"🍒"},
+  {k:"punkte", label:"Linsen",  icon:"🔴", more:true},
+  {k:"blume",  label:"Blumen",  icon:"🌼", more:true},
+  {k:"perle",  label:"Perlen",  icon:"⚪", more:true},
+  {k:"kerze",  label:"Kerze",   icon:"🕯️", more:true}
 ];
+let kHist = [];   // Schnappschüsse für „Rückgängig“
 let kMuffin = null, kKind = "bunt";
 function kItem(it){
   const {t, x, y, r, c} = it;
   if (t === "bunt" || t === "schoko") return `<rect x="${x - 2.2}" y="${y - .8}" width="4.4" height="1.6" rx=".8" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`;
   if (t === "stern") return `<path transform="translate(${x} ${y}) rotate(${r}) scale(.55)" d="M0 -5 L1.4 -1.6 5 -1.5 2.2 .9 3.1 4.6 0 2.5 -3.1 4.6 -2.2 .9 -5 -1.5 -1.4 -1.6 Z" fill="${c}" stroke="#A87500" stroke-width=".6"/>`;
+  if (t === "punkte") return `<g><circle cx="${x}" cy="${y}" r="1.7" fill="${c}"/><circle cx="${x - .5}" cy="${y - .55}" r=".5" fill="#fff" opacity=".7"/></g>`;
+  if (t === "perle") return `<g><circle cx="${x}" cy="${y}" r="1.15" fill="#E9EEF6" stroke="#AEB7C6" stroke-width=".35"/><circle cx="${x - .35}" cy="${y - .4}" r=".35" fill="#fff"/></g>`;
+  if (t === "blume") return `<g transform="translate(${x} ${y}) rotate(${r})">${[0,72,144,216,288].map(a => `<ellipse rx="1.5" ry="2.3" cy="-2" transform="rotate(${a})" fill="${c}"/>`).join("")}<circle r="1.3" fill="#FFD54A"/></g>`;
+  if (t === "kerze") return `<g transform="translate(${x} ${y})"><rect x="-2.2" y="-15" width="4.4" height="15" rx="1.2" fill="#FFF6F8" stroke="#E86A8E" stroke-width=".8"/><path d="M-2.2 -11 L2.2 -13.5 M-2.2 -6 L2.2 -8.5 M-2.2 -1 L2.2 -3.5" stroke="#FF88A8" stroke-width="1.2"/><path d="M0 -15 V-17" stroke="#4A2E3A" stroke-width=".7"/><path class="k-flame" d="M0 -23.5 Q3 -19.5 0 -16.8 Q-3 -19.5 0 -23.5 Z" fill="#FFB13B"/><path d="M0 -21.5 Q1.4 -19 0 -17.6 Q-1.4 -19 0 -21.5 Z" fill="#FFF6C0"/></g>`;
   if (t === "herz") return `<path transform="translate(${x} ${y}) rotate(${r}) scale(.5)" d="M0 4 C-7 -1 -5 -7 0 -3 C5 -7 7 -1 0 4 Z" fill="${c}"/>`;
   return `<g transform="translate(${x} ${y})"><path d="M0 -4 Q2 -10 7 -11" fill="none" stroke="#3E7D22" stroke-width="1.6"/><circle r="4.5" fill="url(#pg-red)" stroke="#A8243C" stroke-width="1.5"/><ellipse cx="-1.5" cy="-1.6" rx="1.3" ry=".9" fill="#fff" opacity=".8"/></g>`;
 }
@@ -124,14 +137,18 @@ function kRender(){
   document.querySelectorAll("#kCups button").forEach(b => b.classList.toggle("on", b.dataset.v === kMuffin.cup));
   document.querySelectorAll("#kTops button").forEach(b => b.classList.toggle("on", b.dataset.v === kMuffin.top));
   document.querySelectorAll("#kKinds button").forEach(b => b.classList.toggle("on", b.dataset.v === kKind));
+  $("kUndo").disabled = !kHist.length; $("kWipe").disabled = !kMuffin.items.length;
 }
-function kNew(){ kMuffin = {cup: pick(K_CUPS), top: pick(K_TOPS), items: []}; kRender(); }
+function kNew(){ kMuffin = {cup: pick(K_CUPS), top: pick(K_TOPS), items: []}; kHist = []; kRender(); }
+function kSnap(){ kHist.push({cup: kMuffin.cup, top: kMuffin.top, items: kMuffin.items.slice()}); if (kHist.length > 40) kHist.shift(); }
+function kUndo(){ const h = kHist.pop(); if (!h) return; kMuffin = h; kRender(); sfx("hic"); }
+function kWipe(){ if (!kMuffin.items.length) return; kSnap(); kMuffin.items = []; kRender(); sfx("whoosh"); }
 /* Streusel rieseln an die angetippte Stelle – aber nur auf den Guss */
 function kSprinkle(ev){
   const svg = $("kMuffin").querySelector("svg"), top = svg && svg.querySelector(".k-top");
   if (!top) return;
   const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse());
-  const n = kKind === "kirsche" ? 1 : kKind === "herz" || kKind === "stern" ? 2 : 4;
+  const n = kKind === "kirsche" || kKind === "kerze" || kKind === "blume" ? 1 : kKind === "herz" || kKind === "stern" || kKind === "punkte" ? 2 : 4;
   if (kKind === "kirsche" && kMuffin.items.filter(i => i.t === "kirsche").length >= 3) return;
   let added = 0;
   for (let i = 0; i < n * 3 && added < n; i++){
@@ -140,25 +157,36 @@ function kSprinkle(ev){
     if (!top.isPointInFill(pt) || y > 31) continue;
     const c = kKind === "bunt" ? pick(["#FF88A8","#FFD54A","#7DD9B4","#93BFF5","#C0A4F0","#FFB062"])
             : kKind === "schoko" ? pick(["#4A2E3A","#6E4429","#5A3A2E"])
-            : kKind === "stern" ? pick(["#FFE45C","#FFF6C0","#FFD54A"]) : kKind === "herz" ? pick(["#FF88A8","#E8455F","#FFB3C8"]) : "";
+            : kKind === "stern" ? pick(["#FFE45C","#FFF6C0","#FFD54A"]) : kKind === "herz" ? pick(["#FF88A8","#E8455F","#FFB3C8"])
+            : kKind === "punkte" ? pick(["#E8455F","#FFB062","#FFD54A","#55BE96","#6295E0","#9474D8"])
+            : kKind === "blume" ? pick(["#FFFFFF","#FFB3C8","#C0A4F0","#93BFF5"]) : "";
     kMuffin.items.push({t: kKind, x: +x.toFixed(1), y: +y.toFixed(1), r: Math.round(rnd() * 180), c});
     added++;
   }
+  if (added && kKind === "kerze"){ const last = kMuffin.items[kMuffin.items.length - 1]; kMuffin.items = kMuffin.items.filter(i => i.t !== "kerze" || i === last); }   // nur eine Kerze – sie zieht um
   if (kMuffin.items.length > 220) kMuffin.items.splice(0, kMuffin.items.length - 220);
   if (added){ kRender(); sfx("sprinkle"); }
+  return added;
 }
 function kInit(){
-  $("kCups").innerHTML = K_CUPS.map(c => `<button data-v="${c}" style="--c:${PIC_PAL[c][1]};--b:${PIC_PAL[c][3]}" aria-label="Förmchen ${c}"></button>`).join("");
-  $("kTops").innerHTML = K_TOPS.map(c => `<button data-v="${c}" style="--c:${PIC_PAL[c][1]};--b:${PIC_PAL[c][3]}" aria-label="Guss ${c}"></button>`).join("");
-  $("kKinds").innerHTML = K_KINDS.map(k => `<button data-v="${k.k}" aria-label="${k.label}"><span>${k.icon}</span><small>${k.label}</small></button>`).join("");
-  $("kCups").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kMuffin.cup = b.dataset.v; kRender(); sfx("hic"); } });
-  $("kTops").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kMuffin.top = b.dataset.v; kRender(); sfx("hic"); } });
+  const sw = (list, more, what) => list.concat(more).map((c, i) => `<button data-v="${c}"${i >= list.length ? ' class="k-more"' : ""} style="--c:${PIC_PAL[c][1]};--b:${PIC_PAL[c][3]}" aria-label="${what} ${c}"></button>`).join("");
+  $("kCups").innerHTML = sw(K_CUPS, K_CUPS_MORE, "Förmchen");
+  $("kTops").innerHTML = sw(K_TOPS, K_TOPS_MORE, "Guss");
+  $("kKinds").innerHTML = K_KINDS.map(k => `<button data-v="${k.k}"${k.more ? ' class="k-more"' : ""} aria-label="${k.label}"><span>${k.icon}</span><small>${k.label}</small></button>`).join("");
+  $("kCups").addEventListener("click", e => { const b = e.target.closest("button"); if (b && b.dataset.v !== kMuffin.cup){ kSnap(); kMuffin.cup = b.dataset.v; kRender(); sfx("hic"); } });
+  $("kTops").addEventListener("click", e => { const b = e.target.closest("button"); if (b && b.dataset.v !== kMuffin.top){ kSnap(); kMuffin.top = b.dataset.v; kRender(); sfx("hic"); } });
+  $("kUndo").addEventListener("click", kUndo);
+  $("kWipe").addEventListener("click", kWipe);
+  document.addEventListener("keydown", e => {
+    if ($("eggKitchen").classList.contains("hidden")) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z"){ e.preventDefault(); kUndo(); }
+  });
   $("kKinds").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kKind = b.dataset.v; kRender(); } });
   // Berührungen gehen an eine feste, unsichtbare Fläche über dem Muffin – der Muffin selbst wird bei jedem Streusel
   // neu gezeichnet; läge der Finger auf einem Element, das dabei verschwindet, würde Safari den Tipp als Zoom deuten
   let down = false, last = 0;
   const box = $("kTouch");
-  box.addEventListener("pointerdown", e => { down = true; box.setPointerCapture(e.pointerId); kSprinkle(e); });
+  box.addEventListener("pointerdown", e => { down = true; box.setPointerCapture(e.pointerId); kSnap(); if (!kSprinkle(e)) kHist.pop(); else kRender(); });
   box.addEventListener("pointermove", e => { if (down && Date.now() - last > 60){ last = Date.now(); kSprinkle(e); } });
   ["pointerup","pointercancel"].forEach(t => box.addEventListener(t, () => down = false));
   $("kNew").addEventListener("click", kNew);

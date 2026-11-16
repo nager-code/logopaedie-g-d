@@ -124,12 +124,17 @@
     <div class="k-panel">
       <button class="close-x" id="kClose" aria-label="Küche schließen">✕</button>
       <h2 class="k-title">👩‍🍳 Muffin-Küche</h2>
-      <div class="k-board"><div class="k-muffin-wrap"><div class="k-muffin" id="kMuffin"></div><div class="k-touch" id="kTouch" aria-label="Streusel streuen"></div></div></div>
-      <p class="k-hint">Tippe oder wische über den Guss – dann rieseln die Streusel!</p>
+      <div class="k-left">
+        <div class="k-board"><div class="k-muffin-wrap"><div class="k-muffin" id="kMuffin"></div><div class="k-touch" id="kTouch" aria-label="Streusel streuen"></div></div></div>
+        <p class="k-hint">Tippe oder wische über den Guss – dann rieseln die Streusel!</p>
+        <div class="k-tools k-more"><button class="k-btn ghost small" id="kUndo">↩️ Rückgängig</button><button class="k-btn ghost small" id="kWipe">🧽 Deko abwischen</button></div>
+      </div>
+      <div class="k-right">
       <div class="k-kinds" id="kKinds"></div>
       <div class="k-row"><b>Förmchen</b><div class="k-swatches" id="kCups"></div></div>
       <div class="k-row"><b>Guss</b><div class="k-swatches" id="kTops"></div></div>
       <div class="k-actions"><button class="k-btn ghost" id="kNew">🔄 Neuer Muffin</button><button class="k-btn" id="kDone">Fertig – für Fips! 🐉</button></div>
+      </div>
     </div>
   </div>
 </div>
