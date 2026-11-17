@@ -710,17 +710,27 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 @keyframes egFly3{0%,100%{transform:translate(0,0)}33%{transform:translate(80px,20px) rotate(14deg)}66%{transform:translate(-60px,30px) rotate(-14deg)}}
 .eg-sky{position:absolute;inset:0}
 /* --- Inhalt --- */
-.egg-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:440px;
+.egg-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:440px;flex:1;min-height:0;
   padding:max(12px,var(--safe-t)) max(14px,var(--safe-r)) max(12px,var(--safe-b)) max(14px,var(--safe-l))}
-.egg-top{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;padding-inline:44px}
-.egg-chips{margin-inline:-44px}
-.egg-title{margin:0;font-size:clamp(15px,5vw,24px);white-space:nowrap;font-weight:900;color:var(--pink-dark);text-shadow:0 3px 0 #fff,0 -2px 0 #fff,2px 0 0 #fff,-2px 0 0 #fff}
+/* Kopf: Titel als Holzschild an der Wimpelkette, darunter die Zähler; Musik links oben, ✕ rechts oben */
+.egg-top{display:flex;flex-direction:column;gap:8px;align-items:center;padding-inline:50px;margin-bottom:56px}
+.egg-title{margin:4px 0 0;position:relative;rotate:-2deg}
+.egg-title span{display:block;font-size:clamp(13px,4.3vw,19px);white-space:nowrap;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(90,50,20,.4);
+  background:linear-gradient(180deg,#d9a26b,#b97a45);border:3px solid #8f5a2b;border-radius:12px;padding:5px 14px 6px;box-shadow:0 5px 0 rgba(90,50,20,.25)}
+.egg-title::before,.egg-title::after{content:"";position:absolute;bottom:100%;width:2px;height:40px;background:#8f5a2b}
+.egg-title::before{left:20px}.egg-title::after{right:20px}
+.egg-music{position:fixed;top:max(14px,var(--safe-t));left:max(14px,var(--safe-l));z-index:5;border:0;background:#f1eef8;border-radius:50%;width:40px;height:40px;font-size:19px;cursor:pointer;padding:0;box-shadow:0 3px 0 rgba(59,44,90,.1)}
 .egg-chips{display:flex;gap:6px}
 .egg-chip{background:rgba(255,255,255,.9);border-radius:999px;padding:4px 10px;font-size:15px;font-weight:900;box-shadow:0 3px 0 rgba(59,44,90,.1);border:0;color:var(--ink)}
 button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
-.egg-bubble{position:relative;background:#fff;border-radius:22px;padding:10px 18px;font-size:20px;font-weight:900;box-shadow:0 5px 0 rgba(59,44,90,.12);animation:pop .35s;text-align:center;min-height:48px;display:flex;align-items:center}
-.egg-bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-10px;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
-.egg-stage{position:relative;width:min(270px,62vw,34svh);aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center}
+/* Sprechblase hängt an Fips: sitzt links über seinem Kopf (rechts hin speit er Feuer) und wächst nach oben, der Zipfel zeigt zu ihm */
+.egg-bubble{position:absolute;z-index:3;left:-6%;bottom:86%;width:max-content;max-width:min(210px,62vw);background:#fff;border-radius:24px;padding:9px 15px;font-size:clamp(16px,4.6vw,19px);line-height:1.2;font-weight:900;box-shadow:0 5px 0 rgba(59,44,90,.12);animation:pop .35s;transform-origin:80% 100%}
+.egg-bubble:empty{display:none}
+.egg-bubble::after{content:"";position:absolute;bottom:-14px;right:26px;border-style:solid;border-width:16px 14px 0 6px;border-color:#fff transparent transparent;rotate:-12deg}
+.bb-bubble{position:absolute;z-index:3;left:-6%;bottom:37%;background:#fff;border-radius:16px;padding:4px 10px;font-size:15px;font-weight:900;white-space:nowrap;box-shadow:0 4px 0 rgba(59,44,90,.12);pointer-events:none;opacity:0;transition:opacity .25s;transform-origin:30% 100%}
+.bb-bubble.on{opacity:1;animation:pop .3s}
+.bb-bubble::after{content:"";position:absolute;bottom:-8px;left:24px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.egg-stage{position:relative;width:min(330px,80vw,40svh);aspect-ratio:1;display:flex;align-items:flex-end;justify-content:center;margin-top:auto}
 /* karierte Picknickdecke unter Fips */
 .egg-stage::before{content:"";position:absolute;left:-12%;right:-12%;bottom:-6%;height:34%;border-radius:50%;z-index:-1;
   background:repeating-conic-gradient(#ff8fa8 0 25%,#fff 0 50%) 0 0/26px 26px;box-shadow:inset 0 -6px 0 rgba(201,80,122,.25),0 6px 0 rgba(59,44,90,.08);border:4px solid #fff}
@@ -767,7 +777,13 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 #eggMeter{display:flex;gap:5px}
 #eggMeter i{width:16px;height:16px;border-radius:50%;background:#f1e6ee;box-shadow:inset 0 2px 0 rgba(0,0,0,.06);transition:background .3s,transform .3s}
 #eggMeter i.on{background:var(--pink);transform:scale(1.15)}
-.egg-tray{display:flex;gap:4px;justify-content:center;background:radial-gradient(ellipse at 50% 35%,#fff,#f4f0fb);border-radius:999px;padding:8px 16px;max-width:100%;box-shadow:0 7px 0 rgba(59,44,90,.12),inset 0 -4px 0 rgba(59,44,90,.06);border:3px solid #fff}
+.egg-tray-row{display:flex;align-items:center;gap:10px;max-width:100%;margin-bottom:4px}
+/* Küche: großer runder Knopf neben dem Teller */
+.k-fab{flex:none;width:64px;height:64px;border-radius:50%;border:4px solid #fff;background:radial-gradient(circle at 35% 30%,#fff 0 10%,#ffb3c8 45%,#ff88a8);box-shadow:0 6px 0 var(--pink-dark);font-size:32px;line-height:1;padding:0;cursor:pointer;position:relative;touch-action:manipulation}
+.k-fab:active{transform:translateY(4px);box-shadow:0 2px 0 var(--pink-dark)}
+.k-fab.fresh{animation:kFresh .8s ease-in-out infinite alternate;box-shadow:0 6px 0 var(--pink-dark),0 0 0 4px #ffd54a}
+.k-fab.fresh::after{content:"NEU";position:absolute;top:-8px;right:-10px;background:var(--pink);color:#fff;font-size:10px;font-weight:900;border-radius:999px;padding:2px 6px;box-shadow:0 2px 0 var(--pink-dark)}
+.egg-tray{min-width:0;display:flex;gap:4px;justify-content:center;background:radial-gradient(ellipse at 50% 35%,#fff,#f4f0fb);border-radius:999px;padding:8px 16px;max-width:100%;box-shadow:0 7px 0 rgba(59,44,90,.12),inset 0 -4px 0 rgba(59,44,90,.06);border:3px solid #fff}
 .egg-muffin{border:0;background:none;flex:0 1 58px;min-width:0;aspect-ratio:1;padding:0;cursor:grab;transition:transform .25s,opacity .25s;touch-action:none;position:relative}
 .egg-muffin svg{width:100%;height:100%;display:block;pointer-events:none}
 .egg-muffin:active{transform:scale(.92)}
@@ -779,7 +795,10 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 /* Handy quer: Fips links, alles andere rechts daneben */
 @media (orientation:landscape) and (height < 520px){
   .egg-wrap{max-width:760px;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:20px;align-items:center;justify-items:center;align-content:center;gap:6px 20px}
-  .egg-stage{grid-column:1;grid-row:1 / span 5;width:min(270px,40vw,62svh)}
+  .egg-stage{grid-column:1;grid-row:1 / span 5;width:min(270px,40vw,62svh);margin-top:0}
+  .egg-top{margin-bottom:0}
+  .egg-bubble{bottom:auto;top:-4%;left:auto;right:-30%}
+  .egg-bubble::after{right:auto;left:26px;border-width:16px 6px 0 14px;rotate:12deg}
   .egg-wrap > :not(.egg-stage){grid-column:2}
   .egg-hint{font-size:12px}
 }
@@ -952,7 +971,6 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .k-kinds button.fresh::after{content:"NEU";position:absolute;top:-7px;right:-4px;background:var(--pink);color:#fff;font-size:9px;font-weight:900;border-radius:999px;padding:1px 5px;box-shadow:0 2px 0 var(--pink-dark);animation:kFresh 1s ease-in-out infinite alternate}
 @keyframes kFresh{to{transform:scale(1.15) rotate(6deg)}}
 .k-hint.say{opacity:1;color:var(--pink-dark)}
-.egg-chip.k-open.fresh{animation:kFresh .8s ease-in-out infinite alternate;box-shadow:0 0 0 3px #FFD54A,0 3px 0 rgba(59,44,90,.1)}
 
 /* ---------- Muffin-Party: Drachenei und Baby-Drache ---------- */
 .egg-baby{position:absolute;left:-14%;bottom:0;width:34%;aspect-ratio:1;cursor:pointer;touch-action:manipulation;z-index:1;-webkit-tap-highlight-color:transparent}
@@ -979,3 +997,15 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 @keyframes bbBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 .egg-baby.puff::after{content:"🔥";position:absolute;right:-12%;top:18%;font-size:22px;animation:bbPuff .9s ease-out forwards;pointer-events:none}
 @keyframes bbPuff{0%{transform:scale(.2);opacity:0}30%{opacity:1}100%{transform:translate(18px,-28px) scale(1.3);opacity:0}}
+
+/* Erster Besuch: eine Hand zeigt, wie ein Muffin zu Fips kommt (verschwindet nach dem ersten Füttern) */
+.egg-howto{position:fixed;inset:0;z-index:6;pointer-events:none}
+.egg-howto svg{position:absolute;inset:0;width:100%;height:100%}
+.egg-howto .ht-ghost{position:absolute;width:50px;height:50px;opacity:.6;margin:-25px 0 0 -25px}
+.egg-howto .ht-ghost svg{position:static}
+.egg-howto .ht-hand{position:absolute;font-size:44px;line-height:1;margin:-6px 0 0 -14px;filter:drop-shadow(0 4px 0 rgba(59,44,90,.2))}
+/* Küche: Schloss als Bildfolge – 🎧 ✅ ×7 ➜ 🍒 */
+.k-lockpic{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:4px 14px;box-shadow:0 4px 0 rgba(59,44,90,.12),0 0 0 3px #ffd54a;font-size:24px;line-height:1.2;animation:pop .3s}
+.k-lockpic b{font-size:18px;font-weight:900;color:var(--pink-dark)}
+.k-lockpic i{font-style:normal;font-size:18px;color:var(--muted)}
+.k-lockpic .k-ico{width:1em;height:1em;display:inline-block;vertical-align:middle}

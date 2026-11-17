@@ -139,10 +139,11 @@ function kKindsRender(){
   }).join("");
 }
 let kHintTimer = null;
-function kHint(text){
+function kHint(text, html){
   const h = $("kHint"); clearTimeout(kHintTimer);
-  h.textContent = text; h.classList.add("say");
-  kHintTimer = setTimeout(() => { h.textContent = h.dataset.def; h.classList.remove("say"); }, 4500);
+  if (html){ h.innerHTML = html; h.setAttribute("aria-label", text); } else h.textContent = text;
+  h.classList.add("say");
+  kHintTimer = setTimeout(() => { h.textContent = h.dataset.def; h.removeAttribute("aria-label"); h.classList.remove("say"); }, 4500);
 }
 let kHist = [];   // Schnappschüsse für „Rückgängig“
 let kMuffin = null, kKind = "bunt";
@@ -225,7 +226,9 @@ function kInit(){
     const k = K_KINDS.find(x => x.k === b.dataset.v), need = K_UNLOCK[k.k] - eggStars();
     if (need > 0){
       sfx("boing"); b.classList.remove("nope"); void b.offsetWidth; b.classList.add("nope");
-      kHint(`🔒 ${k.label} gibt’s nach ${need} ${need === 1 ? "richtigen Antwort" : "richtigen Antworten"} mehr im G-oder-D-Spiel! 🎧`);
+      // für Kinder, die noch nicht lesen: 🎧 ✅ ×7 ➜ 🍒 (= noch 7 richtige Antworten im Spiel, dann gibt’s Kirschen)
+      kHint(`${k.label} gibt’s nach ${need} ${need === 1 ? "richtigen Antwort" : "richtigen Antworten"} mehr im G-oder-D-Spiel.`,
+        `<span class="k-lockpic" aria-hidden="true"><span>🎧</span><span>✅</span><b>×${need}</b><i>➜</i><span>${k.icon}</span></span>`);
       return;
     }
     b.classList.remove("fresh");
@@ -241,10 +244,11 @@ function kInit(){
   $("kNew").addEventListener("click", kNew);
   $("kDone").addEventListener("click", kDone);
   $("kOpen").addEventListener("click", kOpen);
-  $("kClose").addEventListener("click", () => $("eggKitchen").classList.add("hidden"));
+  $("kClose").addEventListener("click", () => { $("eggKitchen").classList.add("hidden"); eggT(eggHowtoShow, 300); });
 }
 function kOpen(){
   if (eggBusy) return;
+  eggHowtoHide();
   // neu freigeschaltete Deko bekommt diesmal ein „NEU“ – danach gilt sie als gesehen
   kFreshNow = kFresh().map(k => k.k);
   if (kFreshNow.length) save("eggSeen", load("eggSeen", []).concat(kFreshNow));
@@ -264,6 +268,7 @@ function kDone(){
   $("eggKitchen").classList.add("hidden");
   kMuffin = null;
   eggSay("Oh! Hast du den für mich verziert? 😍");
+  eggT(eggHowtoShow, 300);
   sfx("right");
 }
 
@@ -363,6 +368,37 @@ function eggMouth(){
   return { x: r.left + r.width / 2, y: r.top + r.height * .58 };
 }
 
+/* ---------- Erster Besuch: eine Hand zeigt, wie man Fips füttert ----------
+   Ein Muffin gleitet (halb durchsichtig) mit dem Finger vom Teller zu Fips' Maul – so lange, bis das Kind das erste Mal füttert. */
+let eggHowtoAnims = [];
+function eggHowtoHide(){
+  eggHowtoAnims.forEach(a => a.cancel()); eggHowtoAnims = [];
+  document.querySelectorAll(".egg-howto").forEach(e => e.remove());
+}
+function eggHowtoShow(){
+  eggHowtoHide();
+  if (load("eggFed", false) || !eggOpen() || eggBusy || !$("eggKitchen").classList.contains("hidden")) return;
+  const btn = $("eggTray").querySelectorAll(".egg-muffin")[1]; if (!btn) return;
+  const r = btn.getBoundingClientRect(), m = eggMouth();
+  const sx = r.left + r.width / 2, sy = r.top + r.height / 2, mx = m.x - 6, my = m.y + 10;
+  const cx = Math.min(sx, mx) - 90, cy = (sy + my) / 2;
+  const el = document.createElement("div"); el.className = "egg-howto"; el.setAttribute("aria-hidden", "true");
+  el.innerHTML = `<svg><path d="M${sx} ${sy - 12} Q${cx} ${cy} ${mx} ${my + 16}" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" opacity=".9"/></svg>
+    <div class="ht-ghost">${btn.innerHTML}</div><div class="ht-hand">👆</div>`;
+  $("eggOverlay").appendChild(el);
+  // Punkte auf der Kurve (quadratische Bézierkurve) für die Bewegung
+  const pt = t => [(1 - t) ** 2 * sx + 2 * (1 - t) * t * cx + t * t * mx, (1 - t) ** 2 * sy + 2 * (1 - t) * t * cy + t * t * my];
+  const steps = [0, .15, .3, .45, .6, .75, .9, 1];
+  const frames = (dx, dy, extra = {}) => [
+    {transform: `translate(${sx + dx}px,${sy + dy}px)`, opacity: 0, offset: 0},
+    {transform: `translate(${sx + dx}px,${sy + dy}px)`, opacity: 1, offset: .12},
+    ...steps.map((t, i) => { const [x, y] = pt(t); return {transform: `translate(${x + dx}px,${y + dy}px)`, opacity: 1, offset: .2 + i / (steps.length - 1) * .6}; }),
+    {transform: `translate(${mx + dx}px,${my + dy}px) scale(.6)`, opacity: 0, offset: 1}];
+  const opt = {duration: 2600, iterations: Infinity, easing: "ease-in-out"};
+  eggHowtoAnims = [el.querySelector(".ht-ghost").animate(frames(0, 0), opt), el.querySelector(".ht-hand").animate(frames(4, 4), opt)];
+}
+window.addEventListener("resize", () => { if (document.querySelector(".egg-howto")) eggHowtoShow(); });
+
 /* ---------- Muffin antippen oder ziehen ---------- */
 function eggDrag(btn){
   btn.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); eggFeed(btn); } });
@@ -414,12 +450,14 @@ function eggDrag(btn){
     };
     if (eggDragEnd) eggDragEnd();                    // ein alter, nie beendeter Zug darf nicht weiterlaufen
     eggDragEnd = cancel;
+    eggHowtoHide();
     window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", cancel);
   });
 }
 
 function eggFeed(btn){
   if (eggBusy || btn.classList.contains("gone")) return;
+  eggHowtoHide();
   eggBusy = true;
   const from = btn.getBoundingClientRect(), to = eggMouth();
   const fly = btn.cloneNode(true);
@@ -439,6 +477,8 @@ function eggFeed(btn){
 }
 
 function eggEat(btn, at){
+  if (!load("eggFed", false)) save("eggFed", true);
+  eggHowtoHide();
   const gold = btn.dataset.gold === "1", custom = !!btn.dataset.custom;
   const f = $("eggFips");
   f.classList.remove("hungry");
@@ -450,6 +490,7 @@ function eggEat(btn, at){
   eggPlay("nom", 450);
   eggPlay("chew", 1350);                                   // kurz kauen …
   bbPlay("hop", 500);                                      // der Kleine freut sich mit
+  if (eggDragon.stage === 2 && rnd() < .3) eggT(() => bbSay(pick(["Piep! 😋", "Auch haben! 🥺", "Mjam! 💚"])), 700);
   sfx("nom");
   [.35, .62, .89, 1.16].forEach(d => eggT(() => sfx("chew"), d * 1000));
   eggCrumbs(at, gold);
@@ -623,11 +664,17 @@ function bbPlay(cls, ms){
   el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
   setTimeout(() => el.classList.remove(cls), ms);
 }
+let bbSayTimer = null;
+function bbSay(text){
+  const b = $("bbBubble"); if (!b) return;
+  b.textContent = text; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on");
+  clearTimeout(bbSayTimer); bbSayTimer = setTimeout(() => b.classList.remove("on"), 2200);
+}
 function bbTap(){
   eggLastAct = Date.now();
   if (eggDragon.stage === 2){
     bbPlay("hop", 500); sfx("laugh", 1);
-    eggSay(pick(["Piep! 🐣", "Der Kleine sagt: Piep-piep! 💚", "Hihi, er hat auch Hunger! 🧁", "Piep! Mini-Feuer! 🔥"]));
+    bbSay(pick(["Piep! 🐣", "Piep-piep! 💚", "Hunger! 🧁", "Piep! 🔥", "Hihi! 😆"]));
     if (rnd() < .3) eggT(() => bbPlay("puff", 900), 250);
     return;
   }
@@ -746,10 +793,13 @@ async function openEgg(){
   sfx("fanfare");
   clearInterval(eggIdleTimer); eggIdleTimer = setInterval(eggIdle, 2200);
   eggT(() => eggMusic(true), 1200);
+  eggT(eggHowtoShow, 1600);
 }
 /* Alles, was gerade läuft, sauber abbrechen: fliegende/gezogene Muffins, Feuerstrahl, Timer.
    Fips bleibt so rund, wie er war – nur ist er danach wieder bereit für den nächsten Muffin. */
 function eggReset(){
+  eggHowtoHide();
+  $("bbBubble") && $("bbBubble").classList.remove("on");
   eggGen++;
   if (eggDragEnd) eggDragEnd();
   eggTimers.forEach(clearTimeout); eggTimers.clear();
@@ -778,6 +828,7 @@ document.addEventListener("visibilitychange", () => {
     clearInterval(eggIdleTimer); eggIdleTimer = setInterval(eggIdle, 2200);
     eggSay(pick(["Da bist du ja wieder! 😊", "Hallo! Hast du noch Muffins? 🧁"]));
     eggT(() => eggMusic(true), 600);
+    eggT(eggHowtoShow, 900);
   }
 });
 function closeEgg(){

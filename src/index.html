@@ -103,21 +103,26 @@
 <div class="overlay egg hidden" id="eggOverlay">
   <div class="egg-scene" id="eggScene" aria-hidden="true"></div>
   <button class="close-x" data-close="eggOverlay" aria-label="Schließen">✕</button>
+  <button class="egg-music" id="eggMusicBtn" aria-label="Musik an oder aus">🔊</button>
   <div class="egg-wrap">
     <div class="egg-top">
-      <h2 class="egg-title">🧁 Geheime Muffin-Party!</h2>
+      <h2 class="egg-title"><span>🧁 Geheime Muffin-Party!</span></h2>
       <div class="egg-chips">
         <span class="egg-chip" title="Muffins gegessen">🧁 <span id="eggEaten">0</span></span>
         <span class="egg-chip" title="Feuerstöße">🔥 <span id="eggFires">0</span></span>
-        <button class="egg-chip" id="eggMusicBtn" aria-label="Musik an oder aus">🔊</button>
-        <button class="egg-chip k-open" id="kOpen">👩‍🍳 Küche</button>
       </div>
     </div>
-    <div class="egg-bubble" id="eggBubble"></div>
-    <div class="egg-stage"><div class="egg-fips" id="eggFips"></div><div class="egg-baby" id="eggBaby" role="button" aria-label="Drachenei"></div></div>
+    <div class="egg-stage">
+      <div class="egg-bubble" id="eggBubble"></div>
+      <div class="egg-fips" id="eggFips"></div>
+      <div class="egg-baby" id="eggBaby" role="button" aria-label="Drachenei"></div>
+      <div class="bb-bubble" id="bbBubble"></div>
+    </div>
     <div class="egg-meter"><span>Bauch</span><span id="eggMeter"></span></div>
-    <div class="egg-tray" id="eggTray"></div>
-    <p class="egg-hint">Tippe auf einen Muffin – oder zieh ihn zu Fips! In der 👩‍🍳 Küche kannst du Muffins verzieren.</p>
+    <div class="egg-tray-row">
+      <div class="egg-tray" id="eggTray" aria-label="Muffins – antippen oder zu Fips ziehen"></div>
+      <button class="k-fab" id="kOpen" aria-label="Muffin-Küche: Muffins verzieren">👩‍🍳</button>
+    </div>
   </div>
   <!-- Muffin-Küche -->
   <div class="egg-kitchen hidden" id="eggKitchen">
