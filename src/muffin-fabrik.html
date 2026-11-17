@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#F6D6E4">
 <link rel="icon" href="favicon.svg">
 <!-- Muffin-Fabrik: spielbarer Prototyp für die Muffin-Party. Alles wird direkt angetippt oder gezogen:
@@ -15,7 +15,8 @@
   html,body{height:100%;margin:0}
   body{background:#F6D6E4;font-family:"Nunito","Varela Round","Trebuchet MS",system-ui,sans-serif;color:#3B2C5A;overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   :root{--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
-  button{font:inherit;cursor:pointer;touch-action:manipulation}
+  html,body,*{touch-action:none}
+  button{font:inherit;cursor:pointer}
   #app{position:fixed;inset:0}
   .fx3{position:absolute;inset:0;overflow:clip;background:#FCE4EE}
   #bg{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .25s}
@@ -97,6 +98,24 @@
 </head>
 <body>
 <div id="app"></div>
+<script>
+/* Kein Zoomen (wie im Spiel): iOS ignoriert user-scalable=no, und in der eingebetteten Fabrik greift der Schutz der Party-Seite nicht */
+(function(){
+  const stop = e => e.preventDefault();
+  ["gesturestart","gesturechange","gestureend"].forEach(t => document.addEventListener(t, stop, {passive:false}));
+  document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, {passive:false});
+  let last = 0;
+  document.addEventListener("touchend", e => {
+    const now = Date.now(), quick = now - last < 380; last = now;
+    if (!quick || !e.cancelable || e.touches.length) return;
+    e.preventDefault();
+    const p = e.changedTouches[0];
+    e.target.dispatchEvent(new MouseEvent("click", {bubbles:true, cancelable:true, view:window, clientX:p.clientX, clientY:p.clientY}));
+  }, {passive:false});
+  document.addEventListener("wheel", e => { if (e.ctrlKey || e.metaKey) e.preventDefault(); }, {passive:false});
+  document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && ["+","-","=","0"].includes(e.key)) e.preventDefault(); });
+})();
+</script>
 <script>
 const PIC_PAL = {
   green:  ["#C8F5DE","#7DD9B4","#55BE96","#2F7D63"],

@@ -778,6 +778,7 @@ function eggFatParts(svg){
 let kReady = false;
 async function openEgg(){
   if (!kReady){ kInit(); kReady = true; }
+  document.documentElement.classList.add("egg-open");   // Seite dahinter festhalten: kein Scrollen, kein Zoomen
   $("eggKitchen").classList.add("hidden");
   eggFat = 0; eggBusy = false; eggEaten = 0; eggFires = 0; eggFlavors = []; eggLastAct = Date.now();
   eggLaidNow = false; bbTaps = 0; bbRender();
@@ -872,4 +873,14 @@ function closeEgg(){
   clearInterval(eggIdleTimer); eggIdleTimer = null;
   eggMusic(false);
   hide("eggOverlay");
+  document.documentElement.classList.remove("egg-open");
 }
+/* iOS scrollt sonst die Startseite hinter der Party mit – nur echte Scrollbereiche (z. B. Küche auf kleinen Handys) dürfen scrollen */
+document.addEventListener("touchmove", e => {
+  if (!document.documentElement.classList.contains("egg-open") || !e.cancelable) return;
+  for (let el = e.target; el && el !== document.body; el = el.parentElement){
+    const o = getComputedStyle(el).overflowY;
+    if ((o === "auto" || o === "scroll") && el.scrollHeight > el.clientHeight + 1) return;
+  }
+  e.preventDefault();
+}, {passive:false});

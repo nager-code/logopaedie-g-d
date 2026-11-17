@@ -675,7 +675,8 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 }
 
 /* ================= Easter Egg: Fips' geheime Muffin-Party ================= */
-.overlay.egg{background:linear-gradient(180deg,#9fd8ff 0%,#cdeaff 38%,#ffe9d6 70%,#ffd9e6 100%);backdrop-filter:none;overflow:hidden;flex-direction:column;padding:0}
+html.egg-open,html.egg-open body{overflow:hidden;overscroll-behavior:none}
+.overlay.egg{touch-action:none;overscroll-behavior:none;background:linear-gradient(180deg,#9fd8ff 0%,#cdeaff 38%,#ffe9d6 70%,#ffd9e6 100%);backdrop-filter:none;overflow:hidden;flex-direction:column;padding:0}
 .overlay.egg .close-x{position:fixed;top:max(14px,var(--safe-t));right:max(14px,var(--safe-r));z-index:5}
 /* --- Bühne: Sommerwiese --- */
 .egg-scene{position:absolute;inset:0;pointer-events:none;overflow:hidden}
