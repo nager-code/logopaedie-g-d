@@ -1016,4 +1016,4 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .egg-tray-row .k-fab{width:56px;height:56px;font-size:28px}
 .egg-factory{position:fixed;inset:0;z-index:30;background:#FCE4EE}
 .egg-factory iframe{position:absolute;border:0;top:var(--safe-t);left:var(--safe-l);width:calc(100% - var(--safe-l) - var(--safe-r));height:calc(100% - var(--safe-t) - var(--safe-b));display:block}
-.egg-factory .f-close{position:absolute;top:calc(var(--safe-t) + 12px);left:calc(var(--safe-l) + 12px);right:auto;z-index:2;background:#fff;box-shadow:0 3px 0 rgba(94,46,74,.15)}
+.egg-factory .f-close{position:absolute;top:calc(var(--safe-t) + 12px);right:calc(var(--safe-r) + 12px);left:auto;z-index:2;background:#fff;box-shadow:0 3px 0 rgba(94,46,74,.15)}
