@@ -244,6 +244,7 @@ function kInit(){
   $("kNew").addEventListener("click", kNew);
   $("kDone").addEventListener("click", kDone);
   $("kOpen").addEventListener("click", kOpen);
+  $("fOpen").addEventListener("click", fOpen);
   $("kClose").addEventListener("click", () => { $("eggKitchen").classList.add("hidden"); eggT(eggHowtoShow, 300); });
 }
 function kOpen(){
@@ -271,6 +272,40 @@ function kDone(){
   eggT(eggHowtoShow, 300);
   sfx("right");
 }
+
+/* ---------- Muffin-Fabrik: zweite Möglichkeit neben der Küche ----------
+   Die Fabrik ist eine eigene Seite (muffin-fabrik.html) und läuft hier eingebettet. Am Ende schickt sie die
+   gebackenen Muffins zurück – die kommen auf den Teller, vorn angefangen. */
+function fIsOpen(){ const f = $("eggFactory"); return !!f && !f.classList.contains("hidden"); }
+function fOpen(){
+  if (eggBusy) return;
+  eggHowtoHide(); eggMusic(false);
+  const f = $("eggFactory");
+  f.innerHTML = `<iframe src="muffin-fabrik.html?embed=1&stars=${eggStars()}&v=${APP_VERSION}" title="Muffin-Fabrik"></iframe>
+    <button class="close-x f-close" id="fClose" aria-label="Fabrik schließen">✕</button>`;
+  $("fClose").addEventListener("click", () => fClose());
+  f.classList.remove("hidden"); sfx("whoosh");
+}
+function fClose(quiet){
+  const f = $("eggFactory"); if (!f || f.classList.contains("hidden")) return;
+  f.classList.add("hidden"); f.innerHTML = "";
+  if (!quiet){ eggLastAct = Date.now(); eggT(() => eggMusic(true), 400); eggT(eggHowtoShow, 500); }
+}
+window.addEventListener("message", e => {
+  if (e.origin !== location.origin || !e.data || e.data.type !== "muffin-fabrik" || !fIsOpen()) return;
+  const list = (e.data.muffins || []).filter(m => m && typeof m.svg === "string" && /^<svg /.test(m.svg));
+  fClose();
+  const btns = $("eggTray").querySelectorAll(".egg-muffin");
+  list.slice(0, btns.length).forEach((m, i) => {
+    const b = btns[i];
+    b.dataset.gold = ""; b.dataset.veg = ""; b.dataset.custom = "fabrik";
+    b.dataset.flavor = eggCustomFlavor({items: (m.items || []).filter(x => x && typeof x.t === "string"), top: m.top});
+    b.classList.remove("golden", "gone"); b.classList.add("custom");
+    b.innerHTML = m.svg;
+    b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+  });
+  if (list.length){ eggSay(list.some(m => m.big) ? "Ein RIESEN-Muffin?! 😍 Frisch aus der Fabrik!" : "Mmmh! Frisch aus der Fabrik! 😍"); sfx("right"); }
+});
 
 /* ---------- Bühne: Sommerwiese mit Picknick ---------- */
 function eggScene(){
@@ -377,7 +412,7 @@ function eggHowtoHide(){
 }
 function eggHowtoShow(){
   eggHowtoHide();
-  if (load("eggFed", false) || !eggOpen() || eggBusy || !$("eggKitchen").classList.contains("hidden")) return;
+  if (load("eggFed", false) || !eggOpen() || eggBusy || !$("eggKitchen").classList.contains("hidden") || fIsOpen()) return;
   const btn = $("eggTray").querySelectorAll(".egg-muffin")[1]; if (!btn) return;
   const r = btn.getBoundingClientRect(), m = eggMouth();
   const sx = r.left + r.width / 2, sy = r.top + r.height / 2, mx = m.x - 6, my = m.y + 10;
@@ -603,7 +638,7 @@ function eggPoke(){
   eggSay(pick(EGG_POKE_SAY));
 }
 function eggIdle(){
-  if ($("eggOverlay").classList.contains("hidden") || eggBusy) return;
+  if ($("eggOverlay").classList.contains("hidden") || eggBusy || fIsOpen()) return;
   const quiet = Date.now() - eggLastAct;
   if (eggFat >= 3 && quiet > 1800 && rnd() < .55){
     eggPlay("hic", 500); sfx("hic"); eggSay(pick(["Hicks! 😳", "Hick! 🙊", "Hicks! Hihi."]));
@@ -705,7 +740,7 @@ const EGG_TUNE = [[784,1],[659,1],[784,1],[1047,1],[988,1],[880,1],[784,2],[698,
 function eggMusic(on){
   clearTimeout(eggMusicTimer); eggMusicTimer = null;
   $("eggMusicBtn").textContent = eggMusicOn ? "🔊" : "🔇";
-  if (!on || !eggMusicOn) return;
+  if (!on || !eggMusicOn || fIsOpen()) return;
   const ctx = getCtx(); if (!ctx) return;
   const beat = .3; let t = ctx.currentTime + .1, total = 0;
   EGG_TUNE.forEach(([f, n]) => {
@@ -832,6 +867,7 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 function closeEgg(){
+  fClose(true);
   eggReset();
   clearInterval(eggIdleTimer); eggIdleTimer = null;
   eggMusic(false);

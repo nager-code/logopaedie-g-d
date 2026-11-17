@@ -88,6 +88,8 @@
   .endbox .small{font-size:14px;font-weight:700;color:#8b7fb0}
   .plate{display:flex;gap:4px;background:radial-gradient(ellipse at 50% 40%,#fff,#F4F0FB);border:3px solid #E8DDF2;border-radius:999px;padding:6px 12px}
   .plate span{width:52px;display:block}.plate svg{width:100%;display:block}
+  #toParty{border:0;border-radius:999px;background:linear-gradient(180deg,#7DD9B4,#55BE96);color:#fff;font-size:21px;font-weight:900;padding:14px 28px;box-shadow:0 6px 0 #2F9B7A}
+  #again.ghost{background:#fff;color:#3B2C5A;box-shadow:0 5px 0 rgba(94,46,74,.15);font-size:17px;padding:10px 20px}
   #again{border:0;border-radius:999px;background:linear-gradient(180deg,#FF9DB2,#FF7AA2);color:#fff;font-size:20px;font-weight:900;padding:14px 26px;box-shadow:0 6px 0 #C9507A}
   @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-iteration-count:1!important}}
 </style>
@@ -157,7 +159,10 @@ function customMuffinSvg(m){
 (function(){
 const $ = id => document.getElementById(id);
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const STARS = 28;   // Beispielkind: 28 richtige Antworten → Kirschen noch gesperrt (ab 35)
+/* In der Muffin-Party läuft die Fabrik eingebettet (?embed=1&stars=…): richtige Antworten aus dem Spiel schalten Deko frei,
+   und die fertigen Muffins gehen am Ende zurück an die Party. Allein geöffnet: Beispielkind mit 28 richtigen Antworten. */
+const QS = new URLSearchParams(location.search), EMBED = QS.has("embed");
+const STARS = QS.has("stars") ? +QS.get("stars") || 0 : 28;
 
 /* ---------- Geräusche ---------- */
 let ac = null;
@@ -774,9 +779,16 @@ function finish(){
     <h2>Fertig! 🎉</h2><img src="img/fips-jubel.svg" alt="Fips freut sich">
     <p>„${S.cups.length === 1 ? "Ein Muffin" : S.cups.length + " Muffins"} für mich? Ab zur Party!“</p>
     <div class="plate">${S.cups.map(cp => `<span>${cupSvg(cp)}</span>`).join("")}</div>
-    <p class="small">In der App geht es jetzt auf die Party-Wiese – dort fütterst du ${S.cups.length === 1 ? "diesen Muffin" : "diese " + S.cups.length + " Muffins"} an Fips.</p>
-    <button id="again">🔄 Nochmal backen</button></div></div>`);
+    ${EMBED ? `<button id="toParty">🎉 Ab zur Party!</button><button id="again" class="ghost">🔄 Nochmal backen</button>`
+            : `<p class="small">In der App geht es jetzt auf die Party-Wiese – dort fütterst du ${S.cups.length === 1 ? "diesen Muffin" : "diese " + S.cups.length + " Muffins"} an Fips.</p>
+    <button id="again">🔄 Nochmal backen</button>`}</div></div>`);
   $("again").onclick = () => start();
+  if (EMBED) $("toParty").onclick = () => {
+    // jeder Muffin als fertiges Bild (mit eigenem Verlauf für den gebackenen Teig) plus Guss und Deko für die Feuerfarbe
+    const defs = `<defs><radialGradient id="bakedG" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#FFE0A8"/><stop offset="1" stop-color="#D99A52"/></radialGradient></defs>`;
+    const muffins = S.cups.map(cp => ({svg: cupSvg(cp).replace(/^<svg ([^>]*)>/, `<svg $1>${defs}`), top: cp.top, items: cp.items.map(i => ({t: i.t})), big: (cp.amt || 0) > 1.05}));
+    parent.postMessage({type: "muffin-fabrik", muffins}, location.origin);
+  };
 }
 function start(){ reset(); build(); step1(); }
 start();

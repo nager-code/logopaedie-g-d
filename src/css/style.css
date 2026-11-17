@@ -1009,3 +1009,11 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .k-lockpic b{font-size:18px;font-weight:900;color:var(--pink-dark)}
 .k-lockpic i{font-style:normal;font-size:18px;color:var(--muted)}
 .k-lockpic .k-ico{width:1em;height:1em;display:inline-block;vertical-align:middle}
+
+/* ---------- Muffin-Party: Fabrik als zweite Möglichkeit neben der Küche ---------- */
+.k-fab.f-fab{background:radial-gradient(circle at 35% 30%,#fff 0 10%,#B8F0DA 45%,#7DD9B4);box-shadow:0 6px 0 #2F9B7A}
+.k-fab.f-fab:active{box-shadow:0 2px 0 #2F9B7A}
+.egg-tray-row .k-fab{width:56px;height:56px;font-size:28px}
+.egg-factory{position:fixed;inset:0;z-index:30;background:#FCE4EE}
+.egg-factory iframe{position:absolute;border:0;top:var(--safe-t);left:var(--safe-l);width:calc(100% - var(--safe-l) - var(--safe-r));height:calc(100% - var(--safe-t) - var(--safe-b));display:block}
+.egg-factory .f-close{position:absolute;top:calc(var(--safe-t) + 12px);left:calc(var(--safe-l) + 12px);right:auto;z-index:2;background:#fff;box-shadow:0 3px 0 rgba(94,46,74,.15)}
