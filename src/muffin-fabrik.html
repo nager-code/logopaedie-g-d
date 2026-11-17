@@ -17,7 +17,9 @@
   :root{--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
   button{font:inherit;cursor:pointer;touch-action:manipulation}
   #app{position:fixed;inset:0}
-  .fx3{position:absolute;inset:0;overflow:clip;background:#FFE6EF}
+  .fx3{position:absolute;inset:0;overflow:clip;background:#FCE4EE}
+  #bg{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .25s}
+  #bg.on{opacity:1}
   #ovenBack,#ovenFront,#deco{opacity:0;transition:opacity .7s}
   #ovenBack.on,#ovenFront.on,#deco.on{opacity:1}
   #goFips{position:absolute;left:50%;bottom:calc(max(18px,var(--safe-b)) + 8px);translate:-50% 0;border:0;border-radius:999px;background:linear-gradient(180deg,#FF9DB2,#FF7AA2);color:#fff;font-size:21px;font-weight:900;padding:14px 28px;box-shadow:0 6px 0 #C9507A,0 10px 30px rgba(201,80,122,.35);opacity:0;pointer-events:none;transition:opacity .3s,scale .3s;scale:.8}
@@ -253,6 +255,7 @@ const DEFS = `<defs>
   <pattern id="brickP" width="30" height="16" patternUnits="userSpaceOnUse"><path d="M0 15.5 H30 M15 0 V8 M0 8 H30 M2 8 V16" stroke="#C9682E" stroke-width="1.5" opacity=".45" fill="none"/></pattern>
   <linearGradient id="ovIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A1F2E"/><stop offset=".55" stop-color="#C9451E"/><stop offset="1" stop-color="#FFC24A"/></linearGradient>
   <linearGradient id="glassSheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".25" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".2"/><stop offset=".56" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="ovGlowG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE45C" stop-opacity="0"/><stop offset="1" stop-color="#FFE45C" stop-opacity=".55"/></linearGradient>
   <radialGradient id="lightPool" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#FFF6D0" stop-opacity=".75"/><stop offset="1" stop-color="#FFF6D0" stop-opacity="0"/></radialGradient>
   <radialGradient id="skyG" cx=".5" cy="0" r="1.1"><stop offset="0" stop-color="#7EC8FF"/><stop offset="1" stop-color="#DDF2FF"/></radialGradient>
   <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#5E2E4A" flood-opacity=".22"/></filter>
@@ -265,7 +268,7 @@ function windowSvg(x, y){
     <path d="M0 150 V50 A40 40 0 0 1 80 50 V150 Z" fill="url(#skyG)"/>
     <circle cx="58" cy="44" r="10" fill="#FFE45C"/><ellipse cx="28" cy="42" rx="13" ry="6" fill="#fff"/>
     <path d="M0 118 Q34 98 80 112 V150 H0 Z" fill="#96D965"/><path d="M0 130 Q40 118 80 128 V150 H0 Z" fill="#66B53C"/></g>
-    <g transform="translate(${x} ${y})"><path d="M0 150 V50 A40 40 0 0 1 80 50 V150 Z" fill="none" stroke="#fff" stroke-width="8"/><path d="M40 10 V150 M0 92 H80" stroke="#fff" stroke-width="5"/><rect x="-6" y="146" width="92" height="10" rx="4" fill="#fff" filter="url(#shadow)"/></g>`;
+    <g transform="translate(${x} ${y})"><path d="M0 150 V50 A40 40 0 0 1 80 50 V150 Z" fill="none" stroke="#fff" stroke-width="8"/><path d="M40 10 V150 M0 92 H80" stroke="#fff" stroke-width="5"/><rect x="-6" y="146" width="92" height="10" rx="4" fill="#fff"/></g>`;
 }
 function lamp(x){
   return `<g><path d="M${x} -10 V60" stroke="#9C8FBF" stroke-width="2"/><path d="M${x - 22} 84 Q${x - 22} 58 ${x} 58 Q${x + 22} 58 ${x + 22} 84 Z" fill="url(#pinkV)" stroke="#C9507A" stroke-width="3"/>
@@ -285,11 +288,15 @@ const BACKDROP = `
   ${lamp(-170)}${lamp(220)}${lamp(610)}${lamp(1000)}${lamp(1420)}
   <rect x="-700" y="556" width="2600" height="220" fill="url(#floorG)"/><rect x="-700" y="556" width="2600" height="220" fill="url(#tileP)" opacity=".55"/>
   <rect x="-700" y="556" width="2600" height="6" fill="#F4B8CC"/>`;
+function beltLegs(){
+  let legs = "";
+  for (let x = -640; x < 1900; x += 170) legs += `<rect x="${x - 9}" y="555" width="18" height="74" fill="url(#mintV)" stroke="#2F9B7A" stroke-width="3"/><ellipse cx="${x}" cy="630" rx="20" ry="7" fill="#2F9B7A"/>`;
+  return `<ellipse cx="600" cy="636" rx="1300" ry="16" fill="#5E2E4A" opacity=".14" filter="url(#blur6)"/>${legs}`;
+}
 function beltSvg(){
   let legs = "", rivets = "";
-  for (let x = -640; x < 1900; x += 170) legs += `<rect x="${x - 9}" y="555" width="18" height="74" fill="url(#mintV)" stroke="#2F9B7A" stroke-width="3"/><ellipse cx="${x}" cy="630" rx="20" ry="7" fill="#2F9B7A"/>`;
   for (let x = -680; x < 1900; x += 34) rivets += `<circle cx="${x}" cy="540" r="3.3" fill="#E9FFF6" stroke="#2F9B7A" stroke-width="1.6"/>`;
-  return `<ellipse cx="600" cy="636" rx="1300" ry="16" fill="#5E2E4A" opacity=".14" filter="url(#blur6)"/>${legs}
+  return `
     <rect x="-700" y="${BELT - 8}" width="2600" height="16" fill="url(#beltTop)"/>
     <line class="belt-lines" x1="-700" x2="1900" y1="${BELT}" y2="${BELT}" stroke="#5E5088" stroke-width="14" stroke-dasharray="3 21"/>
     <rect x="-700" y="${BELT - 8}" width="2600" height="3" fill="#fff" opacity=".45"/>
@@ -306,7 +313,7 @@ function shelfSvg(){
       <ellipse cx="${x}" cy="404" rx="22" ry="4" fill="#5E2E4A" opacity=".18"/>
       <g class="scup">${nest(CUP(c), x - 22, 356, 44, 48)}</g>
       <rect x="${x - 23}" y="330" width="46" height="76" fill="transparent"/></g>`).join("");
-  return `<g id="shelf"><rect x="28" y="404" width="236" height="14" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3" filter="url(#shadow)"/>
+  return `<g id="shelf"><rect x="28" y="404" width="236" height="14" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3"/>
     <path d="M50 418 L50 440 L70 418 Z M238 418 L238 440 L218 418 Z" fill="#B97A45" stroke="#8F5A2B" stroke-width="2.5"/>
     ${stacks}</g>`;
 }
@@ -334,8 +341,8 @@ function tankSvg(){
 }
 function leverSvg(){
   return `<g id="lever" style="cursor:pointer">
-    <ellipse cx="70" cy="690" rx="46" ry="8" fill="#5E2E4A" opacity=".18" filter="url(#blur2)"/>
-    <rect x="30" y="626" width="80" height="62" rx="14" fill="url(#beltFront)" stroke="#2F7D63" stroke-width="4" filter="url(#shadow)"/>
+    <ellipse cx="70" cy="690" rx="46" ry="8" fill="#5E2E4A" opacity=".14"/>
+    <rect x="30" y="626" width="80" height="62" rx="14" fill="url(#beltFront)" stroke="#2F7D63" stroke-width="4"/>
     <rect x="38" y="632" width="64" height="6" rx="3" fill="#fff" opacity=".5"/>
     <path d="M44 640 A28 28 0 0 1 96 640" fill="none" stroke="#2F7D63" stroke-width="3" stroke-dasharray="3 5"/>
     <text x="70" y="676" text-anchor="middle" font-size="12" font-weight="900" fill="#1F6E55">START</text>
@@ -351,11 +358,12 @@ const OV_DOOR = "M448 518 V444 Q448 432 460 432 H478 V518 Z";
 const OV_WIN  = "M494 514 V452 Q494 440 506 440 H764 Q774 440 774 452 V514 Z";
 const OV_EXIT = "M774 518 V444 H792 V518 Z";
 const flaps = (x0) => [0,1,2,3].map(i => `<rect class="flap f${i}" x="${x0 + i * 7}" y="434" width="6.4" height="82" rx="3.2" fill="${i % 2 ? "#FFB3C8" : "#FF88A8"}" stroke="#C9507A" stroke-width="1.4"/>`).join("");
-const OVEN_BACK = `<g id="ovenBack"><rect x="446" y="428" width="352" height="92" fill="url(#ovIn)"/><rect class="flicker" x="446" y="470" width="352" height="50" fill="#FFE45C" opacity=".35" filter="url(#blur6)"/></g>`;
+const OVEN_BACK = `<g id="ovenBack"><rect x="446" y="428" width="352" height="92" fill="url(#ovIn)"/><rect class="flicker" x="446" y="456" width="352" height="64" fill="url(#ovGlowG)"/></g>`;
 const OVEN_FRONT = `<g id="ovenFront">
   <rect x="690" y="196" width="40" height="70" rx="5" fill="#C9946A" stroke="#8F5A2B" stroke-width="4"/><rect x="682" y="190" width="56" height="16" rx="6" fill="#B97A45" stroke="#8F5A2B" stroke-width="3"/>
   <g class="smoke"><text x="700" y="186" font-size="20" fill="#FFB3C8">♥</text><text x="716" y="176" font-size="18" fill="#fff">☁</text></g>
-  <path d="${OV_BODY} ${OV_DOOR} ${OV_WIN} ${OV_EXIT}" fill="url(#ovBody)" fill-rule="evenodd" stroke="#B9651E" stroke-width="5" filter="url(#shadow)"/>
+  <path d="${OV_BODY}" transform="translate(0 6)" fill="#B9651E" opacity=".22"/>
+  <path d="${OV_BODY} ${OV_DOOR} ${OV_WIN} ${OV_EXIT}" fill="url(#ovBody)" fill-rule="evenodd" stroke="#B9651E" stroke-width="5"/>
   <path d="${OV_BODY} ${OV_DOOR} ${OV_WIN} ${OV_EXIT}" fill="url(#brickP)" fill-rule="evenodd"/>
   <path d="M478 300 Q520 270 600 268" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".5"/>
   <path d="${OV_WIN}" fill="url(#glassSheen)" stroke="#8F4A1A" stroke-width="5"/>
@@ -408,13 +416,13 @@ const shaker = ([k, e, x, need]) => { const lock = need > STARS; return `<g clas
   ${lock ? `<g transform="translate(${x + 13} 246)"><circle r="11" fill="#FFD54A" stroke="#fff" stroke-width="2.5"/><text y="5" text-anchor="middle" font-size="12">🔒</text></g>` : ""}
   <rect x="${x - 27}" y="226" width="54" height="80" fill="transparent"/></g></g>`; };
 const DECO = `<g id="deco">
-  <rect x="826" y="206" width="348" height="12" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3" filter="url(#shadow)"/>
-  <rect x="826" y="300" width="348" height="12" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3" filter="url(#shadow)"/>
+  <rect x="826" y="206" width="348" height="12" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3"/>
+  <rect x="826" y="300" width="348" height="12" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3"/>
   <g id="bottles">${GUSS.map(([c, x]) => bottle(c, x)).join("")}</g>
   <g id="shakers">${SHAK.map(shaker).join("")}</g>
   <ellipse cx="1000" cy="${BELT - 6}" rx="40" ry="6" fill="#5E2E4A" opacity=".2"/>
   <rect x="992" y="470" width="16" height="44" fill="url(#metalV)" stroke="#5E6B7E" stroke-width="3"/>
-  <ellipse cx="1000" cy="472" rx="66" ry="12" fill="#E8DDF2" stroke="#B9A9D9" stroke-width="3" filter="url(#shadow)"/><ellipse cx="1000" cy="468" rx="58" ry="8" fill="#fff"/>
+  <ellipse cx="1000" cy="472" rx="66" ry="12" fill="#E8DDF2" stroke="#B9A9D9" stroke-width="3"/><ellipse cx="1000" cy="468" rx="58" ry="8" fill="#fff"/>
   <g id="bigM"></g>
 </g>`;
 
@@ -424,9 +432,9 @@ const CAM = [0, 400, 800];
 function reset(){ S = {step: 1, busy: false, cam: 0, cups: [], sel: 0, hintT: 0}; }
 
 function build(){
-  $("app").innerHTML = `<div class="fx3">
+  $("app").innerHTML = `<div class="fx3"><canvas id="bg"></canvas>
     <svg id="sc" viewBox="0 0 400 760" preserveAspectRatio="xMidYMid slice">${DEFS}
-      <g id="world">${BACKDROP}${OVEN_BACK}${beltSvg()}${shelfSvg()}<g id="streams"></g>${tankSvg()}<g id="slot"></g><g id="cups"></g>${OVEN_FRONT}${DECO}${leverSvg()}<g id="fxl"></g><g id="drag"></g></g>
+      <g id="world">${OVEN_BACK}${beltSvg()}${shelfSvg()}<g id="streams"></g>${tankSvg()}<g id="slot"></g><g id="cups"></g>${OVEN_FRONT}${DECO}${leverSvg()}<g id="fxl"></g><g id="drag"></g></g>
     </svg>
     <div class="vign"></div>
     <button id="restart" aria-label="Von vorn">↺</button>
@@ -437,15 +445,59 @@ function build(){
 }
 function setMap(){}   // keine Schritt-Leiste – für Kinder nicht wichtig
 function say(t){ const b = $("say"); b.innerHTML = t; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
-let VW = 400;
+/* Kamera: der Vordergrund (SVG) bekommt einen neuen Bildausschnitt. Der statische Hintergrund (Wand, Fenster,
+   Lampen, Boden) ist einmal in ein Canvas gezeichnet und wird nur verschoben – das macht die Grafikkarte,
+   ohne alles neu zu malen. So bleibt der Kameraschwenk auch auf dem iPhone flüssig. */
+let VW = 400, CAMK = 1, CAMOX = 0, CAMOY = 0, bgK = 0;
+const BG_X0 = -700, BG_W = 2600;
 function fit(){
   const r = svg.getBoundingClientRect(), asp = r.width / Math.max(1, r.height);
   VW = Math.max(400, Math.min(1500, 760 * asp));     // schmal: 400 breit (Ränder werden abgeschnitten) · breit: mehr Fabrik sichtbar
-  svg.setAttribute("preserveAspectRatio", 760 * asp < 400 ? "xMidYMid slice" : "xMidYMid meet");
+  const slice = 760 * asp < 400;
+  svg.setAttribute("preserveAspectRatio", slice ? "xMidYMid slice" : "xMidYMid meet");
+  CAMK = slice ? Math.max(r.width / VW, r.height / 760) : Math.min(r.width / VW, r.height / 760);
+  CAMOX = (r.width - VW * CAMK) / 2; CAMOY = (r.height - 760 * CAMK) / 2;
+  if (Math.abs(CAMK - bgK) > .01) drawBg();
   setCam(S.cam || 0);
 }
-function setCam(x){ S && (S.cam = x); svg.setAttribute("viewBox", `${x + 200 - VW / 2} 0 ${VW} 760`); }
-window.addEventListener("resize", () => svg && fit());
+/* Hintergrund einmal (unsichtbar) vorzeichnen; pro Bild wird nur der sichtbare Ausschnitt in ein
+   bildschirmgroßes Canvas kopiert – ein schneller Kopiervorgang, nichts wird neu berechnet */
+let bgBig = null, bgQ = 1;
+function drawBg(){
+  bgK = CAMK; bgBig = null;
+  const r = svg.getBoundingClientRect(), cv = $("bg");
+  bgQ = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.round(r.width * bgQ); cv.height = Math.round(r.height * bgQ);
+  const W = Math.round(BG_W * CAMK * bgQ), H = Math.round(760 * CAMK * bgQ);
+  const src = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${BG_X0} 0 ${BG_W} 760" width="${W}" height="${H}" preserveAspectRatio="none">${DEFS}${BACKDROP}${beltLegs()}</svg>`;
+  const img = new Image();
+  img.onload = () => {
+    const big = document.createElement("canvas"); big.width = W; big.height = H;
+    big.getContext("2d").drawImage(img, 0, 0, W, H); URL.revokeObjectURL(img.src);
+    bgBig = big; blitBg(); cv.classList.add("on");
+  };
+  img.src = URL.createObjectURL(new Blob([src], {type: "image/svg+xml"}));
+}
+let bgX = 0;
+function blitBg(){
+  if (!bgBig) return;
+  const cv = $("bg"), ctx = cv.getContext("2d");
+  // Bildschirm-x 0 entspricht im großen Bild: (vx0 - BG_X0) * k - CAMOX
+  const sx = Math.round(bgX * bgQ), sy = Math.round(-CAMOY * bgQ);
+  ctx.fillStyle = "#FCE4EE"; ctx.fillRect(0, 0, cv.width, cv.height);
+  // Quellrechteck auf das Bild begrenzen (Safari zeichnet sonst gar nichts)
+  const x0 = Math.max(0, sx), y0 = Math.max(0, sy), dx = x0 - sx, dy = y0 - sy;
+  const w = Math.min(cv.width - dx, bgBig.width - x0), h = Math.min(cv.height - dy, bgBig.height - y0);
+  if (w > 0 && h > 0) ctx.drawImage(bgBig, x0, y0, w, h, dx, dy, w, h);
+}
+function setCam(x){
+  S && (S.cam = x);
+  const vx0 = x + 200 - VW / 2;
+  svg.setAttribute("viewBox", `${vx0} 0 ${VW} 760`);
+  bgX = (vx0 - BG_X0) * CAMK - CAMOX; blitBg();
+}
+let fitT = 0;
+window.addEventListener("resize", () => { clearTimeout(fitT); fitT = setTimeout(() => svg && fit(), 120); });
 function tween(ms, fn, ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2){
   return new Promise(res => { const t0 = performance.now(); const f = now => { const t = Math.min(1, (now - t0) / ms); fn(ease(t)); if (t < 1) requestAnimationFrame(f); else res(); }; requestAnimationFrame(f); });
 }
