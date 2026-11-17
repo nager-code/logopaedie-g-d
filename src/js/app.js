@@ -75,6 +75,7 @@ document.querySelectorAll(".home-title .tile").forEach(t => {
 });
 
 $("eggFips").addEventListener("click", eggPoke);
+$("eggBaby").addEventListener("click", bbTap);
 $("eggMusicBtn").addEventListener("click", () => {
   eggMusicOn = !eggMusicOn;
   try { localStorage.setItem("eggMusic", eggMusicOn ? "on" : "off"); } catch(e){}

@@ -62,6 +62,9 @@ Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei sei
 - 🤭 Bauch antippen: er wabbelt wie Wackelpudding.
 - 🔥 Nach sechs Muffins grummelt der Bauch, Fips läuft rot an und lässt einen riesigen Feuerstrahl raus – mit Feuerwerk am Himmel. Danach ist er wieder ganz der Alte.
 - 👩‍🍳 In der **Muffin-Küche** lassen sich Muffins selbst verzieren: Förmchen und Guss aussuchen, dann bunte Streusel, Schoko-Streusel, Zuckersterne, Herzen und Kirschen drüberrieseln lassen. Den fertigen Muffin bekommt Fips – und freut sich ganz besonders.
+- 🔓 **Deko freischalten durch Üben:** Bunte und Schoko-Streusel gibt es sofort, Sterne, Herzen, Kirschen und Co. kommen nach und nach mit richtigen Antworten im G-oder-D-Spiel dazu. Gesperrte Deko zeigt, wie viele richtige Antworten noch fehlen. Neues wird mit „NEU“ markiert, und Fips verrät es beim Öffnen der Party.
+- 🥦 Ganz selten ist ein Muffin in Wahrheit ein **Brokkoli-Muffin** – er sieht aus wie jeder andere. Fips verzieht das Gesicht und lässt einen grünen Rülpser raus.
+- 🥚 **Geheimnis im Geheimnis:** Nach 10 Goldmuffins liegt ein Drachenei im Gras. Beim nächsten Besuch lässt es sich aufklopfen – heraus schlüpft ein Baby-Drache, der ab dann mitfeiert.
 
 </details>
 

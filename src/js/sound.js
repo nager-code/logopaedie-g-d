@@ -118,6 +118,18 @@ function sfx(kind, lvl = 1){
     tone(ctx, 500, t, 0.25, "sine", 0.08, 1600);
     tone(ctx, 140, t + 0.26, 0.18, "triangle", 0.3, 60);
     tone(ctx, 1800, t + 0.27, 0.25, "sine", 0.05, 2400);
+  } else if (kind === "yuck"){
+    // „Bäh!“: zwei absackende, quäkige Töne
+    tone(ctx, 420, t, 0.18, "square", 0.08, 300);
+    tone(ctx, 330, t + 0.2, 0.35, "square", 0.08, 180);
+  } else if (kind === "burp"){
+    // Rülpser: tiefer, knarziger Ton, der absackt
+    const o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain(), lp = ctx.createBiquadFilter();
+    o.type = "sawtooth"; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(72, t + .55);
+    lfo.frequency.value = 32; lg.gain.value = 26; lfo.connect(lg); lg.connect(o.frequency);
+    lp.type = "lowpass"; lp.frequency.value = 650;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.4, t + .04); g.gain.exponentialRampToValueAtTime(0.0001, t + .6);
+    o.connect(lp); lp.connect(g); g.connect(ctx.destination); o.start(t); lfo.start(t); o.stop(t + .65); lfo.stop(t + .65);
   } else if (kind === "boing"){
     tone(ctx, 180, t, 0.5, "sine", 0.35, 420);
     tone(ctx, 360, t + 0.02, 0.35, "triangle", 0.08, 700);

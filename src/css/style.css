@@ -933,3 +933,49 @@ button.egg-chip{cursor:pointer;font-size:17px;padding:3px 10px}
 .bk-btn.ghost{background:#fff;color:var(--d-dark);box-shadow:0 5px 0 rgba(31,99,201,.25)}
 .bk-btn:active{transform:translateY(3px)}
 .panel .bk-msg{margin:8px 0 0;font-size:14px;font-weight:800;min-height:1em}
+
+/* ---------- Muffin-Party: Brokkoli-Überraschung ---------- */
+.egg-fips.yuck .fin-svg{animation:eggYuck .8s ease-in-out;filter:drop-shadow(0 0 12px rgba(120,200,80,.85)) saturate(.8)}
+@keyframes eggYuck{0%,100%{transform:translateX(0) rotate(0)}15%{transform:translateX(-12px) rotate(-5deg)}35%{transform:translateX(10px) rotate(4deg)}55%{transform:translateX(-7px) rotate(-3deg)}75%{transform:translateX(4px) rotate(1deg)}}
+.egg-burp{position:fixed;z-index:41;width:120px;margin:-60px 0 0 -10px;pointer-events:none;animation:eggBurp 1.7s ease-out forwards}
+.egg-burp svg{width:100%;display:block}
+.egg-burp span{position:absolute;left:50%;top:42%;translate:-50% -50%;font-size:28px}
+@keyframes eggBurp{0%{transform:translate(0,0) scale(.2);opacity:0}15%{opacity:1}60%{transform:translate(40px,-60px) scale(1.15);opacity:.95}100%{transform:translate(70px,-120px) scale(1.4);opacity:0}}
+
+/* ---------- Muffin-Küche: Deko freischalten ---------- */
+.k-kinds button{position:relative}
+.k-kinds button.locked{background:#eee9f5;box-shadow:none;cursor:help}
+.k-kinds button.locked span{filter:grayscale(1);opacity:.35}
+.k-kinds button.locked small{color:var(--ink);opacity:.7}
+.k-kinds button.nope{animation:kNope .4s}
+@keyframes kNope{0%,100%{translate:0}25%{translate:-4px}75%{translate:4px}}
+.k-kinds button.fresh::after{content:"NEU";position:absolute;top:-7px;right:-4px;background:var(--pink);color:#fff;font-size:9px;font-weight:900;border-radius:999px;padding:1px 5px;box-shadow:0 2px 0 var(--pink-dark);animation:kFresh 1s ease-in-out infinite alternate}
+@keyframes kFresh{to{transform:scale(1.15) rotate(6deg)}}
+.k-hint.say{opacity:1;color:var(--pink-dark)}
+.egg-chip.k-open.fresh{animation:kFresh .8s ease-in-out infinite alternate;box-shadow:0 0 0 3px #FFD54A,0 3px 0 rgba(59,44,90,.1)}
+
+/* ---------- Muffin-Party: Drachenei und Baby-Drache ---------- */
+.egg-baby{position:absolute;left:-14%;bottom:0;width:34%;aspect-ratio:1;cursor:pointer;touch-action:manipulation;z-index:1;-webkit-tap-highlight-color:transparent}
+.egg-baby:empty{display:none}
+.egg-baby svg{width:100%;height:100%;display:block;overflow:visible}
+.egg-baby.is-egg{width:24%;left:-6%}
+.egg-baby.is-egg svg{transform-origin:50% 95%;animation:bbIdle 2.6s ease-in-out infinite}
+@keyframes bbIdle{0%,78%,100%{rotate:0deg}84%{rotate:-6deg}90%{rotate:6deg}95%{rotate:-3deg}}
+.egg-baby.wobble svg{animation:bbWobble .5s}
+@keyframes bbWobble{0%,100%{rotate:0deg}25%{rotate:-14deg}50%{rotate:12deg}75%{rotate:-6deg}}
+.egg-baby .ck{opacity:0;transition:opacity .2s}
+.egg-baby.c1 .ck1,.egg-baby.c2 .ck1,.egg-baby.c2 .ck2{opacity:1}
+.egg-baby.drop{animation:bbDrop .8s cubic-bezier(.3,1.4,.5,1)}
+@keyframes bbDrop{0%{transform:translateY(-160px) scale(.5);opacity:0}100%{transform:none;opacity:1}}
+.egg-baby.hatching svg{animation:bbPop .45s ease-in forwards}
+@keyframes bbPop{to{transform:scale(1.4);opacity:0}}
+.egg-baby.born{animation:bbBorn .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bbBorn{0%{transform:translateY(25%) scale(.2)}100%{transform:none}}
+.egg-baby.is-baby svg{transform-origin:50% 100%;animation:bbBreath 2.6s ease-in-out infinite}
+@keyframes bbBreath{50%{scale:1.03 .97}}
+.egg-baby.hop{animation:bbHop .5s ease-out}
+@keyframes bbHop{40%{transform:translateY(-18%) rotate(-6deg)}}
+.egg-baby .bb-eyes{transform-box:fill-box;transform-origin:50% 50%;animation:bbBlink 4s infinite}
+@keyframes bbBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.egg-baby.puff::after{content:"🔥";position:absolute;right:-12%;top:18%;font-size:22px;animation:bbPuff .9s ease-out forwards;pointer-events:none}
+@keyframes bbPuff{0%{transform:scale(.2);opacity:0}30%{opacity:1}100%{transform:translate(18px,-28px) scale(1.3);opacity:0}}

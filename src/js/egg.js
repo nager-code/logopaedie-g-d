@@ -2,7 +2,11 @@
    Erreicht man, indem man Fips auf der Startseite ganz oft hintereinander kitzelt.
    Picknick auf der Sommerwiese: Muffins antippen oder zu Fips ziehen → er wird immer runder,
    bis er einen riesigen Feuerstrahl rauslässt (mit Feuerwerk) und wieder normal wird.
-   Dazu: Goldmuffins, Schluckauf, Wackelbauch, Zähler und eine kleine Spieluhr-Melodie. */
+   Dazu: Goldmuffins, Schluckauf, Wackelbauch, Zähler und eine kleine Spieluhr-Melodie.
+   Ganz selten ist ein Muffin in Wahrheit ein Brokkoli-Muffin (sieht aus wie jeder andere) → Bäh! und Rülpser.
+   Die Deko in der Küche wird nach und nach freigeschaltet – durch richtige Antworten im Spiel.
+   Geheimnis im Geheimnis: Nach 10 Goldmuffins (über alle Besuche) liegt ein Drachenei im Gras.
+   Beim nächsten Besuch lässt es sich aufklopfen – heraus kommt ein Baby-Drache, der ab dann mitfeiert. */
 const EGG_TAPS = 25;      // so oft ohne Pause kitzeln
 const EGG_FULL = 6;       // so satt → Feuerstrahl
 const EGG_SAY = [
@@ -110,6 +114,36 @@ const K_KINDS = [
   {k:"perle",  label:"Perlen",  icon:"⚪", more:true},
   {k:"kerze",  label:"Kerze",   icon:"🕯️", more:true}
 ];
+/* ---------- Freischalten durch Üben: so viele richtige Antworten (insgesamt) braucht es für eine Deko ----------
+   Gezählt wird der höchste je erreichte Stand – setzen Eltern den Fortschritt zurück, bleibt die Deko trotzdem. */
+const K_UNLOCK = {stern: 10, herz: 20, kirsche: 35, punkte: 50, blume: 70, perle: 90, kerze: 120};
+const K_SMALL = "(width < 900px),(height < 600px)";   // wie in style.css: dort sind die Zusatz-Knöpfe (.k-more) ausgeblendet
+function eggStars(){
+  const now = Object.values(STATS).reduce((a, s) => a + (s.ok || 0), 0);
+  const best = Math.max(now, +load("eggStars", 0) || 0);
+  if (best !== +load("eggStars", 0)) save("eggStars", best);
+  return best;
+}
+function kLocked(k, stars = eggStars()){ return (K_UNLOCK[k] || 0) > stars; }
+/* Freigeschaltete Deko, die das Kind noch nicht gesehen hat (auf dem Handy nur die, die es dort auch gibt) */
+function kFresh(){
+  const stars = eggStars(), seen = load("eggSeen", []), small = matchMedia(K_SMALL).matches;
+  return K_KINDS.filter(k => K_UNLOCK[k.k] && !kLocked(k.k, stars) && !seen.includes(k.k) && !(small && k.more));
+}
+let kFreshNow = [];   // beim Öffnen der Küche „NEU“ markiert
+function kKindsRender(){
+  const stars = eggStars();
+  $("kKinds").innerHTML = K_KINDS.map(k => {
+    const lock = kLocked(k.k, stars), cls = [k.more && "k-more", lock && "locked", kFreshNow.includes(k.k) && "fresh"].filter(Boolean).join(" ");
+    return `<button data-v="${k.k}"${cls ? ` class="${cls}"` : ""} aria-label="${k.label}${lock ? " (noch gesperrt)" : ""}"><span>${k.icon}</span><small>${lock ? `🔒 ${K_UNLOCK[k.k] - stars}` : k.label}</small></button>`;
+  }).join("");
+}
+let kHintTimer = null;
+function kHint(text){
+  const h = $("kHint"); clearTimeout(kHintTimer);
+  h.textContent = text; h.classList.add("say");
+  kHintTimer = setTimeout(() => { h.textContent = h.dataset.def; h.classList.remove("say"); }, 4500);
+}
 let kHist = [];   // Schnappschüsse für „Rückgängig“
 let kMuffin = null, kKind = "bunt";
 function kItem(it){
@@ -148,7 +182,7 @@ function kSprinkle(ev){
   const svg = $("kMuffin").querySelector("svg"), top = svg && svg.querySelector(".k-top");
   if (!top) return;
   const p = new DOMPoint(ev.clientX, ev.clientY).matrixTransform(svg.getScreenCTM().inverse());
-  const n = kKind === "kirsche" || kKind === "kerze" || kKind === "blume" ? 1 : kKind === "herz" || kKind === "stern" || kKind === "punkte" ? 2 : 4;
+  const n = kKind === "kirsche" || kKind === "kerze" || kKind === "blume" || kKind === "perle" ? 1 : kKind === "herz" || kKind === "stern" || kKind === "punkte" ? 2 : 4;
   if (kKind === "kirsche" && kMuffin.items.filter(i => i.t === "kirsche").length >= 3) return;
   let added = 0;
   for (let i = 0; i < n * 3 && added < n; i++){
@@ -176,7 +210,8 @@ function kInit(){
   const sw = (list, more, what) => list.concat(more).map((c, i) => `<button data-v="${c}"${i >= list.length ? ' class="k-more"' : ""} style="--c:${PIC_PAL[c][1]};--b:${PIC_PAL[c][3]}" aria-label="${what} ${c}"></button>`).join("");
   $("kCups").innerHTML = sw(K_CUPS, K_CUPS_MORE, "Förmchen");
   $("kTops").innerHTML = sw(K_TOPS, K_TOPS_MORE, "Guss");
-  $("kKinds").innerHTML = K_KINDS.map(k => `<button data-v="${k.k}"${k.more ? ' class="k-more"' : ""} aria-label="${k.label}"><span>${k.icon}</span><small>${k.label}</small></button>`).join("");
+  $("kHint").dataset.def = $("kHint").textContent;
+  kKindsRender();
   $("kCups").addEventListener("click", e => { const b = e.target.closest("button"); if (b && b.dataset.v !== kMuffin.cup){ kSnap(); kMuffin.cup = b.dataset.v; kRender(); sfx("hic"); } });
   $("kTops").addEventListener("click", e => { const b = e.target.closest("button"); if (b && b.dataset.v !== kMuffin.top){ kSnap(); kMuffin.top = b.dataset.v; kRender(); sfx("hic"); } });
   $("kUndo").addEventListener("click", kUndo);
@@ -185,7 +220,17 @@ function kInit(){
     if ($("eggKitchen").classList.contains("hidden")) return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z"){ e.preventDefault(); kUndo(); }
   });
-  $("kKinds").addEventListener("click", e => { const b = e.target.closest("button"); if (b){ kKind = b.dataset.v; kRender(); } });
+  $("kKinds").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    const k = K_KINDS.find(x => x.k === b.dataset.v), need = K_UNLOCK[k.k] - eggStars();
+    if (need > 0){
+      sfx("boing"); b.classList.remove("nope"); void b.offsetWidth; b.classList.add("nope");
+      kHint(`🔒 ${k.label} gibt’s nach ${need} ${need === 1 ? "richtigen Antwort" : "richtigen Antworten"} mehr im G-oder-D-Spiel! 🎧`);
+      return;
+    }
+    b.classList.remove("fresh");
+    kKind = k.k; kRender();
+  });
   // Berührungen gehen an eine feste, unsichtbare Fläche über dem Muffin – der Muffin selbst wird bei jedem Streusel
   // neu gezeichnet; läge der Finger auf einem Element, das dabei verschwindet, würde Safari den Tipp als Zoom deuten
   let down = false, last = 0;
@@ -198,11 +243,21 @@ function kInit(){
   $("kOpen").addEventListener("click", kOpen);
   $("kClose").addEventListener("click", () => $("eggKitchen").classList.add("hidden"));
 }
-function kOpen(){ if (eggBusy) return; if (!kMuffin) kNew(); else kRender(); $("eggKitchen").classList.remove("hidden"); sfx("whoosh"); }
+function kOpen(){
+  if (eggBusy) return;
+  // neu freigeschaltete Deko bekommt diesmal ein „NEU“ – danach gilt sie als gesehen
+  kFreshNow = kFresh().map(k => k.k);
+  if (kFreshNow.length) save("eggSeen", load("eggSeen", []).concat(kFreshNow));
+  $("kOpen").classList.remove("fresh");
+  if (kLocked(kKind)) kKind = "bunt";
+  kKindsRender();
+  if (!kMuffin) kNew(); else kRender();
+  $("eggKitchen").classList.remove("hidden"); sfx("whoosh");
+}
 /* Fertig: der selbst verzierte Muffin kommt auf den Teller (vorne) */
 function kDone(){
   const btn = $("eggTray").querySelector(".egg-muffin");
-  btn.dataset.gold = ""; btn.dataset.custom = JSON.stringify(kMuffin); btn.dataset.flavor = eggCustomFlavor(kMuffin);
+  btn.dataset.gold = ""; btn.dataset.veg = ""; btn.dataset.custom = JSON.stringify(kMuffin); btn.dataset.flavor = eggCustomFlavor(kMuffin);
   btn.classList.remove("golden"); btn.classList.add("custom");
   btn.innerHTML = customMuffinSvg(kMuffin);
   btn.style.animation = "none"; void btn.offsetWidth; btn.style.animation = "";
@@ -290,6 +345,7 @@ function eggFill(btn){
   const gold = rnd() < .16;
   btn.dataset.gold = gold ? "1" : "";
   btn.classList.toggle("golden", gold);
+  btn.dataset.veg = !gold && rnd() < .07 ? "1" : "";      // Überraschung: sieht aus wie jeder andere Muffin …
   const kind = gold ? EGG_GOLD : pick(EGG_KINDS);
   btn.dataset.flavor = EGG_DECO_FLAME[kind[2]] || "feuer";
   btn.innerHTML = muffinSvg(kind);
@@ -386,12 +442,14 @@ function eggEat(btn, at){
   const gold = btn.dataset.gold === "1", custom = !!btn.dataset.custom;
   const f = $("eggFips");
   f.classList.remove("hungry");
+  if (btn.dataset.veg === "1") return eggYuck(btn, at);
   eggFat = Math.min(EGG_FULL, eggFat + (gold ? 2 : 1));
   eggEaten++; eggLastAct = Date.now();
   const fl = btn.dataset.flavor || "feuer";
   eggFlavors.push(fl); if (gold) eggFlavors.push(fl);     // Goldmuffin zählt doppelt (macht auch doppelt satt)
   eggPlay("nom", 450);
   eggPlay("chew", 1350);                                   // kurz kauen …
+  bbPlay("hop", 500);                                      // der Kleine freut sich mit
   sfx("nom");
   [.35, .62, .89, 1.16].forEach(d => eggT(() => sfx("chew"), d * 1000));
   eggCrumbs(at, gold);
@@ -400,16 +458,48 @@ function eggEat(btn, at){
   else if (gold){ eggSay(pick(EGG_GOLD_SAY)); eggPlay("glitter", 1400); setTimeout(() => sfx("right"), 250); }
   else eggSay(EGG_SAY[Math.min(eggFat, EGG_SAY.length - 1)]);
   eggT(() => { eggFill(btn); btn.classList.remove("gone"); }, 900);   // neuer Muffin auf dem Teller
+  if (gold) eggGotGold(eggFat >= EGG_FULL ? 4600 : 1600);
   if (eggFat >= EGG_FULL) eggT(eggFire, 800);
   else eggT(() => { eggBusy = false; }, 250);
 }
 
-function eggCrumbs(p, gold){
+/* ---------- Überraschung: Brokkoli-Muffin! Bäh – und dann ein grüner Rülpser. Macht nicht satt. ---------- */
+function eggYuck(btn, at){
+  const f = $("eggFips");
+  eggEaten++; eggLastAct = Date.now();
+  eggPlay("nom", 450); sfx("nom");
+  eggCrumbs(at, false, ["#66B53C","#96D965","#3E7D22","#C8F5A0"]);
+  eggMeter();
+  eggT(() => {
+    f.classList.add("yuck");
+    eggSay(pick(["Bäh! Da war ja BROKKOLI drin! 🥦🤢", "Iiih! Ein Brokkoli-Muffin! 🥦😖", "Bääh! Das ist ja Gemüse! 🥦😝"]));
+    sfx("yuck");
+  }, 350);
+  eggT(() => { eggFill(btn); btn.classList.remove("gone"); }, 900);
+  eggT(() => {
+    eggBurp(eggMouth());
+    sfx("burp");
+    eggSay(pick(["Ups … ein Brokkoli-Rülpser! 💚😅", "Rüüülps! 'Tschuldigung! 🙊💚", "Hihi … das war der Brokkoli! 💨🥦"]));
+  }, 1500);
+  eggT(() => { f.classList.remove("yuck"); eggBusy = false; eggLastAct = Date.now(); }, 2300);
+}
+function eggBurp(p){
+  const b = document.createElement("div");
+  b.className = "egg-burp";
+  b.style.cssText = `left:${p.x}px;top:${p.y}px`;
+  b.innerHTML = `<svg viewBox="0 0 120 90"><g fill="#B8EC8E" stroke="#66B53C" stroke-width="3">
+    <circle cx="36" cy="52" r="22"/><circle cx="60" cy="36" r="26"/><circle cx="86" cy="52" r="22"/><ellipse cx="60" cy="62" rx="40" ry="18"/></g>
+    <ellipse cx="60" cy="56" rx="34" ry="16" fill="#B8EC8E"/><ellipse cx="50" cy="32" rx="9" ry="5" fill="#fff" opacity=".6"/></svg><span>🥦</span>`;
+  document.body.appendChild(b);
+  setTimeout(() => b.remove(), 1700);
+}
+
+function eggCrumbs(p, gold, cols = ["#C9946A","#A8714A","#FFD6BA","#FF88A8"]){
   for (let i = 0; i < (gold ? 16 : 9); i++){
     const c = document.createElement("i");
     c.className = "egg-crumb" + (gold ? " gold" : "");
     c.style.cssText = `left:${p.x}px;top:${p.y}px;--x:${(rnd() * 100 - 50).toFixed(0)}px;--y:${(rnd() * 60 + (gold ? -60 : 20)).toFixed(0)}px;` +
-      (gold ? "" : `background:${pick(["#C9946A","#A8714A","#FFD6BA","#FF88A8"])}`);
+      (gold ? "" : `background:${pick(cols)}`);
     document.body.appendChild(c);
     setTimeout(() => c.remove(), 900);
   }
@@ -436,6 +526,7 @@ function eggFire(){
     sfx("fire");
     $("eggOverlay").classList.add("lit");                 // Lichterkette blinkt
     eggT(() => eggFireworks(EGG_FLAMES[kind].sky), 700);
+    eggT(() => bbPlay("puff", 900), 500);                 // und der Kleine macht ein Mini-Feuerchen
     eggT(() => {
       f.classList.remove("fire");
       head && head.querySelectorAll(".fb").forEach(g => g.remove());
@@ -479,6 +570,86 @@ function eggIdle(){
   } else if (eggFat < 3 && quiet > 7000){
     eggSay(pick(EGG_IDLE_SAY)); eggPlay("nom", 450); eggLastAct = Date.now();
   }
+}
+
+/* ---------- Geheimnis im Geheimnis: Drachenei und Baby-Drache ---------- */
+const EGG_HATCH = 10;                                   // so viele Goldmuffins → Drachenei
+let eggDragon = load("eggDragon", {gold: 0, stage: 0}); // stage: 0 nichts · 1 Ei liegt im Gras · 2 geschlüpft
+let eggLaidNow = false, bbTaps = 0;                     // frisch gelegte Eier schlafen erst bis zum nächsten Besuch
+function eggGotGold(delay){
+  if (eggDragon.stage) return;
+  eggDragon.gold = (eggDragon.gold || 0) + 1; save("eggDragon", eggDragon);
+  if (eggDragon.gold >= EGG_HATCH) eggT(eggLay, delay);
+}
+function eggLay(){
+  eggDragon.stage = 1; save("eggDragon", eggDragon);
+  eggLaidNow = true; bbRender("drop");
+  eggSay("Nanu? Was liegt denn da im Gras? Ein DRACHENEI! 🥚✨");
+  sfx("right");
+}
+const BB_EGG = `<svg viewBox="0 0 100 110"><defs><radialGradient id="bbEggG" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFF4D6"/><stop offset="1" stop-color="#F2D9A6"/></radialGradient></defs>
+  <ellipse cx="50" cy="104" rx="30" ry="5" fill="rgba(59,44,90,.15)"/>
+  <path d="M50 14 C74 14 86 50 86 70 C86 92 70 104 50 104 C30 104 14 92 14 70 C14 50 26 14 50 14 Z" fill="url(#bbEggG)" stroke="#C9A56A" stroke-width="3"/>
+  <g stroke="none"><circle cx="34" cy="56" r="7" fill="#7DD9B4"/><circle cx="62" cy="40" r="5" fill="#FF88A8"/><circle cx="66" cy="76" r="8" fill="#C0A4F0"/><circle cx="40" cy="86" r="5" fill="#FFD54A"/><circle cx="56" cy="60" r="3.5" fill="#93BFF5"/></g>
+  <ellipse cx="36" cy="32" rx="8" ry="5" transform="rotate(-35 36 32)" fill="#fff" opacity=".8"/>
+  <g fill="none" stroke="#8F6A3A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path class="ck ck1" d="M30 50 L38 56 L34 63 L43 68"/>
+    <path class="ck ck2" d="M43 68 L52 62 L58 70 L66 63 L72 68"/></g></svg>`;
+const BB_BABY = `<svg viewBox="0 0 100 100"><defs><radialGradient id="bbSkin" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#D6F7E8"/><stop offset="1" stop-color="#7DD9B4"/></radialGradient></defs>
+  <g stroke-linejoin="round" stroke-linecap="round">
+  <ellipse cx="50" cy="97" rx="26" ry="3.5" fill="rgba(59,44,90,.15)"/>
+  <path d="M70 84 Q90 86 90 72 Q94 78 92 70" fill="none" stroke="#2F7D63" stroke-width="9"/><path d="M70 84 Q90 86 90 72" fill="none" stroke="#9FE3C5" stroke-width="4"/>
+  <path d="M27 62 Q10 50 14 40 Q20 50 30 52 Z" fill="#FFB3C8" stroke="#E0608A" stroke-width="2.5"/>
+  <path d="M73 62 Q90 50 86 40 Q80 50 70 52 Z" fill="#FFB3C8" stroke="#E0608A" stroke-width="2.5"/>
+  <ellipse cx="50" cy="74" rx="25" ry="21" fill="url(#bbSkin)" stroke="#2F7D63" stroke-width="3"/>
+  <ellipse cx="50" cy="78" rx="14" ry="13" fill="#FFE7A8" stroke="#D9A93E" stroke-width="2"/>
+  <ellipse cx="38" cy="94" rx="8" ry="4.5" fill="url(#bbSkin)" stroke="#2F7D63" stroke-width="2.6"/><ellipse cx="62" cy="94" rx="8" ry="4.5" fill="url(#bbSkin)" stroke="#2F7D63" stroke-width="2.6"/>
+  <path d="M36 22 L39 10 L45 20 Z M64 22 L61 10 L55 20 Z" fill="#FFD54A" stroke="#D9A93E" stroke-width="2"/>
+  <ellipse cx="50" cy="40" rx="27" ry="23" fill="url(#bbSkin)" stroke="#2F7D63" stroke-width="3"/>
+  <path d="M27 30 L33 24 L38 30 L44 22 L50 29 L56 22 L62 30 L67 24 L73 30 Q70 14 50 13 Q30 14 27 30 Z" fill="#FFF8E7" stroke="#C9A56A" stroke-width="2.2"/>
+  <g class="bb-eyes"><ellipse cx="40" cy="41" rx="7" ry="8.5" fill="#fff" stroke="#2F7D63" stroke-width="2"/><ellipse cx="60" cy="41" rx="7" ry="8.5" fill="#fff" stroke="#2F7D63" stroke-width="2"/>
+    <circle cx="41" cy="43" r="4.5" fill="#3B2C5A"/><circle cx="59" cy="43" r="4.5" fill="#3B2C5A"/><circle cx="42.6" cy="41" r="1.6" fill="#fff"/><circle cx="60.6" cy="41" r="1.6" fill="#fff"/></g>
+  <ellipse cx="31" cy="51" rx="5" ry="3" fill="#FF9BB5"/><ellipse cx="69" cy="51" rx="5" ry="3" fill="#FF9BB5"/>
+  <path d="M44 53 Q50 58 56 53" fill="none" stroke="#2F7D63" stroke-width="2.6"/>
+  <ellipse cx="36" cy="28" rx="5" ry="2.5" transform="rotate(-25 36 28)" fill="#fff" opacity=".5"/></g></svg>`;
+function bbRender(anim){
+  const el = $("eggBaby"), st = eggDragon.stage;
+  el.className = "egg-baby" + (st === 1 ? " is-egg" : st === 2 ? " is-baby" : "") + (anim ? " " + anim : "");
+  el.innerHTML = st === 1 ? BB_EGG : st === 2 ? BB_BABY : "";
+  el.setAttribute("aria-label", st === 2 ? "Baby-Drache" : "Drachenei");
+}
+function bbPlay(cls, ms){
+  const el = $("eggBaby"); if (!el.innerHTML) return;
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), ms);
+}
+function bbTap(){
+  eggLastAct = Date.now();
+  if (eggDragon.stage === 2){
+    bbPlay("hop", 500); sfx("laugh", 1);
+    eggSay(pick(["Piep! 🐣", "Der Kleine sagt: Piep-piep! 💚", "Hihi, er hat auch Hunger! 🧁", "Piep! Mini-Feuer! 🔥"]));
+    if (rnd() < .3) eggT(() => bbPlay("puff", 900), 250);
+    return;
+  }
+  if (eggDragon.stage !== 1) return;
+  bbPlay("wobble", 500);
+  if (eggLaidNow){ sfx("hic"); eggSay("Psst … das Ei schläft noch. Komm später wieder! 🤫🥚"); return; }
+  bbTaps++; sfx("hic");
+  const el = $("eggBaby");
+  if (bbTaps === 1){ el.classList.add("c1"); eggSay("Knack! Da tut sich was! 😮"); }
+  else if (bbTaps === 2){ el.classList.add("c2"); eggSay("Knack-knack! Gleich …! 😲"); }
+  else if (bbTaps === 3) bbHatch();
+}
+function bbHatch(){
+  const el = $("eggBaby"), r = el.getBoundingClientRect();
+  el.classList.add("hatching"); sfx("pop");
+  eggCrumbs({x: r.left + r.width / 2, y: r.top + r.height * .45}, false, ["#FFF8E7","#F2D9A6","#7DD9B4","#FF88A8"]);
+  eggT(() => {
+    eggDragon.stage = 2; save("eggDragon", eggDragon);
+    bbRender("born"); sfx("fanfare");
+    eggSay("Ein Baby-Drache! Hallo, kleiner Fips! 🐣💚");
+    eggFireworks(["#7DD9B4","#FFB3C8","#FFD54A","#C0A4F0"]);
+  }, 450);
 }
 
 /* ---------- Spieluhr-Melodie (leise, lässt sich ausschalten) ---------- */
@@ -527,6 +698,7 @@ async function openEgg(){
   if (!kReady){ kInit(); kReady = true; }
   $("eggKitchen").classList.add("hidden");
   eggFat = 0; eggBusy = false; eggEaten = 0; eggFires = 0; eggFlavors = []; eggLastAct = Date.now();
+  eggLaidNow = false; bbTaps = 0; bbRender();
   $("eggScene").innerHTML = eggScene();
   const st = $("eggFips");
   st.className = "egg-fips";
@@ -561,6 +733,15 @@ async function openEgg(){
   }
   eggApplyFat(); eggTray();
   eggSay(EGG_SAY[0]);
+  // Neues in der Küche freigeschaltet? Fips verrät es – und der Küchen-Knopf glitzert
+  const fresh = kFresh();
+  $("kOpen").classList.toggle("fresh", fresh.length > 0);
+  if (fresh.length){
+    const names = fresh.map(k => `${k.label} ${/^</.test(k.icon) ? "" : k.icon}`.trim());
+    const list = names.length > 1 ? names.slice(0, -1).join(", ") + " und " + names[names.length - 1] : names[0];
+    eggT(() => eggSay(`Psst … in der Küche gibt’s was Neues: ${list}! 👩‍🍳`), 2200);
+  }
+  if (eggDragon.stage === 1) eggT(() => { if (bbTaps || eggDragon.stage !== 1) return; eggSay("Guck mal, das Drachenei wackelt! Klopf mal an! 🥚"); bbPlay("wobble", 500); }, fresh.length ? 5200 : 2200);
   show("eggOverlay");
   sfx("fanfare");
   clearInterval(eggIdleTimer); eggIdleTimer = setInterval(eggIdle, 2200);
@@ -572,14 +753,15 @@ function eggReset(){
   eggGen++;
   if (eggDragEnd) eggDragEnd();
   eggTimers.forEach(clearTimeout); eggTimers.clear();
-  document.querySelectorAll(".egg-fly,.egg-crumb").forEach(el => el.remove());
+  document.querySelectorAll(".egg-fly,.egg-crumb,.egg-burp").forEach(el => el.remove());
   const sky = $("eggSky"); if (sky) sky.innerHTML = "";
   const f = $("eggFips");
-  ["hungry","rumble","fire","nom","chew","glitter","jiggle","hic"].forEach(c => f.classList.remove(c));
+  ["hungry","rumble","fire","nom","chew","glitter","jiggle","hic","yuck"].forEach(c => f.classList.remove(c));
   f.querySelectorAll(".fb").forEach(g => g.remove());
   $("eggOverlay").classList.remove("lit");
   $("eggTray").querySelectorAll(".egg-muffin.gone").forEach(b => { eggFill(b); b.classList.remove("gone"); });
   if (eggFat >= EGG_FULL) eggFat = 0;               // Feuerstrahl wurde unterbrochen → wieder schlank
+  bbTaps = 0; bbRender();                            // halb aufgeklopftes Ei fängt wieder von vorne an
   eggApplyFat();
   eggBusy = false; eggLastAct = Date.now();
 }
