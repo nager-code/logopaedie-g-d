@@ -153,6 +153,15 @@
   @keyframes cvTick{from{rotate:-10deg}to{rotate:10deg}}
   .cv-bar{flex:1;height:24px;border-radius:999px;background:#fff;box-shadow:inset 0 3px 0 rgba(47,155,122,.2);overflow:hidden;border:3px solid #2F9B7A}
   .cv-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FFD54A,#FF8A3D)}
+  .cv-ovback,.cv-ovfront{position:absolute;right:-14px;bottom:calc(var(--bb) + 40px);width:54%;height:min(290px,34vh)}
+  .cv-ovback{z-index:2}.cv-ovfront{z-index:6;pointer-events:none}
+  .cv-ovback svg,.cv-ovfront svg{display:block;width:100%;height:100%;overflow:visible}
+  .cv-ovfront svg{filter:drop-shadow(0 6px 0 rgba(185,101,30,.2))}
+  #ovenLayer .cv-ovback,#ovenLayer .cv-ovfront{transition:transform 1.3s ease-in-out}
+  #ovenLayer.enter .cv-ovback,#ovenLayer.enter .cv-ovfront{transform:translateX(110%)}
+  .cv-ovfront .ov-glass{animation:cvGlow .6s ease-in-out infinite alternate}
+  .cv-ovfront .ov-needle{transform-box:view-box;transform-origin:172px 100px;rotate:70deg}
+  .cv-ovfront .cv-smoke{right:20%}
   #mach{transition:opacity .3s}
   .cv-scene{overflow:clip}
   .cv-item.lifted{opacity:0}
@@ -533,7 +542,7 @@ const sfx = {
 let S;
 function reset(){
   S = {step: 1, busy: false, cups: CUPS.map(c => ({c, dough: false, baked: false, top: null, items: []})),
-       pos: CUPS.map((_, i) => 42 - i * 10.4), fill: 0, boost: 0, sel: 0, guss: null, kind: "bunt", hinted: {}};
+       pos: CUPS.map((_, i) => 46.4 - i * 10.4), fill: 0, boost: 0, sel: 0, guss: null, kind: "bunt", hinted: {}};
 }
 
 /* ---------- Aufbau ---------- */
@@ -564,31 +573,31 @@ function hand(where){ $("fx").querySelectorAll(".cv-hand").forEach(h => h.remove
 /* ---------- Schritte ---------- */
 function step1(){
   S.step = 1; setMap(); say("Drück auf START!");
-  $("mach").innerHTML = nozzle(false) + oven(false, false, true) + `<div class="cv-babyrider" style="left:3%;bottom:calc(var(--bb) + 92px)">${window.BB_BABY}</div>`;
+  $("mach").innerHTML = nozzle(false) + `<div class="cv-babyrider" style="left:3%;bottom:calc(var(--bb) + 92px)">${window.BB_BABY}</div>`;
   drawCups();
   $("panel").innerHTML = lamps(1) + bigBtn("red", "▶", "", "START") + `<div class="cv-hand" style="left:calc(50% + 14px);bottom:calc(max(16px,var(--safe-b)) + 44px)">👆</div>`;
   $("panel").querySelector(".cv-big").onclick = async () => {
     if (S.busy) return; S.busy = true; sfx.go();
     $("panel").querySelector(".cv-hand")?.remove();
     say("Los geht’s! 🚚");
-    await moveCups(8, 900);
+    await moveCups(3.6, 600);
     S.busy = false; step2();
   };
 }
 function counter(){ return `<div class="cv-count">${[0,1,2,3,4].map(i => `<i class="${S.cups[i].dough ? "on" : ""}"></i>`).join("")}</div>`; }
 function step2(){
   S.step = 2; setMap(); say("Tipp auf TEIG!");
-  $("mach").innerHTML = nozzle(false) + oven(false, false, true) + counter();
+  $("mach").innerHTML = nozzle(false) + counter();
   drawCups();
   $("panel").innerHTML = lamps(2) + bigBtn("pink", "🧁", "", "TEIG") + (S.fill === 0 ? `<div class="cv-hand" style="left:calc(50% + 14px);bottom:calc(max(16px,var(--safe-b)) + 44px)">👆</div>` : "");
   $("panel").querySelector(".cv-big").onclick = async () => {
     if (S.busy) return; S.busy = true;
     $("panel").querySelector(".cv-hand")?.remove();
-    $("mach").innerHTML = nozzle(true, true) + oven(false, false, true) + counter();
+    $("mach").innerHTML = nozzle(true, true) + counter();
     sfx.blubb();
     await wait(650);
     S.cups[S.fill].dough = true; drawCups();
-    $("mach").innerHTML = nozzle(false) + oven(false, false, true) + counter();
+    $("mach").innerHTML = nozzle(false) + counter();
     say(["Blubb! 😋", "Noch einer! 🧁", "Mmmh, Teig! 😍", "Fast voll! 🙌", "Alle voll! 🎉"][S.fill]);
     if (S.fill < 4){
       await wait(250); await moveCups(10.4, 650);
@@ -596,47 +605,77 @@ function step2(){
       say(`Tipp auf TEIG! (${S.fill + 1} von 5)`);
     } else {
       await wait(500);
-      $("mach").style.opacity = 0; await moveCups(14, 900); $("mach").style.opacity = 1;
       S.busy = false; step3();
     }
   };
 }
 let raf = 0;
+/* Ofen in zwei Ebenen: hinten das glühende Innere, vorn die Wand mit dem Loch –
+   die Förmchen fahren dazwischen, also wirklich durch die Öffnung hinein */
+const OV_BODY = "M6 216 V96 Q6 30 100 30 Q194 30 194 96 V216 Z";
+const OV_RIM  = "M30 216 V178 Q30 146 100 146 Q170 146 170 178 V216 Z";
+const OV_HOLE = "M42 216 V182 Q42 158 100 158 Q158 158 158 182 V216 Z";
+const OVEN_BACK = `<div class="cv-ovback"><svg viewBox="0 0 200 220" preserveAspectRatio="none"><defs>
+    <radialGradient id="ovIn" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#FFE45C"/><stop offset=".4" stop-color="#FF8A3D"/><stop offset="1" stop-color="#5E2E3A"/></radialGradient></defs>
+    <path d="${OV_HOLE}" fill="url(#ovIn)"/><path d="M42 182 Q42 158 100 158 Q158 158 158 182" fill="none" stroke="#3B2C5A" stroke-width="10" opacity=".6"/></svg></div>`;
+const OVEN_FRONT = `<div class="cv-ovfront"><div class="cv-smoke"><i>♥</i><i>☁</i><i>♥</i></div>
+  <svg viewBox="0 0 200 220" preserveAspectRatio="none"><defs>
+    <linearGradient id="ovB2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC48A"/><stop offset="1" stop-color="#F09A5A"/></linearGradient>
+    <radialGradient id="ovF2" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#FFE45C"/><stop offset=".45" stop-color="#FF8A3D"/><stop offset="1" stop-color="#7A2E3A"/></radialGradient>
+    <pattern id="ovBr2" width="28" height="16" patternUnits="userSpaceOnUse"><path d="M0 15.5 H28 M14 0 V8 M0 8 H28 M2 8 V16" stroke="#D97A3A" stroke-width="1.6" opacity=".55"/></pattern></defs>
+    <rect x="132" y="2" width="30" height="46" rx="4" fill="#C9946A" stroke="#8F5A2B" stroke-width="4"/><rect x="126" y="0" width="42" height="12" rx="5" fill="#B97A45" stroke="#8F5A2B" stroke-width="3"/>
+    <path d="${OV_BODY} ${OV_RIM}" fill="url(#ovB2)" fill-rule="evenodd" stroke="#B9651E" stroke-width="5"/>
+    <path d="${OV_BODY} ${OV_RIM}" fill="url(#ovBr2)" fill-rule="evenodd"/>
+    <path d="${OV_RIM} ${OV_HOLE}" fill="#3B2C5A" fill-rule="evenodd" stroke="#B9651E" stroke-width="4"/>
+    <path d="M30 70 Q60 44 100 42" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+    <rect x="52" y="70" width="96" height="58" rx="18" fill="#5E2E3A" stroke="#B9651E" stroke-width="5"/>
+    <rect x="60" y="78" width="80" height="42" rx="12" fill="url(#ovF2)" class="ov-glass"/>
+    <g class="ov-dial"><circle cx="172" cy="100" r="13" fill="#fff" stroke="#B9651E" stroke-width="4"/><path class="ov-needle" d="M172 100 L172 90" stroke="#E8455F" stroke-width="3" stroke-linecap="round"/></g>
+    <g fill="#B9651E"><circle cx="26" cy="100" r="3"/><circle cx="26" cy="130" r="3"/><circle cx="174" cy="130" r="3"/></g></svg>
+  <div class="cv-peek" id="peek"></div><div class="cv-glint"></div></div>`;
 function step3(){
-  /* Backen läuft von allein: das Band fährt durch den Ofen, hinter der Scheibe gehen die Muffins auf, dann „Ding!“ */
+  /* Backen läuft von allein. Erst schwenkt die Kamera: Teigdüse raus nach links, Ofen rein von rechts.
+     Dann fährt das Band die Förmchen durch die Ofenöffnung – hinter der Scheibe gehen sie auf – „Ding!“ */
   S.step = 3; setMap(); say("Ab in den Ofen! 🔥");
-  S.pos = [70, 59.6, 49.2, 38.8, 28.4];
-  $("mach").innerHTML = "";
-  drawCups();
-  scene().insertAdjacentHTML("beforeend", `<div id="ovenLayer">${oven(true, false)}</div>`);
-  const ov = scene().querySelector(".cv-oven");
-  ov.insertAdjacentHTML("beforeend", `<div class="cv-peek" id="peek"></div>`);
-  $("panel").innerHTML = lamps(3) + `<div class="cv-bake"><span class="cv-timer">⏲️</span><div class="cv-bar"><i id="bakeBar"></i></div><span>🔔</span></div><p class="cv-tip" id="bakeTip">Die Muffins backen …</p>`;
-  moving(true);
-  const from = S.pos[4], to = 104, total = to - from;
-  let last = performance.now(), dinged = false, inside = 0;
-  const tips = ["Die Muffins backen …", "Sie gehen auf! 😮", "Hmm, wie das duftet! 😋", "Gleich fertig …"];
-  const tick = now => {
-    const dt = Math.min(.05, (now - last) / 1000); last = now;
-    S.cups.forEach((cp, i) => {
-      S.pos[i] += 14 * dt;
-      if (!cp.baked && S.pos[i] > 64){
-        cp.baked = true; const el = $("cup" + i); el.firstElementChild.outerHTML = BAKED(cp.c);
-        $("peek").insertAdjacentHTML("beforeend", `<span class="cv-rise">${BAKED(cp.c)}</span>`); inside++;
+  $("panel").innerHTML = lamps(3) + `<div class="cv-bake"><span class="cv-timer">⏲️</span><div class="cv-bar"><i id="bakeBar"></i></div><span>🔔</span></div><p class="cv-tip" id="bakeTip">Da kommt der Ofen! 👀</p>`;
+  scene().insertAdjacentHTML("beforeend", `<div id="ovenLayer" class="enter">${OVEN_BACK}${OVEN_FRONT}</div>`);
+  const PAN = 46;
+  (async () => {
+    // Kameraschwenk
+    $("mach").style.transition = "transform 1.3s ease-in-out"; $("mach").style.transform = `translateX(-${PAN}vw)`;
+    S.cups.forEach((_, i) => { S.pos[i] -= PAN; const el = $("cup" + i); el.style.transition = "left 1.3s ease-in-out"; el.style.left = S.pos[i] + "%"; });
+    moving(true); sfx.belt();
+    await wait(30); $("ovenLayer").classList.remove("enter");
+    await wait(1350); moving(false);
+    $("mach").innerHTML = ""; $("mach").style.transition = "none"; $("mach").style.transform = "";
+    await wait(250);
+    // durch den Ofen
+    moving(true);
+    const from = S.pos[4], to = 101, total = to - from;
+    let last = performance.now(), dinged = false;
+    const tips = ["Die Muffins backen …", "Sie gehen auf! 😮", "Hmm, wie das duftet! 😋", "Gleich fertig …"];
+    const tick = now => {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      S.cups.forEach((cp, i) => {
+        S.pos[i] += 17 * dt;
+        if (!cp.baked && S.pos[i] > 76){
+          cp.baked = true; const el = $("cup" + i); el.firstElementChild.outerHTML = BAKED(cp.c);
+          $("peek").insertAdjacentHTML("beforeend", `<span class="cv-rise">${BAKED(cp.c)}</span>`);
+        }
+        const el = $("cup" + i); el.style.transition = "none"; el.style.left = S.pos[i] + "%";
+      });
+      const prog = Math.max(0, Math.min(1, (S.pos[4] - from) / total));
+      $("bakeBar").style.width = (prog * 100) + "%";
+      $("bakeTip").textContent = tips[Math.min(3, prog * 4 | 0)];
+      if (S.pos[4] >= to){
+        moving(false); cancelAnimationFrame(raf);
+        if (!dinged){ dinged = true; sfx.ding(); say("Ding! Alle gebacken! 🔔"); $("bakeTip").textContent = "Fertig! 🎉"; setTimeout(() => { $("ovenLayer")?.remove(); step4(); }, 1300); }
+        return;
       }
-      const el = $("cup" + i); el.style.transition = "none"; el.style.left = S.pos[i] + "%";
-    });
-    const prog = Math.min(1, (S.pos[4] - from) / total);
-    $("bakeBar").style.width = (prog * 100) + "%";
-    $("bakeTip").textContent = tips[Math.min(3, prog * 4 | 0)];
-    if (S.pos[4] >= to){
-      moving(false); cancelAnimationFrame(raf);
-      if (!dinged){ dinged = true; sfx.ding(); say("Ding! Alle gebacken! 🔔"); $("bakeTip").textContent = "Fertig! 🎉"; setTimeout(() => { $("ovenLayer")?.remove(); step4(); }, 1200); }
-      return;
-    }
+      raf = requestAnimationFrame(tick);
+    };
     raf = requestAnimationFrame(tick);
-  };
-  raf = requestAnimationFrame(tick);
+  })();
 }
 /* ---------- Verzieren ---------- */
 const XS = [16, 31, 50, 70, 86];
