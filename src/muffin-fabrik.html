@@ -153,7 +153,13 @@
   @keyframes cvTick{from{rotate:-10deg}to{rotate:10deg}}
   .cv-bar{flex:1;height:24px;border-radius:999px;background:#fff;box-shadow:inset 0 3px 0 rgba(47,155,122,.2);overflow:hidden;border:3px solid #2F9B7A}
   .cv-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#FFD54A,#FF8A3D)}
-  .cv-ovback,.cv-ovfront{position:absolute;right:-14px;bottom:calc(var(--bb) + 40px);width:54%;height:min(290px,34vh)}
+  .cv-ovback,.cv-ovfront{position:absolute;right:-14px;bottom:calc(var(--bb) + 40px);width:54%;height:min(250px,30vh)}
+  .ov-flap{transform-box:fill-box;transform-origin:50% 0;animation:ovFlap 1.1s ease-in-out infinite alternate}
+  .ov-flap.f1{animation-delay:-.3s}.ov-flap.f2{animation-delay:-.6s}.ov-flap.f3{animation-delay:-.9s}
+  @keyframes ovFlap{from{rotate:-4deg}to{rotate:7deg}}
+  .ov-flicker{animation:cvGlow .5s ease-in-out infinite alternate}
+  .cv-item.rise svg{animation:cvRiseUp 1.2s cubic-bezier(.3,1.6,.5,1)}
+  @keyframes cvRiseUp{0%{scale:1 .8;transform-origin:50% 100%}100%{scale:1 1;transform-origin:50% 100%}}
   .cv-ovback{z-index:2}.cv-ovfront{z-index:6;pointer-events:none}
   .cv-ovback svg,.cv-ovfront svg{display:block;width:100%;height:100%;overflow:visible}
   .cv-ovfront svg{filter:drop-shadow(0 6px 0 rgba(185,101,30,.2))}
@@ -610,29 +616,34 @@ function step2(){
   };
 }
 let raf = 0;
-/* Ofen in zwei Ebenen: hinten das glühende Innere, vorn die Wand mit dem Loch –
-   die Förmchen fahren dazwischen, also wirklich durch die Öffnung hinein */
-const OV_BODY = "M6 216 V96 Q6 30 100 30 Q194 30 194 96 V216 Z";
-const OV_RIM  = "M30 216 V178 Q30 146 100 146 Q170 146 170 178 V216 Z";
-const OV_HOLE = "M42 216 V182 Q42 158 100 158 Q158 158 158 182 V216 Z";
+/* Tunnelofen in zwei Ebenen: hinten das glühende Innere, vorn die Ofenwand mit Eingang (Vorhang-Streifen)
+   und langem Glasfenster – die Förmchen fahren dazwischen, also sichtbar hinein und hinter der Scheibe weiter */
+const OV_BODY = "M0 214 V96 Q0 30 100 30 Q200 30 200 96 V214 Z";
+const OV_DOOR = "M-2 214 V152 Q-2 140 10 140 H22 V214 Z";
+const OV_WIN  = "M34 210 V160 Q34 148 46 148 H206 V210 Z";
 const OVEN_BACK = `<div class="cv-ovback"><svg viewBox="0 0 200 220" preserveAspectRatio="none"><defs>
-    <radialGradient id="ovIn" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#FFE45C"/><stop offset=".4" stop-color="#FF8A3D"/><stop offset="1" stop-color="#5E2E3A"/></radialGradient></defs>
-    <path d="${OV_HOLE}" fill="url(#ovIn)"/><path d="M42 182 Q42 158 100 158 Q158 158 158 182" fill="none" stroke="#3B2C5A" stroke-width="10" opacity=".6"/></svg></div>`;
+    <linearGradient id="ovIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E2E3A"/><stop offset=".5" stop-color="#C9451E"/><stop offset="1" stop-color="#FFB13B"/></linearGradient>
+    <radialGradient id="ovGlow" cx=".5" cy="1" r=".7"><stop offset="0" stop-color="#FFE45C" stop-opacity=".9"/><stop offset="1" stop-color="#FFE45C" stop-opacity="0"/></radialGradient></defs>
+    <rect x="-4" y="136" width="210" height="80" fill="url(#ovIn)"/><rect x="-4" y="150" width="210" height="66" fill="url(#ovGlow)" class="ov-flicker"/></svg></div>`;
 const OVEN_FRONT = `<div class="cv-ovfront"><div class="cv-smoke"><i>♥</i><i>☁</i><i>♥</i></div>
   <svg viewBox="0 0 200 220" preserveAspectRatio="none"><defs>
     <linearGradient id="ovB2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC48A"/><stop offset="1" stop-color="#F09A5A"/></linearGradient>
     <radialGradient id="ovF2" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#FFE45C"/><stop offset=".45" stop-color="#FF8A3D"/><stop offset="1" stop-color="#7A2E3A"/></radialGradient>
+    <linearGradient id="ovGl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".18"/><stop offset=".62" stop-color="#fff" stop-opacity="0"/></linearGradient>
     <pattern id="ovBr2" width="28" height="16" patternUnits="userSpaceOnUse"><path d="M0 15.5 H28 M14 0 V8 M0 8 H28 M2 8 V16" stroke="#D97A3A" stroke-width="1.6" opacity=".55"/></pattern></defs>
-    <rect x="132" y="2" width="30" height="46" rx="4" fill="#C9946A" stroke="#8F5A2B" stroke-width="4"/><rect x="126" y="0" width="42" height="12" rx="5" fill="#B97A45" stroke="#8F5A2B" stroke-width="3"/>
-    <path d="${OV_BODY} ${OV_RIM}" fill="url(#ovB2)" fill-rule="evenodd" stroke="#B9651E" stroke-width="5"/>
-    <path d="${OV_BODY} ${OV_RIM}" fill="url(#ovBr2)" fill-rule="evenodd"/>
-    <path d="${OV_RIM} ${OV_HOLE}" fill="#3B2C5A" fill-rule="evenodd" stroke="#B9651E" stroke-width="4"/>
-    <path d="M30 70 Q60 44 100 42" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55"/>
-    <rect x="52" y="70" width="96" height="58" rx="18" fill="#5E2E3A" stroke="#B9651E" stroke-width="5"/>
-    <rect x="60" y="78" width="80" height="42" rx="12" fill="url(#ovF2)" class="ov-glass"/>
-    <g class="ov-dial"><circle cx="172" cy="100" r="13" fill="#fff" stroke="#B9651E" stroke-width="4"/><path class="ov-needle" d="M172 100 L172 90" stroke="#E8455F" stroke-width="3" stroke-linecap="round"/></g>
-    <g fill="#B9651E"><circle cx="26" cy="100" r="3"/><circle cx="26" cy="130" r="3"/><circle cx="174" cy="130" r="3"/></g></svg>
-  <div class="cv-peek" id="peek"></div><div class="cv-glint"></div></div>`;
+    <rect x="140" y="2" width="30" height="46" rx="4" fill="#C9946A" stroke="#8F5A2B" stroke-width="4"/><rect x="134" y="0" width="42" height="12" rx="5" fill="#B97A45" stroke="#8F5A2B" stroke-width="3"/>
+    <path d="${OV_BODY} ${OV_DOOR} ${OV_WIN}" fill="url(#ovB2)" fill-rule="evenodd" stroke="#B9651E" stroke-width="5"/>
+    <path d="${OV_BODY} ${OV_DOOR} ${OV_WIN}" fill="url(#ovBr2)" fill-rule="evenodd"/>
+    <path d="${OV_WIN}" fill="url(#ovGl)" stroke="#8F4A1A" stroke-width="5"/>
+    <path d="M36 210 H206" stroke="#8F4A1A" stroke-width="4"/>
+    <path d="M28 60 Q56 40 100 40" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+    <rect x="50" y="66" width="84" height="50" rx="16" fill="#5E2E3A" stroke="#B9651E" stroke-width="5"/>
+    <rect x="57" y="73" width="70" height="36" rx="11" fill="url(#ovF2)" class="ov-glass"/>
+    <rect x="63" y="77" width="7" height="26" rx="3.5" fill="#fff" opacity=".5"/>
+    <g class="ov-dial"><circle cx="166" cy="92" r="13" fill="#fff" stroke="#B9651E" stroke-width="4"/><path class="ov-needle" d="M166 92 L166 82" stroke="#E8455F" stroke-width="3" stroke-linecap="round"/></g>
+    <g class="ov-flaps">${[0,1,2,3].map(i => `<rect class="ov-flap f${i}" x="${-1 + i * 5.6}" y="142" width="5.2" height="66" rx="2.6" fill="${i % 2 ? "#FFB3C8" : "#FF88A8"}" stroke="#C9507A" stroke-width="1.4"/>`).join("")}</g>
+    <path d="M-2 140 H22" stroke="#B9651E" stroke-width="5" stroke-linecap="round"/></svg>
+  <div class="cv-glint"></div></div>`;
 function step3(){
   /* Backen läuft von allein. Erst schwenkt die Kamera: Teigdüse raus nach links, Ofen rein von rechts.
      Dann fährt das Band die Förmchen durch die Ofenöffnung – hinter der Scheibe gehen sie auf – „Ding!“ */
@@ -651,16 +662,15 @@ function step3(){
     await wait(250);
     // durch den Ofen
     moving(true);
-    const from = S.pos[4], to = 101, total = to - from;
+    const from = S.pos[4], to = 104, total = to - from;
     let last = performance.now(), dinged = false;
     const tips = ["Die Muffins backen …", "Sie gehen auf! 😮", "Hmm, wie das duftet! 😋", "Gleich fertig …"];
     const tick = now => {
       const dt = Math.min(.05, (now - last) / 1000); last = now;
       S.cups.forEach((cp, i) => {
-        S.pos[i] += 17 * dt;
-        if (!cp.baked && S.pos[i] > 76){
-          cp.baked = true; const el = $("cup" + i); el.firstElementChild.outerHTML = BAKED(cp.c);
-          $("peek").insertAdjacentHTML("beforeend", `<span class="cv-rise">${BAKED(cp.c)}</span>`);
+        S.pos[i] += 13 * dt;
+        if (!cp.baked && S.pos[i] > 66){
+          cp.baked = true; const el = $("cup" + i); el.firstElementChild.outerHTML = BAKED(cp.c); el.classList.add("rise");
         }
         const el = $("cup" + i); el.style.transition = "none"; el.style.left = S.pos[i] + "%";
       });
