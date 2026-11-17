@@ -685,8 +685,8 @@ const KINDS = [["bunt","🌈",0],["schoko","🍫",0],["stern","⭐",10],["herz",
 const GUSS = ["brown","pink","cream","blue","purple"];
 function step4(){
   S.step = 4; setMap(); S.sel = 0;
-  S.pos = XS.slice();
-  $("mach").innerHTML = EXIT + `<div class="cv-spot"></div><div class="cv-lift"></div><div class="cv-deco" id="big"></div><div id="shakerBox"></div><div class="cv-touch" id="touch"></div>`;
+  S.pos = XS.map(x => x - 90);            // die Muffins kommen von links aufs Bild gefahren
+  $("mach").innerHTML = `<div class="cv-spot"></div><div class="cv-lift"></div><div class="cv-deco" id="big"></div><div id="shakerBox"></div><div class="cv-touch" id="touch"></div>`;
   S.cups.forEach((cp, i) => { cp.baked = true; });
   $("panel").innerHTML = `<div class="cv-row" id="gussRow"><b>🍫</b>${GUSS.map(c => `<button class="cv-g" data-g="${c}" style="--c:${PIC_PAL[c][1]};--b:${PIC_PAL[c][3]}" aria-label="Guss ${c}"><i></i></button>`).join("")}</div>
     <div class="cv-row" id="kindRow"><b>✨</b>${KINDS.map(([k, e, need]) => `<button class="cv-k${need > STARS ? " locked" : ""}" data-k="${k}">${e}${need > STARS ? "<em>🔒</em>" : ""}</button>`).join("")}</div>
@@ -701,6 +701,15 @@ function step4(){
   t.addEventListener("pointermove", e => { if (down && Date.now() - last > 60){ last = Date.now(); sprinkle(e); } });
   ["pointerup","pointercancel"].forEach(n => t.addEventListener(n, () => down = false));
   selectCup();
+  // erst einfahren, dann hebt die Bühne den ersten Muffin hoch
+  const lift = [".cv-spot", ".cv-lift", "#big", "#shakerBox"].map(q => $("mach").querySelector(q));
+  lift.forEach(el => { el.style.transition = "opacity .4s, translate .5s cubic-bezier(.3,1.5,.5,1)"; el.style.opacity = 0; });
+  $("big").style.translate = "-50% 40px";
+  S.busy = true; say("Da kommen deine Muffins! 🧁");
+  moveCups(90, 1400).then(() => {
+    lift.forEach(el => el.style.opacity = 1); $("big").style.translate = "-50% 0";
+    S.busy = false; selectCup();
+  });
 }
 function rows(){
   const cp = S.cups[S.sel];
