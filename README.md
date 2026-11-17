@@ -65,7 +65,7 @@ Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei sei
 - 🔓 **Deko freischalten durch Üben:** Bunte und Schoko-Streusel gibt es sofort, Sterne, Herzen, Kirschen und Co. kommen nach und nach mit richtigen Antworten im G-oder-D-Spiel dazu. Gesperrte Deko zeigt, wie viele richtige Antworten noch fehlen. Neues wird mit „NEU“ markiert, und Fips verrät es beim Öffnen der Party.
 - 🥦 Ganz selten ist ein Muffin in Wahrheit ein **Brokkoli-Muffin** – er sieht aus wie jeder andere. Fips verzieht das Gesicht und lässt einen grünen Rülpser raus.
 - 🥚 **Geheimnis im Geheimnis:** Nach 10 Goldmuffins liegt ein Drachenei im Gras. Beim nächsten Besuch lässt es sich aufklopfen – heraus schlüpft ein Baby-Drache, der ab dann mitfeiert.
-- 🏭 **Prototyp Muffin-Fabrik** (noch nicht in der Party eingebaut): [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html) – START drücken, Teig einfüllen, mit Fips’ Feuer backen, 5 Muffins verzieren.
+- 🏭 **Prototyp Muffin-Fabrik** (noch nicht in der Party eingebaut): [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html) – START drücken, Teig einfüllen, das Band fährt von allein durch den Ofen, dann 5 Muffins verzieren.
 
 </details>
 
