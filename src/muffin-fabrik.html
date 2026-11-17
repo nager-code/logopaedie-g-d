@@ -44,6 +44,8 @@
   .hot{animation:glow 1s ease-in-out infinite alternate}
   @keyframes glow{from{filter:drop-shadow(0 0 0 rgba(255,213,74,0))}to{filter:drop-shadow(0 0 7px rgba(255,213,74,1)) drop-shadow(0 0 2px #fff)}}
   .hint,.fallbit,.pourS,#streams,#slot{pointer-events:none}
+  .droplines{pointer-events:none;animation:dropl .42s ease-out forwards}
+  @keyframes dropl{from{opacity:.9;transform:translateY(-30px)}to{opacity:0;transform:translateY(40px)}}
   .hint .ring{transform-box:fill-box;transform-origin:center;animation:ring 1.3s ease-out infinite}
   .hint .r2{animation-delay:.65s}
   @keyframes ring{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.5);opacity:0}}
@@ -211,8 +213,6 @@ const DEFS = `<defs>
   <linearGradient id="metalV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8C97A8"/><stop offset=".4" stop-color="#EEF2F7"/><stop offset="1" stop-color="#9AA5B6"/></linearGradient>
   <linearGradient id="mintV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#55BE96"/><stop offset=".4" stop-color="#B8F0DA"/><stop offset="1" stop-color="#5EC79F"/></linearGradient>
   <linearGradient id="woodG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2C894"/><stop offset="1" stop-color="#C9894E"/></linearGradient>
-  <linearGradient id="tubeBack" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F7C3D5" stop-opacity=".75"/><stop offset=".35" stop-color="#fff" stop-opacity=".35"/><stop offset=".65" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#F7C3D5" stop-opacity=".8"/></linearGradient>
-  <linearGradient id="tubeFront" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E8A5BC" stop-opacity=".45"/><stop offset=".18" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#C9507A" stop-opacity=".35"/></linearGradient>
   <radialGradient id="glassG" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".5" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#F7D9E6" stop-opacity=".55"/></radialGradient>
   <linearGradient id="doughG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3CC"/><stop offset="1" stop-color="#F2C873"/></linearGradient>
   <linearGradient id="pinkV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC4D4"/><stop offset=".55" stop-color="#FF88A8"/><stop offset="1" stop-color="#E8608A"/></linearGradient>
@@ -270,25 +270,14 @@ function beltSvg(){
 /* ---------- Station 1: Förmchen-Regal, Teigmaschine, Hebel ---------- */
 const STACKS = [["pink", 58], ["blue", 103], ["yellow", 148], ["purple", 193], ["leaf", 238]];
 function shelfSvg(){
-  // je Farbe steht genau ein Förmchen im Regal; darüber eine Glasröhre mit Nachschub – wird eins genommen, fällt das nächste herunter
-  // runde Glasröhre: dunklere Ränder, Glanzstreifen, ovaler Deckel oben, ovale Öffnung unten
-  const tube = (c, x) => `<g>
-      <rect x="${x - 18}" y="236" width="36" height="118" fill="url(#tubeBack)"/>
-      ${[0,1,2].map(k => nest(CUP(c), x - 15, 252 + k * 26, 30, 32, 'opacity=".7"')).join("")}
-      <rect x="${x - 18}" y="236" width="36" height="118" fill="url(#tubeFront)"/>
-      <path d="M${x - 18} 236 V354 M${x + 18} 236 V354" stroke="#E8A5BC" stroke-width="2.2"/>
-      <ellipse cx="${x}" cy="354" rx="18" ry="5" fill="#C9507A" opacity=".25" stroke="#E8A5BC" stroke-width="2"/>
-      <rect x="${x - 10}" y="240" width="4" height="108" rx="2" fill="#fff" opacity=".9"/><rect x="${x + 9}" y="244" width="2.5" height="100" rx="1.2" fill="#fff" opacity=".55"/>
-      <path d="M${x - 21} 232 V226 Q${x} 218 ${x + 21} 226 V232 Z" fill="url(#pinkV)" stroke="#C9507A" stroke-width="2.5" stroke-linejoin="round"/>
-      <ellipse cx="${x}" cy="232" rx="21" ry="6" fill="#E8608A" stroke="#C9507A" stroke-width="2.5"/>
-      <ellipse cx="${x - 6}" cy="224" rx="6" ry="2" fill="#fff" opacity=".6"/></g>`;
-  const stacks = STACKS.map(([c, x]) => `${tube(c, x)}<g class="stack hot" data-c="${c}" data-x="${x}" style="cursor:grab">
+  // je Farbe steht genau ein Förmchen im Regal – wird eins genommen, fällt von oben ein neues herein
+  const stacks = STACKS.map(([c, x]) => `<g class="stack hot" data-c="${c}" data-x="${x}" style="cursor:grab">
       <ellipse cx="${x}" cy="404" rx="22" ry="4" fill="#5E2E4A" opacity=".18"/>
       <g class="scup">${nest(CUP(c), x - 22, 356, 44, 48)}</g>
       <rect x="${x - 23}" y="330" width="46" height="76" fill="transparent"/></g>`).join("");
   return `<g id="shelf"><rect x="28" y="404" width="236" height="14" rx="5" fill="url(#woodG)" stroke="#8F5A2B" stroke-width="3" filter="url(#shadow)"/>
     <path d="M50 418 L50 440 L70 418 Z M238 418 L238 440 L218 418 Z" fill="#B97A45" stroke="#8F5A2B" stroke-width="2.5"/>
-    <rect x="96" y="184" width="104" height="22" rx="11" fill="#fff" stroke="#E8B5C8" stroke-width="2.5" filter="url(#shadow)"/><text x="148" y="200" text-anchor="middle" font-size="13" font-weight="900" fill="#C9507A">Förmchen</text>
+    <rect x="96" y="300" width="104" height="22" rx="11" fill="#fff" stroke="#E8B5C8" stroke-width="2.5" filter="url(#shadow)"/><text x="148" y="316" text-anchor="middle" font-size="13" font-weight="900" fill="#C9507A">Förmchen</text>
     ${stacks}</g>`;
 }
 function tankSvg(){
@@ -466,8 +455,11 @@ function stackDown(e, st){
   e.preventDefault(); sfx.pick(); hint(null);
   const c = st.dataset.c, sx = +st.dataset.x, sc = st.querySelector(".scup");
   sc.style.opacity = 0;
-  const refill = () => { sc.setAttribute("transform", "translate(0 -70)"); sc.style.opacity = 1; sfx.drop();
-    tween(380, t => sc.setAttribute("transform", `translate(0 ${-70 * (1 - t)})`), t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375; return n * (t -= 2.625 / d) * t + .984375; }); };
+  const refill = () => { sc.setAttribute("transform", "translate(0 -260)"); sc.style.opacity = 1;
+    setTimeout(() => sfx.drop(), 330);
+    $("fxl").insertAdjacentHTML("beforeend", `<g class="droplines"><path d="M${sx - 12} 250 V300 M${sx} 236 V296 M${sx + 12} 250 V300" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>`);
+    const dl = $("fxl").lastElementChild; setTimeout(() => dl.remove(), 420);
+    tween(560, t => sc.setAttribute("transform", `translate(0 ${-260 * (1 - t)})`), t => { const n = 7.5625, d = 2.75; if (t < 1 / d) return n * t * t; if (t < 2 / d) return n * (t -= 1.5 / d) * t + .75; if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + .9375; return n * (t -= 2.625 / d) * t + .984375; }); };
   const p0 = toWorld(e); let moved = false;
   const d = $("drag"); d.innerHTML = `<g id="ghost">${nest(CUP(c), -CW / 2, -CH, CW, CH)}</g>`;
   const gh = $("ghost"); let gx = sx, gy = 400;
