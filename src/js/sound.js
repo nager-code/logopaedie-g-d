@@ -26,11 +26,12 @@ function playRec(k){
 async function playSeq(keys){
   stopAll();
   const token = playToken;
-  if (typeof partyOn !== "undefined" && partyOn) return;   // während einer Feier still sein
+  if (typeof partyOn !== "undefined" && partyOn) return false;   // während einer Feier still sein
   for (const k of keys){
-    if (token !== playToken) return;                        // inzwischen weitergeschaltet → nichts Altes mehr abspielen
+    if (token !== playToken) return false;                  // inzwischen weitergeschaltet → nichts Altes mehr abspielen
     if (recURL[k]) await playRec(k);
   }
+  return token === playToken;                               // true = komplett abgespielt, nicht unterbrochen
 }
 
 /* ================= Geräusche ================= */

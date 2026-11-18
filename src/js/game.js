@@ -212,14 +212,22 @@ function answer(choice){
   results[round] = correct === true ? "ok" : correct === false ? "no" : "skip";
   recordAnswer(item.w, item.l, correct);
   renderProgress();
-  if (!partyDue) show("next");   // bei fälliger Feier kommt der Pfeil erst mit Fips' Tanz – sonst tippt man die Feier weg
+  // bei fälliger Feier kommt der Pfeil erst mit Fips' Tanz – sonst tippt man die Feier weg.
+  // Nach einem Fehler erscheint er erst nach 1 Sekunde, damit das Kind die Korrektur sieht und nicht gleich weitertippt.
+  if (correct === false) later(() => show("next"), 1000);
+  else if (!partyDue) show("next");
 
   const seq = correct === false ? ["#" + item.l, item.w] : correct === true ? ["#ok", item.w] : [item.w];
   if (partyDue){
-    // erst feiern, danach das Wort – nichts soll sich überlagern
+    // erst das Wort wiederholen, danach feiern – so passt die Wiederholung noch zum gerade gelösten Bild
     partyDue = false;
-    const n = streak;
-    later(() => { celebrate(n, seq); show("next"); }, 700);
+    const n = streak, r = round;
+    later(async () => {
+      const done = await playSeq(seq);
+      if (round !== r || $("game").classList.contains("hidden")) return;   // inzwischen weiter oder zurück zum Start
+      if (done) celebrate(n);
+      show("next");
+    }, 900);
   } else {
     later(() => { if (!partyOn) playSeq(seq); }, correct === null ? 400 : 900);
   }
