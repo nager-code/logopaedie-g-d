@@ -465,7 +465,7 @@ function build(){
     <div class="vign"></div>
     <button id="restart" aria-label="Von vorn">↺</button>
     <div class="say" id="say"></div><button id="goFips">🎉 Ab zu Fips!</button></div>`;
-  svg = $("sc"); world = $("world"); fit();
+  svg = $("sc"); world = $("world"); bgK = 0; fit();   // neues (leeres) Canvas → Hintergrund neu zeichnen
   $("restart").onclick = () => { tone(520, .08, "square", .08); start(); };
   $("goFips").onclick = () => { if (S.step === 4 && !S.busy){ hint(null); finish(); } };
 }
@@ -705,7 +705,9 @@ function sprinkleAt(wx, wy, kind){
   const sp = svg.createSVGPoint(); sp.x = wx; sp.y = wy;
   const lp = sp.matrixTransform(world.getScreenCTM()).matrixTransform(top.getScreenCTM().inverse());   // Welt → Kuppel-Koordinaten
   const lx = lp.x, ly = lp.y;
-  const n = kind === "herz" || kind === "stern" ? 2 : 4; let added = 0;
+  // Kirschen: einzeln und höchstens drei pro Muffin (wie in egg.js)
+  if (kind === "kirsche" && cp.items.filter(i => i.t === "kirsche").length >= 3) return 0;
+  const n = kind === "kirsche" ? 1 : kind === "herz" || kind === "stern" ? 2 : 4; let added = 0;
   for (let i = 0; i < n * 3 && added < n; i++){
     const x = lx + Math.random() * 12 - 6, y = ly + Math.random() * 8 - 4;
     const pt = svg.createSVGPoint(); pt.x = x; pt.y = y;
@@ -719,7 +721,7 @@ function sprinkleAt(wx, wy, kind){
   return added;
 }
 function fall(wx, wy, kind){
-  const cols = {bunt: ["#FF88A8","#FFD54A","#7DD9B4","#93BFF5"], schoko: ["#4A2E3A","#6E4429"], stern: ["#FFE45C"], herz: ["#FF88A8","#E8455F"]}[kind];
+  const cols = {bunt: ["#FF88A8","#FFD54A","#7DD9B4","#93BFF5"], schoko: ["#4A2E3A","#6E4429"], stern: ["#FFE45C"], herz: ["#FF88A8","#E8455F"], kirsche: ["#E8455F"]}[kind] || ["#FF88A8"];
   for (let i = 0; i < 3; i++){
     const x = wx + Math.random() * 14 - 7, c = cols[i % cols.length];
     $("fxl").insertAdjacentHTML("beforeend", `<rect class="fallbit" x="${x}" y="${wy}" width="3" height="8" rx="1.5" fill="${c}" style="--d:${30 + Math.random() * 20}px"/>`);
@@ -762,11 +764,14 @@ function toolDown(e, el, type){
     if (moved){ await back(); goHome(); afterTool(); return; }
     // nur angetippt: Werkzeug fliegt selbst zum Muffin
     S.busy = true;
-    const tx = 1000 - homeX, ty = (type === "bottle" ? 250 : 268) - homeY;
-    await tween(320, t => { dx = tx * t; dy = ty * t; rot = (type === "bottle" ? 150 : 165) * t; put(); });
-    if (type === "bottle") await pour(color);
-    else for (let k = 0; k < 10; k++){ const a = Math.random() * 2 - 1; dx = tx + a * 40; put(); fall(homeX + dx, homeY + dy + 30, kind); sprinkleAt(homeX + dx, BIG.y + 30 + Math.random() * 26, kind); await wait(90); }
-    await back(); goHome(); S.busy = false; afterTool();
+    try {
+      const tx = 1000 - homeX, ty = (type === "bottle" ? 250 : 268) - homeY;
+      await tween(320, t => { dx = tx * t; dy = ty * t; rot = (type === "bottle" ? 150 : 165) * t; put(); });
+      if (type === "bottle") await pour(color);
+      else for (let k = 0; k < 10; k++){ const a = Math.random() * 2 - 1; dx = tx + a * 40; put(); fall(homeX + dx, homeY + dy + 30, kind); sprinkleAt(homeX + dx, BIG.y + 30 + Math.random() * 26, kind); await wait(90); }
+      await back();
+    } finally { goHome(); S.busy = false; }   // nie im "busy"-Zustand hängen bleiben
+    afterTool();
   };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
 }
