@@ -12,6 +12,9 @@ document.querySelectorAll(".mode").forEach(b => b.addEventListener("click", () =
 }));
 $("homeBtn").addEventListener("click", goHome);
 $("endHome").addEventListener("click", goHome);
+/* Muffin-Party als Belohnung nach jeder fertigen Runde. Darunter liegt dann die Startseite –
+   so ist es derselbe Weg wie nach dem Kitzeln, und nach der Party ist man wieder am Start. */
+$("endParty").addEventListener("click", () => { cancelRoundTimers(); endParty(); stopAll(); hide("game"); hide("endOverlay"); show("home"); refreshCounts(); openEgg(); });
 $("restartBtn").addEventListener("click", () => { hide("endOverlay"); stars = 0; $("stars").textContent = "⭐ 0"; newGame(); });
 $("next").addEventListener("click", () => { partyAfter = null; endParty(); next(); });
 $("party").addEventListener("click", endParty);
@@ -96,20 +99,18 @@ $("bkFile").addEventListener("change", async e => {
 });
 
 /* Kitzeln: je öfter man schnell hintereinander tippt, desto mehr lacht Fips –
-   kichern → lachen → er kugelt sich vor Lachen auf dem Boden */
-let tickles = 0, tickleTimer = null, rofl = false, eggTaps = 0, eggTimer = null;
+   kichern → lachen → er kugelt sich vor Lachen auf dem Boden.
+   Easter Egg: Wer ihn so weit bringt, landet kurz darauf bei seiner Muffin-Party. */
+let tickles = 0, tickleTimer = null, rofl = false;
 $("homeDragon").addEventListener("click", () => {
-  // Easter Egg: ganz oft ohne Pause kitzeln (auch während er sich am Boden kugelt) → Muffin-Party
-  eggTaps++;
-  clearTimeout(eggTimer);
-  eggTimer = setTimeout(() => eggTaps = 0, 2500);
-  if (eggTaps >= EGG_TAPS){ eggTaps = 0; tickles = 0; openEgg(); return; }
   if (rofl) return;                                   // kugelt sich gerade – erst wieder aufstehen lassen
   tickles++;
   clearTimeout(tickleTimer);
   tickleTimer = setTimeout(() => tickles = 0, 1500);   // kurze Pause → Fips beruhigt sich wieder
-  if (tickles >= 10){
+  if (tickles >= EGG_TICKLES){
     tickles = 0; rofl = true;
+    // erst kugeln und lachen, dann geht es zur Party – außer man ist inzwischen woanders
+    setTimeout(() => { if (!$("home").classList.contains("hidden") && !document.querySelector(".overlay:not(.hidden)")) openEgg(); }, 1800);
     dragonDo("homeDragon", "rofl", 3000);
     heroSay(pick(["Hahahaha! 😂<br>Ich kann nicht mehr!","Hahaha! 🤣<br>Gnade, Gnade!","Hihihaha! 😂<br>Ich platze gleich!"]), 3200);
     sfx("laugh", 3);

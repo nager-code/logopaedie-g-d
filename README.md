@@ -54,7 +54,7 @@ Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein p
 <details>
 <summary><b>🤫 Psst … ein Geheimnis</b></summary>
 
-Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei seiner **geheimen Muffin-Party** auf einer Sommerwiese – mit Picknickdecke, Wimpel- und Lichterkette, Schmetterlingen und einer kleinen Spieluhr-Melodie:
+Wer Fips auf der Startseite so oft schnell hintereinander kitzelt, dass er sich vor Lachen kugelt (10-mal), landet bei seiner **geheimen Muffin-Party**. Der zweite Weg führt übers Üben: Nach jeder fertigen Runde gibt es im Finale den Knopf „Zur Muffin-Party“. Die Party steigt auf einer Sommerwiese – mit Picknickdecke, Wimpel- und Lichterkette, Schmetterlingen und einer kleinen Spieluhr-Melodie:
 
 - 🧁 Muffins antippen oder mit dem Finger zu Fips ziehen – kommt einer näher, reißt er hungrig das Maul auf.
 - 🎈 Mit jedem Muffin wird Fips kugelrunder: Kugelbauch mit Bauchnabel, Pausbacken, Doppelkinn – und irgendwann bekommt er Schluckauf.

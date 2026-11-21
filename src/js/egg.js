@@ -1,5 +1,6 @@
 /* ================= Easter Egg: Fips' geheime Muffin-Party =================
-   Erreicht man, indem man Fips auf der Startseite ganz oft hintereinander kitzelt.
+   Zwei Wege dorthin: Fips auf der Startseite kitzeln, bis er sich vor Lachen kugelt –
+   oder eine Runde zu Ende spielen, dann gibt es im Finale den Knopf „Zur Muffin-Party“.
    Picknick auf der Sommerwiese: Muffins antippen oder zu Fips ziehen → er wird immer runder,
    bis er einen riesigen Feuerstrahl rauslässt (mit Feuerwerk) und wieder normal wird.
    Dazu: Goldmuffins, Schluckauf, Wackelbauch, Zähler und eine kleine Spieluhr-Melodie.
@@ -7,7 +8,7 @@
    Die Deko in der Küche wird nach und nach freigeschaltet – durch richtige Antworten im Spiel.
    Geheimnis im Geheimnis: Nach 10 Goldmuffins (über alle Besuche) liegt ein Drachenei im Gras.
    Beim nächsten Besuch lässt es sich aufklopfen – heraus kommt ein Baby-Drache, der ab dann mitfeiert. */
-const EGG_TAPS = 25;      // so oft ohne Pause kitzeln
+const EGG_TICKLES = 10;   // so oft schnell hintereinander kitzeln → Fips kugelt sich, dann beginnt die Party
 const EGG_FULL = 6;       // so satt → Feuerstrahl
 const EGG_SAY = [
   "Hast du Muffins für mich? 🥺",
@@ -778,6 +779,9 @@ function eggFatParts(svg){
 let kReady = false;
 async function openEgg(){
   if (!kReady){ kInit(); kReady = true; }
+  // Ein Fips aus dem letzten Finale liegt noch unsichtbar in der Seite. Beide Zeichnungen benutzen dieselben
+  // Namen für Farbverläufe und Masken – der Party-Fips griffe sonst auf die des versteckten zu und würde dunkel.
+  if ($("endOverlay").classList.contains("hidden")){ $("endDragon").innerHTML = ""; $("finFx").innerHTML = ""; }
   document.documentElement.classList.add("egg-open");   // Seite dahinter festhalten: kein Scrollen, kein Zoomen
   $("eggKitchen").classList.add("hidden");
   eggFat = 0; eggBusy = false; eggEaten = 0; eggFires = 0; eggFlavors = []; eggLastAct = Date.now();
