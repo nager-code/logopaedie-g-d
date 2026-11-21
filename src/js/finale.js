@@ -121,22 +121,30 @@ function storyAim(){
   story.classList.remove("aim", "aim1", "aim2"); probe.remove();
   return out;
 }
-/* Ein Feueratem als Ebenen; bt = Sekunden bis der Strahl losgeht */
-function storyFire(a, bt){
-  const story = document.querySelector("#endDragon .story"); if (!story || !a) return;
+/* Ein Feueratem als Ebenen. a = {x, y: Maul in Pixeln, u, ang: Richtung in Grad, len: Länge in SVG-Einheiten},
+   bt = Sekunden bis der Strahl losgeht. th (für die Muffin-Party) färbt ihn um:
+   {grad: Namen der Farbverläufe, puff: Farbfolgen der Feuerbälle, spark, stroke, halo}. */
+function fireLayers(a, bt, th){
+  th = th || {};
+  const g = Object.assign({o:"fbOuter", m:"fbMid", c:"fbCore", bo:"fbBallOut", bm:"fbBallMid", bc:"fbBallCore"}, th.grad);
   const r = (x, y) => +(x + rnd() * (y - x)).toFixed(1);
-  const dot = (cls, k, s, oy) => `<i class="${cls}" style="--j:${k};--oy:${oy};width:${2 * s}px;height:${2 * s}px;margin:${-s}px"></i>`;
-  const puffs = Array.from({length:14}, (_, k) => dot("sf-puff", k, r(12,19), r(-34,34))).join("");
-  const sparks = Array.from({length:10}, (_, k) => dot("sf-spark", k, r(2.5,4), r(-60,60))).join("");
+  const dot = (cls, k, s, oy, col = "") => `<i class="${cls}" style="--j:${k};--oy:${oy};width:${2 * s}px;height:${2 * s}px;margin:${-s}px;${col}"></i>`;
+  const puffCol = k => { const p = th.puff && th.puff[k % th.puff.length]; return p ? `--p1:${p[0]};--p2:${p[1]};--p3:${p[2]}` : ""; };
+  const puffs = Array.from({length:14}, (_, k) => dot("sf-puff", k, r(12,19), r(-34,34), puffCol(k))).join("");
+  const sparks = Array.from({length:10}, (_, k) => dot("sf-spark", k, r(2.5,4), r(-60,60), th.spark ? `--sp:${th.spark}` : "")).join("");
   const cone = (cls, k, grad) => `<svg class="${cls}" viewBox="0 -54 120 108"><path d="${FB_CONE[k]}" fill="url(#${grad})"/></svg>`;
   const ring = (cls, inner) => `<svg class="${cls}" viewBox="-64 -48 128 96">${inner}</svg>`;
-  story.insertAdjacentHTML("beforeend", `<div class="st-fire" style="left:${a.x.toFixed(1)}px;top:${a.y.toFixed(1)}px;--u:${a.u.toFixed(4)};--ang:${a.ang.toFixed(1)}deg;--len:${a.len.toFixed(1)};--k:${(a.len / 100).toFixed(3)};--bt:${bt.toFixed(3)}s">
-    <div class="sf-jet"><div class="sf-cone">${cone("sf-outer", 0, "fbOuter")}${cone("sf-mid", 1, "fbMid")}${cone("sf-core", 2, "fbCore")}</div>${puffs}${sparks}</div>
-    <div class="sf-ball"><i class="sf-halo"></i>
-      ${ring("sf-ring", `<path d="${finTongues(8, 31, 41)}" fill="url(#fbBallOut)" stroke="#F06A3A" stroke-width="2" stroke-linejoin="round"/>`)}
-      ${ring("sf-ring2", `<path d="${finTongues(7, 21, 29, .4)}" fill="url(#fbBallMid)"/>`)}
-      ${ring("sf-kern", `<ellipse rx="17" ry="14" fill="url(#fbBallCore)"/>`)}</div>
-  </div>`);
+  return `<div class="st-fire" style="left:${a.x.toFixed(1)}px;top:${a.y.toFixed(1)}px;--u:${a.u.toFixed(4)};--ang:${a.ang.toFixed(1)}deg;--len:${a.len.toFixed(1)};--k:${(a.len / 100).toFixed(3)};--bt:${bt.toFixed(3)}s">
+    <div class="sf-jet"><div class="sf-cone"><b>${cone("sf-outer", 0, g.o)}${cone("sf-mid", 1, g.m)}${cone("sf-core", 2, g.c)}</b></div>${puffs}${sparks}</div>
+    <div class="sf-ball"><i class="sf-halo"${th.halo ? ` style="--h1:${th.halo}"` : ""}></i>
+      ${ring("sf-ring", `<path d="${finTongues(8, 31, 41)}" fill="url(#${g.bo})" stroke="${th.stroke || "#F06A3A"}" stroke-width="2" stroke-linejoin="round"/>`)}
+      ${ring("sf-ring2", `<path d="${finTongues(7, 21, 29, .4)}" fill="url(#${g.bm})"/>`)}
+      ${ring("sf-kern", `<ellipse rx="17" ry="14" fill="url(#${g.bc})"/>`)}</div>
+  </div>`;
+}
+function storyFire(a, bt){
+  const story = document.querySelector("#endDragon .story"); if (!story || !a) return;
+  story.insertAdjacentHTML("beforeend", fireLayers(a, bt));
   const el = story.lastElementChild;
   later(() => el.remove(), (bt + 1.5) * 1000);
 }
@@ -185,13 +193,13 @@ function finaleFx(key){
   const r = (a, b) => a + rnd() * (b - a);
   if (key === "cheer"){
     for (let i = 0; i < 12; i++) add(FIN_HEART(pick(["#FF88A8","#FFB3C8","#7DD9B4"])),
-      `left:${r(4,92)}%;--s:${r(.6,1.2)};animation:finRise ${r(3.5,5.5)}s linear ${-r(0,5)}s infinite`);
+      `left:${r(4,92)}%;top:0;--s:${r(.6,1.2)};animation:finRise ${r(3.5,5.5)}s linear ${-r(0,5)}s infinite`);
   } else if (key === "clap"){
     for (let i = 0; i < 16; i++) add(FIN_STAR(pick(FIN_COLORS)),
       `left:${r(4,92)}%;top:${r(4,60)}%;--s:${r(.6,1.3)};animation:finTwinkle ${r(1,1.6)}s ease-in-out ${-r(0,1.6)}s infinite`);
   } else if (key === "jump"){
     for (let i = 0; i < 28; i++) add(`<i style="background:${pick(FIN_COLORS)}"></i>`,
-      `left:${r(0,98)}%;--s:${r(.7,1.2)};--r:${r(-540,540)}deg;animation:finFall ${r(2.4,4)}s linear ${-r(0,4)}s infinite`);
+      `left:${r(0,98)}%;top:0;--s:${r(.7,1.2)};--r:${r(-540,540)}deg;animation:finFall ${r(2.4,4)}s linear ${-r(0,4)}s infinite`);
   } else if (key === "flip"){
     // Sterne springen genau bei der Landung (70 % des Salto-Takts) heraus
     for (let i = 0; i < 12; i++){ const a = i / 12 * Math.PI * 2;
