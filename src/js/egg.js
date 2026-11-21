@@ -889,8 +889,9 @@ function closeEgg(){
   hide("eggOverlay");
   document.documentElement.classList.remove("egg-open");
 }
-/* iOS scrollt sonst die Startseite hinter der Party mit – nur echte Scrollbereiche (z. B. Küche auf kleinen Handys) dürfen scrollen */
-document.addEventListener("touchmove", e => {
+/* iOS scrollt sonst die Startseite hinter der Party mit – nur echte Scrollbereiche (z. B. Küche auf kleinen Handys) dürfen scrollen.
+   Der Wächter hängt nur an der Party selbst: An der ganzen Seite müsste der Browser bei jedem Wischen erst auf ihn warten. */
+$("eggOverlay").addEventListener("touchmove", e => {
   if (!document.documentElement.classList.contains("egg-open") || !e.cancelable) return;
   for (let el = e.target; el && el !== document.body; el = el.parentElement){
     const o = getComputedStyle(el).overflowY;

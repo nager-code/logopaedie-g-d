@@ -51,7 +51,10 @@ function selectKey(k){
   stopAll();
   selKey = k;
   setStudio("idle");
-  renderRecList();
+  // Die Liste nur neu aufbauen, wenn der Filter es verlangt – sonst genügt es, die Markierung umzusetzen
+  // (fast 90 Zeilen mit Bildern bei jedem Tipp neu zu bauen, macht das Durchklicken zäh)
+  if ($("onlyMissing").checked) renderRecList();
+  else document.querySelectorAll("#recList .recrow").forEach(r => r.classList.toggle("sel", r.dataset.k === k));
   $("studio").scrollIntoView({behavior:"smooth", block:"nearest"});
   if (hasRec(k)) playRec(k);             // beim Durchklicken gleich anhören – so fällt eine verpatzte Aufnahme sofort auf
 }
