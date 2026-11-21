@@ -249,7 +249,18 @@ function showEnd(){
   recordRound();
   const ok = results.filter(r => r === "ok").length, n = deck.length;
   showFinale(ok, n);   // große Abschluss-Animation von Fips, je nach Ergebnis
+  partyOffer(ok, n);
   playSeq(["#end"]);
+}
+/* Muffin-Party als Belohnung: bei 10 von 10 – oder nach drei gespielten Runden seit der letzten Party.
+   Die Runden werden auf dem Gerät gezählt, auch über mehrere Tage. Vorher steht im Finale, wie viele noch fehlen. */
+const PARTY_ROUNDS = 3;
+function partyOffer(ok, n){
+  const rounds = (+load("partyRounds", 0) || 0) + 1; save("partyRounds", rounds);
+  const can = (n > 0 && ok === n) || rounds >= PARTY_ROUNDS, rest = PARTY_ROUNDS - rounds;
+  $("endParty").classList.toggle("hidden", !can);
+  $("endPartyHint").classList.toggle("hidden", can);
+  $("endPartyHint").textContent = `🧁 Noch ${rest} ${rest === 1 ? "Runde" : "Runden"} bis zur Muffin-Party`;
 }
 /* ================= Zwischendurch-Feier bei einer Serie ================= */
 const STREAK_EVERY = 3;

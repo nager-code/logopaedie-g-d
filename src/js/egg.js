@@ -1,6 +1,6 @@
 /* ================= Easter Egg: Fips' geheime Muffin-Party =================
-   Zwei Wege dorthin: Fips auf der Startseite kitzeln, bis er sich vor Lachen kugelt –
-   oder eine Runde zu Ende spielen, dann gibt es im Finale den Knopf „Zur Muffin-Party“.
+   Der Weg dorthin führt übers Üben: Bei 10 von 10 oder nach drei gespielten Runden gibt es im Finale
+   den Knopf „Zur Muffin-Party“ (partyOffer in game.js).
    Picknick auf der Sommerwiese: Muffins antippen oder zu Fips ziehen → er wird immer runder,
    bis er einen riesigen Feuerstrahl rauslässt (mit Feuerwerk) und wieder normal wird.
    Dazu: Goldmuffins, Schluckauf, Wackelbauch, Zähler und eine kleine Spieluhr-Melodie.
@@ -8,7 +8,6 @@
    Die Deko in der Küche wird nach und nach freigeschaltet – durch richtige Antworten im Spiel.
    Geheimnis im Geheimnis: Nach 10 Goldmuffins (über alle Besuche) liegt ein Drachenei im Gras.
    Beim nächsten Besuch lässt es sich aufklopfen – heraus kommt ein Baby-Drache, der ab dann mitfeiert. */
-const EGG_TICKLES = 10;   // so oft schnell hintereinander kitzeln → Fips kugelt sich, dann beginnt die Party
 const EGG_FULL = 6;       // so satt → Feuerstrahl
 const EGG_SAY = [
   "Hast du Muffins für mich? 🥺",

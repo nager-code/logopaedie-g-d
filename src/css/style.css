@@ -477,10 +477,11 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .fin-panel{padding:14px 18px 10px}
 .fin-panel h1{margin:2px 0 4px}
 .fin-panel p{margin:6px 0 12px}
-/* unter „Nochmal“: Muffin-Party als Belohnung fürs Üben, daneben zurück zum Start */
+/* unter „Nochmal“: Muffin-Party als Belohnung fürs Üben (oder wie viele Runden noch fehlen), daneben zurück zum Start */
 .fin-more{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:14px!important}
 .fin-more .parents-btn{margin-top:0}
 .party-btn{border:0;border-radius:999px;padding:11px 18px;font-size:16px;font-weight:900;background:linear-gradient(160deg,#ff9dbb,var(--pink));color:#fff;box-shadow:0 5px 0 var(--pink-dark);cursor:pointer}
+.party-hint{border-radius:999px;padding:8px 14px;font-size:14px;font-weight:800;color:var(--pink-dark);background:#fff0f5;border:2px dashed #ffc2d4}
 .party-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--pink-dark)}
 .fin-stars{display:flex;justify-content:center;gap:4px;margin:2px 0}
 .fin-star{width:40px;height:40px;fill:#EEE8F7;stroke:#D5CCE8;animation:starIn .45s calc(.3s + var(--i) * .18s) both}
