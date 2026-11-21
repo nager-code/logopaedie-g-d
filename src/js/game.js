@@ -96,10 +96,28 @@ function setBubble(text, cls){
   b.textContent = text;
   b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
 }
+/* Die farbige Box soll genau auf dem Buchstaben sitzen – auch auf kleinen wie „g“, das nur halb so hoch ist und
+   unter die Zeile reicht. Dazu wird einmal ausgemessen, wo der Buchstabe in der Schrift dieses Geräts wirklich
+   liegt: Abstand von der Oberkante der Zeile und Höhe, beides in em (also passend zu jeder Schriftgröße). */
+const glyphBoxes = {};
+function glyphBox(ch){
+  if (ch in glyphBoxes) return glyphBoxes[ch];
+  let box = null;
+  try {
+    const c = document.createElement("canvas").getContext("2d");
+    c.font = `900 100px ${getComputedStyle(document.body).fontFamily}`;
+    const m = c.measureText(ch), up = m.actualBoundingBoxAscent, down = m.actualBoundingBoxDescent, pad = 9;   // pad: Rand oben und unten
+    if (m.fontBoundingBoxAscent != null && up != null && up + down > 0)
+      box = {top: (m.fontBoundingBoxAscent - up - pad) / 100, h: (up + down + 2 * pad) / 100};
+  } catch(e){}
+  return glyphBoxes[ch] = box;
+}
 function highlight(word, letter){
   const i = word.toLowerCase().indexOf(letter.toLowerCase());
   if (i < 0) return word;
-  return word.slice(0,i) + `<span class="hl ${letter}">${word[i]}</span>` + word.slice(i+1);
+  const m = glyphBox(word[i]);
+  const fit = m ? ` fit" style="--ht:${m.top.toFixed(3)}em;--hh:${m.h.toFixed(3)}em` : "";
+  return word.slice(0,i) + `<span class="hl ${letter}${fit}">${word[i]}</span>` + word.slice(i+1);
 }
 function renderProgress(){
   $("progress").innerHTML = deck.map((_,i) => {
@@ -267,6 +285,7 @@ function partyOffer(ok, n){
   $("endParty").classList.toggle("hidden", !can);
   $("endPartyHint").classList.toggle("hidden", can);
   $("endPartyHint").textContent = `🧁 Noch ${rest} ${rest === 1 ? "Runde" : "Runden"} bis zur Muffin-Party`;
+  finaleFit();                               // Knopf oder Hinweis ändern die Höhe ein wenig
 }
 /* ================= Zwischendurch-Feier bei einer Serie ================= */
 const STREAK_EVERY = 3;

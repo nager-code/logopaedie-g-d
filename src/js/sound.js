@@ -57,7 +57,7 @@ function getCtx(){
     return sfxCtx;
   } catch(e){ return null; }
 }
-function tone(ctx, freq, start, dur, type, vol, freqEnd){
+function tone(ctx, freq, start, dur, type, vol, freqEnd, dest){
   const o = ctx.createOscillator(), g = ctx.createGain();
   o.type = type;
   o.frequency.setValueAtTime(freq, start);
@@ -65,9 +65,18 @@ function tone(ctx, freq, start, dur, type, vol, freqEnd){
   g.gain.setValueAtTime(0.0001, start);
   g.gain.exponentialRampToValueAtTime(vol, start + 0.02);
   g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-  o.connect(g); g.connect(ctx.destination);
+  o.connect(g); g.connect(dest || ctx.destination);
   o.start(start); o.stop(start + dur + 0.05);
 }
+/* Seite verlassen (App gewechselt, Tab gewechselt, Handy gesperrt): alle Geräusche sofort anhalten.
+   Töne werden im Voraus geplant – ohne das spielen sie im Hintergrund weiter. Zurück: weiter. */
+function sfxPause(hidden){
+  if (!sfxCtx || (typeof recActive !== "undefined" && recActive)) return;
+  try { hidden ? sfxCtx.suspend() : sfxCtx.resume(); } catch(e){}
+}
+document.addEventListener("visibilitychange", () => sfxPause(document.hidden));
+window.addEventListener("pagehide", () => sfxPause(true));
+window.addEventListener("pageshow", () => sfxPause(document.hidden));
 /* Rauschen fürs Feuer-Fauchen: einmal berechnen und behalten (das dauert – beim Feuerstrahl selbst würde es ruckeln) */
 let fireNoise = null;
 function fireBuffer(ctx){

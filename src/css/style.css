@@ -159,6 +159,10 @@ body:has(> #eggOverlay:not(.hidden)) > #endOverlay,
 .word{font-size:clamp(26px + var(--u) * .04,9vw + var(--u) * .05,34px + var(--u) * .12);font-weight:900;letter-spacing:1px;line-height:1.15;white-space:nowrap}
 .hl{display:inline-block;padding:0 6px;border-radius:12px;color:#fff;margin:0 1px}
 .hl.G{background:var(--g)} .hl.D{background:var(--d)}
+/* ausgemessene Box (highlight in game.js): liegt genau um den Buchstaben, auch bei kleinen wie „g“ */
+.hl.fit{display:inline;position:relative;z-index:0;background:none}
+.hl.fit::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:var(--ht);height:var(--hh);border-radius:.32em}
+.hl.G.fit::before{background:var(--g)} .hl.D.fit::before{background:var(--d)}
 .explain{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;justify-content:center}
 .chip{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:46px;padding:0 10px;border-radius:14px;color:#fff;font-weight:900;font-size:28px}
 .chip.G{background:var(--g)} .chip.D{background:var(--d)}
@@ -471,15 +475,23 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 }
 
 /* ================= Finale: Fips' große Abschluss-Animation ================= */
-.overlay.finale{background:radial-gradient(ellipse at 50% 30%,#fffdf3,#ffeccb);backdrop-filter:none;overflow-x:hidden;overflow-y:auto;align-items:center}
+/* Das Finale füllt den Bildschirm, ohne zu scrollen: Der Inhalt wird in fester Größe gebaut – hochkant Fips über
+   dem Ergebnis, quer (fin-row) daneben – und dann als Ganzes passend vergrößert oder verkleinert (finaleFit in
+   finale.js setzt --fw, --fit und fin-row). Deshalb stehen hier feste Pixelmaße statt Anteilen des Bildschirms. */
+.overlay.finale{background:radial-gradient(ellipse at 50% 30%,#fffdf3,#ffeccb);backdrop-filter:none;overflow-x:hidden;overflow-y:auto;align-items:center;justify-content:center}
 .fin-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .fx{position:absolute;width:28px;height:28px;opacity:0;pointer-events:none}
 .fx svg{display:block;width:100%;height:100%}
 .fx i{display:block;width:10px;height:14px;border-radius:3px}
-.fin-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;max-width:440px;margin:auto 0}
-.fin-stage{position:relative;width:min(230px,34svh);margin-top:10px}
-.fin-flip .fin-stage{margin-top:min(120px,17svh)}
-.fin-panel{padding:14px 18px 10px}
+.fin-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px;width:var(--fw,440px);max-width:none;flex:none;margin:auto;zoom:var(--fit,1)}
+.fin-stage{position:relative;width:230px;margin-top:10px}
+.fin-flip .fin-stage{margin-top:120px}                 /* Platz nach oben für den Salto */
+.fin-panel{padding:14px 18px 10px;max-height:none;overflow:visible}
+/* quer: Fips links, Ergebnis rechts */
+.fin-wrap.fin-row{flex-direction:row;justify-content:center;gap:22px;width:max-content}
+.fin-row .fin-stage{width:300px;margin:0;flex:none}
+.fin-flip .fin-row .fin-stage{width:230px;margin-top:100px}
+.fin-row .fin-panel{width:400px;flex:none}
 .fin-panel h1{margin:2px 0 4px}
 .fin-panel p{margin:6px 0 12px}
 /* unter „Nochmal“: Muffin-Party als Belohnung fürs Üben (oder wie viele Runden noch fehlen), daneben zurück zum Start */
@@ -493,14 +505,6 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .fin-star.on{fill:url(#pg-gold);stroke:#A87500;filter:drop-shadow(0 3px 0 rgba(168,117,0,.25))}
 .fin-svg{display:block;width:100%;height:auto;overflow:visible}
 
-/* Handy quer: Fips links, Ergebnis rechts */
-@media (orientation:landscape) and (height < 520px){
-  .fin-wrap{flex-direction:row;justify-content:center;gap:16px;max-width:780px}
-  .fin-stage,.fin-flip .fin-stage{width:min(230px,30vw,62svh);margin-top:0;flex:none}
-  .fin-story .fin-stage{width:auto;flex:1 1 0;min-width:0}
-  .fin-panel{flex:1 1 0;min-width:0;max-width:400px}
-  .fin-panel h1{font-size:28px}
-}
 
 /* Gelenke (Koordinaten im Fips-SVG) */
 .fin-svg .jump{transform-origin:200px 372px}
@@ -580,7 +584,9 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 @keyframes finFirework{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}8%{opacity:1}60%{opacity:1;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--s))}75%,100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--s))}}
 
 /* Stufe 5 (10 von 10) – Geschichte: Fips läuft durch die Landschaft und zündet G und D an */
-.fin-story .fin-stage{width:min(420px,94vw)}
+/* unter der Szene Abstand zum Ergebnis – ihr Schatten ragt 10 px nach unten, sonst klebt die Tafel direkt daran */
+.fin-story .fin-stage{width:100%;max-width:420px;margin-bottom:26px}
+.fin-story .fin-row .fin-stage{width:420px;max-width:none;margin:0 0 10px}
 .story{position:relative;height:250px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,#bfe6ff 0%,#e4f5ff 60%,#fff6d6 100%);box-shadow:0 10px 0 rgba(59,44,90,.12);border:5px solid #fff}
 .st-sun{position:absolute;right:22px;top:18px;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b8,#ffcf3f);box-shadow:0 0 0 8px rgba(255,207,63,.25)}
 .st-cloud{position:absolute;width:70px;height:22px;border-radius:20px;background:#fff;opacity:.9;animation:stCloud 9s linear infinite}

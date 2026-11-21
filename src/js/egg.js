@@ -737,15 +737,26 @@ function bbHatch(){
 /* ---------- Spieluhr-Melodie (leise, lässt sich ausschalten) ---------- */
 const EGG_TUNE = [[784,1],[659,1],[784,1],[1047,1],[988,1],[880,1],[784,2],[698,1],[659,1],[587,1],[659,1],[698,1],[784,1],[659,2],
                   [784,1],[659,1],[784,1],[1047,1],[1175,1],[1047,1],[988,2],[880,1],[988,1],[1047,1],[784,1],[659,1],[587,1],[523,2]];
+/* Die Melodie wird als Ganzes im Voraus geplant. Damit sie beim Ausschalten wirklich sofort verstummt
+   (Party zu, Fabrik auf, Seite verlassen), läuft sie über einen eigenen Lautstärke-Regler, der dann zugedreht wird. */
+let eggMusicOut = null;
+function eggMusicStop(){
+  const g = eggMusicOut; eggMusicOut = null;
+  if (!g) return;
+  try { const t = g.context.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .06); } catch(e){}
+  setTimeout(() => { try { g.disconnect(); } catch(e){} }, 300);
+}
 function eggMusic(on){
   clearTimeout(eggMusicTimer); eggMusicTimer = null;
+  eggMusicStop();
   $("eggMusicBtn").textContent = eggMusicOn ? "🔊" : "🔇";
   if (!on || !eggMusicOn || fIsOpen()) return;
   const ctx = getCtx(); if (!ctx) return;
+  const out = eggMusicOut = ctx.createGain(); out.connect(ctx.destination);
   const beat = .3; let t = ctx.currentTime + .1, total = 0;
   EGG_TUNE.forEach(([f, n]) => {
-    tone(ctx, f, t, beat * n * .95, "sine", .05);
-    tone(ctx, f * 2, t, beat * .4, "sine", .012);
+    tone(ctx, f, t, beat * n * .95, "sine", .05, 0, out);
+    tone(ctx, f * 2, t, beat * .4, "sine", .012, 0, out);
     t += beat * n; total += beat * n;
   });
   eggMusicTimer = setTimeout(() => eggMusic(true), total * 1000 + 600);
