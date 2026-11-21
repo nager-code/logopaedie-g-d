@@ -14,12 +14,26 @@ function playRec(k){
     if (!url){ resolve(false); return; }
     const a = new Audio(url);
     curAudio = a;
-    let done = false;
-    const fin = () => { if (done) return; done = true; if (curFin === fin) curFin = null; setTalking(false); resolve(true); };
+    let done = false, src = null;
+    const fin = () => { if (done) return; done = true; if (curFin === fin) curFin = null; try { src && src.stop(); } catch(e){} setTalking(false); resolve(true); };
     curFin = fin;
     a.onended = a.onerror = fin;
     setTalking(true);
-    a.play().catch(fin);
+    a.play().catch(async err => {
+      // Safari spielt Ton nur direkt nach einem Fingertipp. Das Anhören nach einer Aufnahme startet aber erst,
+      // wenn sie gespeichert ist – am iPad wird es deshalb abgelehnt. Dann über die Ton-Engine abspielen:
+      // die läuft seit dem Tipp auf „Aufnehmen“ und darf jederzeit Ton ausgeben.
+      if (done || !err || err.name !== "NotAllowedError") return fin();
+      try {
+        const ctx = getCtx();
+        if (ctx && ctx.state !== "running") await Promise.race([ctx.resume(), new Promise(r => setTimeout(r, 300))]);
+        if (!ctx || ctx.state !== "running" || done) return fin();
+        const ab = await (await fetch(url)).arrayBuffer();
+        const buf = await new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no));
+        if (done) return;
+        src = ctx.createBufferSource(); src.buffer = buf; src.connect(ctx.destination); src.onended = fin; src.start();
+      } catch(e){ fin(); }
+    });
     setTimeout(fin, 8000);
   });
 }

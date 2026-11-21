@@ -109,6 +109,7 @@ function meterLoop(){
 
 async function startRec(){
   if (!navigator.mediaDevices || !window.MediaRecorder){ showRecWarn(); setStudio("error", "⚠️ Mikrofon geht hier nicht – öffne das Spiel in Safari oder Chrome oder nutze 📁."); return; }
+  getCtx();                              // Ton-Engine gleich beim Fingertipp starten (vor der Mikrofon-Frage) – für Piepton und Anhören danach
   stopAll();
   if (!micStream){
     setStudio("asking");
