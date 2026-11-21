@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F6D6E4">
 <link rel="icon" href="favicon.svg">
 <!-- Muffin-Fabrik: spielbarer Prototyp für die Muffin-Party. Alles wird direkt angetippt oder gezogen:
-     Förmchen aufs Band ziehen → Hebel (bei 5 Förmchen fährt das Band von selbst los) → Teigmaschine gedrückt halten (zu lange = läuft über) → Tunnelofen → mit Flaschen und Streuern verzieren.
+     Förmchen aufs Band ziehen → Hebel (bei 5 Förmchen fährt das Band von selbst los) → Teigmaschine gedrückt halten (zu lange = läuft über, und der Teig kann ausgehen) → Tunnelofen → mit Flaschen und Streuern verzieren.
      Eigenständige Seite – Palette und Muffin-Zeichnung sind aus js/pictures.js und js/egg.js übernommen. -->
 <title>Muffin-Fabrik</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap">
@@ -353,8 +353,8 @@ function tankSvg(){
     <rect x="256" y="214" width="108" height="112" rx="22" fill="#FFF8F2"/>
     <clipPath id="tankClip"><rect x="256" y="214" width="108" height="112" rx="22"/></clipPath>
     <g clip-path="url(#tankClip)"><path id="doughLevel" d="M256 250 Q283 240 310 250 T364 250 V330 H256 Z" fill="url(#doughG)"/>
-      <path d="M256 250 Q283 240 310 250 T364 250" fill="none" stroke="#E2B95A" stroke-width="3"/>
-      <g fill="#fff" opacity=".8"><circle class="bub b1" cx="276" cy="306" r="5"/><circle class="bub b2" cx="322" cy="312" r="4"/><circle class="bub b3" cx="344" cy="296" r="6"/></g></g>
+      <path id="doughTop" d="M256 250 Q283 240 310 250 T364 250" fill="none" stroke="#E2B95A" stroke-width="3"/>
+      <g id="doughBubs" fill="#fff" opacity=".8"><circle class="bub b1" cx="276" cy="306" r="5"/><circle class="bub b2" cx="322" cy="312" r="4"/><circle class="bub b3" cx="344" cy="296" r="6"/></g></g>
     <rect x="256" y="214" width="108" height="112" rx="22" fill="url(#glassG)" stroke="#C9507A" stroke-width="4"/>
     <rect x="266" y="224" width="10" height="70" rx="5" fill="#fff" opacity=".9"/>
     <path d="M248 322 H372 Q372 352 344 358 H276 Q248 352 248 322 Z" fill="url(#pinkV)" stroke="#C9507A" stroke-width="4"/>
@@ -609,8 +609,11 @@ async function startBelt(){
 }
 /* ---------- Schritt 2: Teig ---------- */
 /* Teigmaschine gedrückt halten: solange gedrückt, fließt Teig. Loslassen → das Band fährt weiter.
-   Zu lange gedrückt → der Teig läuft über (wird nach dem Backen ein Riesen-Pilzmuffin). */
+   Zu lange gedrückt → der Teig läuft über (wird nach dem Backen ein Riesen-Pilzmuffin).
+   Der Vorrat im Tank ist begrenzt: wer zu oft zu lange drückt, hat für die letzten Förmchen keinen Teig mehr. */
 const FLOW = .8;          // Förmchen pro Sekunde
+const DOUGH = 6;          // Vorrat im Tank (in Förmchen): reicht für 5 volle und etwas Übermut
+const tankDry = () => (S.poured || 0) >= DOUGH - 1e-6;
 let pouring = false;
 function tankTap(e){
   if (S.step !== 2 || S.busy || pouring) return;
@@ -624,10 +627,12 @@ function tankTap(e){
   const tick = now => {
     if (!pouring) return;
     const dt = Math.min(.05, (now - last) / 1000); last = now;
-    cp.amt = Math.min(1.8, cp.amt + FLOW * dt); S.poured = (S.poured || 0) + FLOW * dt;
+    const d = Math.min(FLOW * dt, DOUGH - (S.poured || 0));
+    cp.amt = Math.min(1.8, cp.amt + d); S.poured = (S.poured || 0) + d;
     drawCup(cp);
-    const y = 250 + Math.min(60, S.poured * 11);
-    lvl.setAttribute("d", `M256 ${y} Q283 ${y - 10} 310 ${y} T364 ${y} V330 H256 Z`);
+    const y = 250 + S.poured / DOUGH * 86, top = `M256 ${y} Q283 ${y - 10} 310 ${y} T364 ${y}`;   // leer: Spiegel unter dem Glas
+    lvl.setAttribute("d", top + " V340 H256 Z"); $("doughTop").setAttribute("d", top);
+    if (tankDry()){ $("doughBubs").style.display = "none"; stop(); return; }   // Teig alle – der Strahl versiegt von selbst
     if (now - lastBlubb > 320){ lastBlubb = now; tone(240 + Math.random() * 80, .1, "sine", .2, 130); }
     if (cp.amt > 1.05 && !saidOver){ saidOver = true; say("Uii, zu viel! 😂"); }
     else if (!saidOver && cp.amt > .2 && cp.amt < .3) say("Halten … 😮");
@@ -638,9 +643,21 @@ function tankTap(e){
     window.removeEventListener("pointerup", stop); window.removeEventListener("pointercancel", stop);
     pouring = false;
     $("streams").innerHTML = ""; tween(200, t => pl.setAttribute("transform", `translate(0 ${12 - 12 * t})`));
-    $("tankMouth").setAttribute("d", "M302 345 Q310 352 318 345");
-    if (cp.amt < .2){ say("Länger gedrückt halten! 👆"); return; }
+    const dry = tankDry();
+    $("tankMouth").setAttribute("d", dry ? "M302 350 Q310 343 318 350" : "M302 345 Q310 352 318 345");
+    if (cp.amt < .2 && !dry){ say("Länger gedrückt halten! 👆"); return; }
     S.busy = true;
+    if (dry){
+      // ein Rest im Förmchen wird noch ein Mini-Muffin, Förmchen ohne Teig kommen vom Band
+      if (cp.amt >= .08 && cp.amt < .2){ cp.amt = .2; drawCup(cp); }
+      const keep = Math.max(1, S.fill + (cp.amt >= .2 ? 1 : 0)), gone = S.cups.slice(keep);
+      if (gone.length){
+        sfx.nope(); say("Oh, der Teig ist alle! 🙈"); await wait(1100);
+        await tween(450, t => gone.forEach(c => { const g = $("cup" + c.i); g.setAttribute("transform", `translate(${c.x - 40 * t} ${c.y + 70 * t * t}) rotate(${-50 * t})`); g.style.opacity = 1 - t; }));
+        gone.forEach(c => $("cup" + c.i).remove()); S.cups.length = keep;
+        await wait(350); step3(); return;
+      }
+    }
     await tween(240, t => { cp.sy = 1 + Math.sin(t * Math.PI) * .12; place(cp); });
     const last = S.fill >= S.cups.length - 1;
     say(cp.amt > 1.05 ? "Übergelaufen! 😂 Das wird ein Riesen-Muffin!" : cp.amt < .6 ? "Ein Mini-Muffin! 🤏" : "Perfekt! 😋");
