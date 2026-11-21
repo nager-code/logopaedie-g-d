@@ -44,10 +44,10 @@ body::before{
 }
 button{font-family:inherit;color:inherit}
 .hidden{display:none !important}
-/* Was ganz verdeckt ist, ruht: Finale und Muffin-Party decken den Bildschirm komplett ab, die Fabrik die Party.
-   Ohne das zeichnet das Handy alle Animationen darunter weiter mit (Sonne, Wolken, Feuerwerk, Lichterkette …),
-   obwohl sie niemand sieht – und die sichtbaren ruckeln. */
-body:has(> #endOverlay:not(.hidden), > #eggOverlay:not(.hidden)) > .screen,
+/* Was verdeckt ist, ruht: Jedes Overlay (Finale, Muffin-Party, Elternbereich, Aufnahme-Studio) deckt den Bildschirm
+   ab, die Fabrik die Party. Ohne das zeichnet das Gerät alle Animationen darunter weiter mit (Sonne, Wolken,
+   Feuerwerk, Lichterkette …), obwohl sie niemand sieht – die sichtbaren ruckeln, und Scrollen reagiert zäh. */
+body:has(> .overlay:not(.hidden)) > .screen,
 body:has(> #eggOverlay:not(.hidden)) > #endOverlay,
 #eggOverlay:has(> #eggFactory:not(.hidden)) > :not(#eggFactory){visibility:hidden}
 
@@ -190,7 +190,7 @@ button:active{transform:translateY(4px)}
 .letter:active,.pic:active,.mode:active,.next:active,.speaker:active{box-shadow:0 2px 0 rgba(0,0,0,.15)}
 
 /* ---------- Overlays ---------- */
-.overlay{--pad:12px;position:fixed;inset:0;background:rgba(191,230,255,.94);display:flex;align-items:center;justify-content:center;z-index:20;backdrop-filter:blur(3px);
+.overlay{--pad:12px;position:fixed;inset:0;background:rgba(191,230,255,.94);display:flex;align-items:center;justify-content:center;z-index:20;
   padding:max(var(--pad),var(--safe-t)) max(var(--pad),var(--safe-r)) max(var(--pad),var(--safe-b)) max(var(--pad),var(--safe-l))}
 .panel{background:#fff;border-radius:32px;padding:22px 18px;text-align:center;max-width:460px;width:100%;box-shadow:0 12px 0 rgba(59,44,90,.12);max-height:100%;overflow:auto;overscroll-behavior:contain;position:relative}
 .panel h1{margin:6px 0 8px;font-size:36px;font-weight:900}
@@ -248,7 +248,8 @@ button:active{transform:translateY(4px)}
 .rec-sec{text-align:left;font-weight:900;font-size:17px;margin:16px 0 8px;color:var(--ink)}
 .rec-sec small{display:block;font-size:14px;font-weight:700;color:var(--muted);margin-top:2px;line-height:1.35}
 .sec-box{background:#fff8e1;border-radius:20px;padding:4px 10px 6px;margin-top:14px}
-.recrow{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 10px;border-radius:16px;background:var(--soft);margin-bottom:6px;text-align:left;cursor:pointer;border:3px solid transparent}
+.recrow{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 10px;border-radius:16px;background:var(--soft);margin-bottom:6px;text-align:left;cursor:pointer;border:3px solid transparent;
+  content-visibility:auto;contain-intrinsic-size:auto 58px}   /* Zeilen außerhalb des Sichtfelds werden nicht gezeichnet – die Liste hat fast 90 Bilder */
 .recrow.has{background:var(--g-soft)}
 .recrow.sel{border-color:var(--pink);background:#fff}
 .recrow .e{font-size:26px;width:34px;text-align:center;flex:none}
