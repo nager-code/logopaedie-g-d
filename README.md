@@ -20,7 +20,7 @@
     <td align="center" width="25%"><img src="docs/start.png" alt="Startseite mit Fips" width="200"><br><b>Fips begrüßt das Kind</b></td>
     <td align="center" width="25%"><img src="docs/richtig.png" alt="Richtige Antwort im Spiel" width="200"><br><b>Hören und tippen</b></td>
     <td align="center" width="25%"><img src="docs/feier.png" alt="Fips tanzt nach drei richtigen Antworten" width="200"><br><b>Fips tanzt bei Erfolgen</b></td>
-    <td align="center" width="25%"><img src="docs/eltern.png" alt="Elternbereich mit Datenschutz-Hinweis" width="200"><br><b>Elternbereich</b></td>
+    <td align="center" width="25%"><img src="docs/eltern.png" alt="Elternbereich mit Aufnahme-Knopf, Fortschritt und Einstellungen" width="200"><br><b>Elternbereich</b></td>
   </tr>
 </table>
 
@@ -34,6 +34,8 @@
 - 🤔 **Falsch:** Fips kratzt sich verlegen am Kopf, und das Spiel zeigt, welcher Buchstabe richtig gewesen wäre.
 - 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt (in den letzten beiden Runden nicht mehr, da kommt gleich das Finale). Im Elternbereich abschaltbar – dann wird ohne Unterbrechung geübt.
 - 🔊 hört das Wort nochmal, 👀 zeigt die Lösung.
+- 💡 Bei sehr ähnlichen Wörtern (*Gaumen / Daumen*) zeigt die Karte unten links ein kleines **Tipp-Bild** (mehr dazu unten bei den Wörtern).
+- 👆 Die Knöpfe G und D sind für Kinderhände gemacht: Sie reagieren auch, wenn der Finger beim Drücken etwas rutscht.
 
 ### 🏁 Das große Finale
 
@@ -47,14 +49,16 @@ Am Ende jeder Runde gibt es je nach Ergebnis eine von fünf Fips-Animationen –
 | 8–9 richtig | springt einen Salto ⭐ |
 | **10 von 10** | **erlebt eine kleine Geschichte:** läuft durch eine Landschaft und speit Feuer auf das **G** – es fängt Feuer, verkohlt, Flammen schlagen hoch, dann zerbricht es in glühende Brocken und zerfällt zu Asche. Danach ist das **D** dran. Zum Schluss jubelt Fips mit Krone und Feuerwerk 👑 |
 
+Unter „Nochmal“ wartet die Belohnung fürs Üben: Bei **10 von 10** oder nach **drei gespielten Runden** erscheint der Knopf **🧁 Zur Muffin-Party**. Vorher steht dort, wie viele Runden noch fehlen.
+
 ## 🐉 Fips, der kleine Drache
 
 Fips begleitet durchs ganze Spiel: Er winkt zur Begrüßung, ist kitzelig (ein paarmal antippen: er kichert – öfter: er lacht laut – ganz oft: er kugelt sich vor Lachen auf dem Boden), freut sich über jede richtige Antwort und tanzt bei Erfolgen. Er ist in vier Posen gezeichnet – Begrüßung, Jubel, Hoppla und Tanz.
 
 <details>
-<summary><b>🤫 Psst … ein Geheimnis</b></summary>
+<summary><b>🧁 Fips’ geheime Muffin-Party</b></summary>
 
-Fips’ **geheime Muffin-Party** ist die Belohnung fürs Üben: Bei 10 von 10 richtigen Antworten oder nach drei gespielten Runden gibt es im Finale den Knopf „Zur Muffin-Party“ (vorher steht dort, wie viele Runden noch fehlen). Die Party steigt auf einer Sommerwiese – mit Picknickdecke, Wimpel- und Lichterkette, Schmetterlingen und einer kleinen Spieluhr-Melodie:
+Zur Party geht es über den Knopf im Finale (bei 10 von 10 oder nach drei gespielten Runden; wer hingeht, sammelt danach neu). Die Party steigt auf einer Sommerwiese – mit Picknickdecke, Wimpel- und Lichterkette, Schmetterlingen und einer kleinen Spieluhr-Melodie:
 
 - 🧁 Muffins antippen oder mit dem Finger zu Fips ziehen – kommt einer näher, reißt er hungrig das Maul auf.
 - 🎈 Mit jedem Muffin wird Fips kugelrunder: Kugelbauch mit Bauchnabel, Pausbacken, Doppelkinn – und irgendwann bekommt er Schluckauf.
@@ -65,22 +69,37 @@ Fips’ **geheime Muffin-Party** ist die Belohnung fürs Üben: Bei 10 von 10 ri
 - 🔓 **Deko freischalten durch Üben:** Bunte und Schoko-Streusel gibt es sofort, Sterne, Herzen, Kirschen und Co. kommen nach und nach mit richtigen Antworten im G-oder-D-Spiel dazu. Gesperrte Deko zeigt, wie viele richtige Antworten noch fehlen. Neues wird mit „NEU“ markiert, und Fips verrät es beim Öffnen der Party.
 - 🥦 Ganz selten ist ein Muffin in Wahrheit ein **Brokkoli-Muffin** – er sieht aus wie jeder andere. Fips verzieht das Gesicht und lässt einen grünen Rülpser raus.
 - 🥚 **Geheimnis im Geheimnis:** Nach 10 Goldmuffins liegt ein Drachenei im Gras. Beim nächsten Besuch lässt es sich aufklopfen – heraus schlüpft ein Baby-Drache, der ab dann mitfeiert.
-- 🏭 **Muffin-Fabrik** (Knopf neben der Küche, auch einzeln: [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html)): Förmchen aufs Band ziehen, Hebel ziehen (bei fünf Förmchen fährt das Band von selbst los), Teigmaschine gedrückt halten (zu lange = läuft über und wird ein Riesen-Muffin – und der Teig im Tank kann ausgehen, dann bleiben die letzten Förmchen leer und kommen vom Band), durch den Tunnelofen, dann mit Guss-Flaschen und Streuern verzieren. Die fertigen Muffins kommen auf Fips’ Teller.
+- 🏭 **Muffin-Fabrik** (Knopf neben der Küche, auch einzeln: [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html)): Förmchen aufs Band ziehen, Hebel ziehen (bei fünf Förmchen fährt das Band von selbst los), Teigmaschine gedrückt halten (zu lange = läuft über und wird ein Riesen-Muffin – und der Teig im Tank kann ausgehen, dann bleiben die letzten Förmchen leer und kommen vom Band), durch den Tunnelofen, dann mit Guss-Flaschen und Streuern verzieren (pro Muffin eine Kirsche). Die fertigen Muffins kommen auf Fips’ Teller.
 
 </details>
 
 ## 🖼️ 83 gezeichnete Wörter
 
-40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Sehr ähnliche Wörter (Hörpaare wie *Gaumen / Daumen* oder *Nagel / Nadel*) sind allein gehört kaum auseinanderzuhalten – deshalb zeigt die Karte bei ihnen ein Tipp-Bild, das den Zusammenhang verrät, ohne das Wort abzubilden (beim Daumen eine Hand, beim Gaumen einen Mund). Im Elternbereich lassen sie sich auch ganz abschalten.
+40 Wörter mit **D** und 40 mit **G**, dazu 3 weitere für die Hörpaare – nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen.
 
 Jedes Wort hat ein eigenes, von Hand gezeichnetes Bild – alle im gleichen Stil wie Fips: weiche Farbverläufe, farbige Umrisse, Glanzlichter und Tiere mit Fips-Augen und rosa Bäckchen.
 
+### 💡 Tipp-Bilder für sehr ähnliche Wörter
+
+Fünf Hörpaare unterscheiden sich nur im G und D: *Gaumen / Daumen*, *Nagel / Nadel*, *Bogen / Boden*, *Regen / reden* und *Wagen / Waden*. Allein gehört sind sie kaum auseinanderzuhalten. Deshalb zeigt die Karte bei diesen Wörtern unten links ein gezeichnetes Tipp-Bild, das den Zusammenhang verrät, ohne das Wort selbst abzubilden:
+
+| Wort | Tipp-Bild | Wort | Tipp-Bild |
+|---|---|---|---|
+| Gaumen | Mund | Daumen | Hand |
+| Nagel | Hammer | Nadel | Faden |
+| Bogen | Zielscheibe | Boden | Besen |
+| Regen | Regenschirm | reden | Telefon |
+| Wagen | Ampel | Waden | Bein |
+
+Ein Tipp auf das Bild spielt das Wort noch einmal ab. Im Elternbereich lassen sich die Hörpaare auch ganz abschalten.
+
 ## 👪 Für Eltern
 
-- **Eure eigenen Stimmen:** Es gibt keine Computerstimme. Unter **👪 Für Eltern → Wörter aufnehmen** sprecht ihr die Wörter ein. Eine Anzeige hilft mit Lautstärke und Restzeit, Stille am Anfang und Ende wird automatisch abgeschnitten.
+- **Eure eigenen Stimmen:** Es gibt keine Computerstimme. Unter **👪 Für Eltern → Wörter aufnehmen** sprecht ihr die Wörter ein. Eine Anzeige hilft mit Lautstärke und Restzeit, Stille am Anfang und Ende wird automatisch abgeschnitten. Nach jeder Aufnahme wird sie zur Kontrolle einmal abgespielt.
 - **Schnell startklar:** Gespielt werden kann ab **5 aufgenommenen Wörtern** (G und D). Beim Aufnehmen werden die leichten Wörter zuerst vorgeschlagen, abwechselnd mit G und D. Im Spiel kommen nur Wörter vor, die schon aufgenommen sind.
 - **Gezielt üben:** Das Spiel merkt sich, welche Wörter oft verwechselt werden, und bringt sie häufiger – sicher gekonnte Wörter kommen seltener, neue werden eingestreut.
 - **Fortschritt:** Im Elternbereich steht, wie oft G und D richtig erkannt werden, welche Wörter noch schwer sind und welche schon super klappen.
+- **Einstellungen:** Zwei Schalter im Elternbereich, die auf dem Gerät gespeichert bleiben: die **Zwischen-Feier** (Fips’ Tanz nach 3 richtigen Antworten) aus- oder einschalten und die **sehr ähnlichen Wörter** (Hörpaare) aus dem Spiel nehmen.
 - **Sichern & übertragen:** Alle Aufnahmen (samt Fortschritt) lassen sich als ZIP-Datei speichern und auf einem anderen Gerät wieder laden. In der ZIP liegt jedes Wort auch als einzelne WAV-Datei mit englischem Namen ohne Umlaute (z. B. `recordings/saw.wav` = Säge).
 - **Tipps zum Üben:** Im Elternbereich steht kurz, wie G und D gebildet werden und wie ihr gemeinsam üben könnt.
 
@@ -98,21 +117,22 @@ Reines HTML, CSS und JavaScript – ohne Abhängigkeiten und ohne Build-Schritt.
 ```
 src/                    alles, was veröffentlicht wird
   index.html            Seitenaufbau, Vorschau fürs Teilen (Open Graph)
+  muffin-fabrik.html    Muffin-Fabrik: eigene Seite, läuft eingebettet in der Muffin-Party oder einzeln
   favicon.svg           Icon
   img/fips-*.svg        Fips in vier Posen: Begrüßung, Jubel, Hoppla, Tanz
   img/share.png         Vorschaubild fürs Teilen (1200 × 630)
   img/apple-touch-icon.png  Icon für den Home-Bildschirm
   css/style.css         Design und Animationen
-  js/words.js           Wortlisten, Wortpaare, Mindestanzahl Wörter
-  js/pictures.js        Gezeichnete Bilder zu allen Wörtern
-  js/util.js            Hilfsfunktionen und Spielzustand
+  js/words.js           Wortlisten, Hörpaare mit ihren Tipp-Bildern, Mindestanzahl Wörter
+  js/pictures.js        Gezeichnete Bilder zu allen Wörtern und die Tipp-Bilder
+  js/util.js            Hilfsfunktionen, Spielzustand, Zoom-Sperre, Einstellungen, Antwort-Knöpfe für Kinderhände
   js/dragon.js          Fips: zeigt je nach Gefühl die passende Pose
   js/progress.js        Fortschritt je Wort, gezielte Wortauswahl, Übersicht für Eltern
   js/storage.js         Aufnahmen speichern (IndexedDB), Stille abschneiden, Sichern & Laden
   js/sound.js           Aufnahmen abspielen, Geräusche und Fanfare
-  js/game.js            Spiellogik und Feiern
+  js/game.js            Spiellogik, Zwischen-Feier, Angebot der Muffin-Party im Finale
   js/finale.js          Abschluss-Animationen (5 Stufen, 10 von 10 als Geschichte)
-  js/egg.js             Easter Egg: Fips’ geheime Muffin-Party
+  js/egg.js             Fips’ geheime Muffin-Party mit Küche und eingebetteter Fabrik
   js/recorder.js        Aufnahme-Studio
   js/app.js             Navigation und Start
 docs/                   Screenshots für diese README
