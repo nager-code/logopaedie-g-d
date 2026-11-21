@@ -65,7 +65,7 @@ Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei sei
 - 🔓 **Deko freischalten durch Üben:** Bunte und Schoko-Streusel gibt es sofort, Sterne, Herzen, Kirschen und Co. kommen nach und nach mit richtigen Antworten im G-oder-D-Spiel dazu. Gesperrte Deko zeigt, wie viele richtige Antworten noch fehlen. Neues wird mit „NEU“ markiert, und Fips verrät es beim Öffnen der Party.
 - 🥦 Ganz selten ist ein Muffin in Wahrheit ein **Brokkoli-Muffin** – er sieht aus wie jeder andere. Fips verzieht das Gesicht und lässt einen grünen Rülpser raus.
 - 🥚 **Geheimnis im Geheimnis:** Nach 10 Goldmuffins liegt ein Drachenei im Gras. Beim nächsten Besuch lässt es sich aufklopfen – heraus schlüpft ein Baby-Drache, der ab dann mitfeiert.
-- 🏭 **Muffin-Fabrik** (Knopf neben der Küche, auch einzeln: [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html)): Förmchen aufs Band ziehen, Hebel ziehen, Teigmaschine gedrückt halten (zu lange = läuft über und wird ein Riesen-Muffin), durch den Tunnelofen, dann mit Guss-Flaschen und Streuern verzieren. Die fertigen Muffins kommen auf Fips’ Teller.
+- 🏭 **Muffin-Fabrik** (Knopf neben der Küche, auch einzeln: [`muffin-fabrik.html`](https://nager-code.github.io/logopaedie-g-d/muffin-fabrik.html)): Förmchen aufs Band ziehen, Hebel ziehen (bei fünf Förmchen fährt das Band von selbst los), Teigmaschine gedrückt halten (zu lange = läuft über und wird ein Riesen-Muffin), durch den Tunnelofen, dann mit Guss-Flaschen und Streuern verzieren. Die fertigen Muffins kommen auf Fips’ Teller.
 
 </details>
 

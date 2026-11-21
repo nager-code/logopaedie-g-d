@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#F6D6E4">
 <link rel="icon" href="favicon.svg">
 <!-- Muffin-Fabrik: spielbarer Prototyp für die Muffin-Party. Alles wird direkt angetippt oder gezogen:
-     Förmchen aufs Band ziehen → Hebel → Teigmaschine gedrückt halten (zu lange = läuft über) → Tunnelofen → mit Flaschen und Streuern verzieren.
+     Förmchen aufs Band ziehen → Hebel (bei 5 Förmchen fährt das Band von selbst los) → Teigmaschine gedrückt halten (zu lange = läuft über) → Tunnelofen → mit Flaschen und Streuern verzieren.
      Eigenständige Seite – Palette und Muffin-Zeichnung sind aus js/pictures.js und js/egg.js übernommen. -->
 <title>Muffin-Fabrik</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap">
@@ -587,12 +587,16 @@ function stackDown(e, st){
     S.busy = false; showSlot();
     $("lever").classList.add("hot");
     if (S.cups.length < 5){ say(n === 0 ? "Super! Noch eins – oder zieh den Hebel! 👇" : "Toll! Noch mehr? Oder Hebel ziehen!"); if (n === 0) hint(70, 600); }
-    else { say("Band voll! Zieh den Hebel! 👇"); hint(70, 600); document.querySelectorAll(".stack").forEach(s => s.classList.remove("hot")); }
+    else startBelt();   // Band voll → es fährt von selbst los, der Hebel legt sich allein um
   };
   window.addEventListener("pointermove", move); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
 }
-async function leverDown(e){
+function leverDown(e){
   if (S.step !== 1 || S.cups.length < 1 || S.busy) { if (S.step === 1 && !S.cups.length){ sfx.nope(); say("Erst ein Förmchen aufs Band! 🧁"); } return; }
+  startBelt();
+}
+async function startBelt(){
+  if (S.step !== 1 || S.busy) return;
   document.querySelectorAll(".stack").forEach(s => s.classList.remove("hot")); $("slot").innerHTML = "";
   S.busy = true; hint(null); $("lever").classList.remove("hot"); sfx.lever();
   const arm = $("leverArm");
@@ -705,8 +709,8 @@ function sprinkleAt(wx, wy, kind){
   const sp = svg.createSVGPoint(); sp.x = wx; sp.y = wy;
   const lp = sp.matrixTransform(world.getScreenCTM()).matrixTransform(top.getScreenCTM().inverse());   // Welt → Kuppel-Koordinaten
   const lx = lp.x, ly = lp.y;
-  // Kirschen: einzeln und höchstens drei pro Muffin (wie in egg.js)
-  if (kind === "kirsche" && cp.items.filter(i => i.t === "kirsche").length >= 3) return 0;
+  // Kirsche: nur eine pro Muffin
+  if (cherryDone(kind)) return 0;
   const n = kind === "kirsche" ? 1 : kind === "herz" || kind === "stern" ? 2 : 4; let added = 0;
   for (let i = 0; i < n * 3 && added < n; i++){
     const x = lx + Math.random() * 12 - 6, y = ly + Math.random() * 8 - 4;
@@ -720,9 +724,11 @@ function sprinkleAt(wx, wy, kind){
   if (added){ drawBig(); sfx.sprinkle(); }
   return added;
 }
+function cherryDone(kind){ return kind === "kirsche" && S.cups[S.sel].items.some(i => i.t === "kirsche"); }
 function fall(wx, wy, kind){
+  if (cherryDone(kind)) return;   // die eine Kirsche liegt schon – es fällt nichts mehr heraus
   const cols = {bunt: ["#FF88A8","#FFD54A","#7DD9B4","#93BFF5"], schoko: ["#4A2E3A","#6E4429"], stern: ["#FFE45C"], herz: ["#FF88A8","#E8455F"], kirsche: ["#E8455F"]}[kind] || ["#FF88A8"];
-  for (let i = 0; i < 3; i++){
+  for (let i = 0; i < (kind === "kirsche" ? 1 : 3); i++){
     const x = wx + Math.random() * 14 - 7, c = cols[i % cols.length];
     $("fxl").insertAdjacentHTML("beforeend", `<rect class="fallbit" x="${x}" y="${wy}" width="3" height="8" rx="1.5" fill="${c}" style="--d:${30 + Math.random() * 20}px"/>`);
     const el = $("fxl").lastElementChild; setTimeout(() => el.remove(), 420);
