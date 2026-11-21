@@ -31,15 +31,18 @@ const G_LEVELS = [
 const D_WORDS = D_LEVELS.flatMap(l => l.words);
 const G_WORDS = G_LEVELS.flatMap(l => l.words);
 
-/* Hörpaare (Minimalpaare): ihre Wörter kommen zusätzlich ins G-oder-D-Spiel */
+/* Hörpaare (Minimalpaare): ihre Wörter kommen zusätzlich ins G-oder-D-Spiel.
+   Allein gehört sind sie kaum auseinanderzuhalten (Gaumen oder Daumen?) – deshalb hat jedes ein Tipp-Bild (h),
+   das den Zusammenhang zeigt, ohne das Wort selbst abzubilden: beim Daumen eine Hand, beim Gaumen einen Mund. */
 const PAIRS = [
-  [{w:"Nagel",e:"💅",l:"G"},{w:"Nadel",e:"🪡",l:"D"}],
-  [{w:"Bogen",e:"🏹",l:"G"},{w:"Boden",e:"🟫",l:"D"}],
-  [{w:"Regen",e:"🌧️",l:"G"},{w:"reden",e:"🗣️",l:"D"}],
-  [{w:"Wagen",e:"🚗",l:"G"},{w:"Waden",e:"🦵",l:"D"}],
-  [{w:"Gaumen",e:"👄",l:"G"},{w:"Daumen",e:"👍",l:"D"}]
+  [{w:"Nagel",e:"💅",l:"G",h:["🔨","Hammer"]},{w:"Nadel",e:"🪡",l:"D",h:["🧵","Faden"]}],
+  [{w:"Bogen",e:"🏹",l:"G",h:["🎯","Zielscheibe"]},{w:"Boden",e:"🟫",l:"D",h:["🧹","Besen"]}],
+  [{w:"Regen",e:"🌧️",l:"G",h:["☂️","Regenschirm"]},{w:"reden",e:"🗣️",l:"D",h:["💬","Sprechblase"]}],
+  [{w:"Wagen",e:"🚗",l:"G",h:["🚦","Ampel"]},{w:"Waden",e:"🦵",l:"D",h:["🦵","Bein"]}],
+  [{w:"Gaumen",e:"👄",l:"G",h:["👄","Mund"]},{w:"Daumen",e:"👍",l:"D",h:["✋","Hand"]}]
 ];
 const PAIR_WORDS = new Set(PAIRS.flat().map(p => p.w));
+const PAIR_HINTS = Object.fromEntries(PAIRS.flat().map(p => [p.w, p.h]));
 const APP_VERSION = "__VERSION__";  // wird beim Veröffentlichen durch die Commit-Nummer ersetzt
 const ROUNDS = 10;
 const MIN_WORDS = 5;          // so viele Wörter (G + D) braucht „G oder D?“ mindestens

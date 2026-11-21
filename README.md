@@ -71,7 +71,7 @@ Fips’ **geheime Muffin-Party** ist die Belohnung fürs Üben: Bei 10 von 10 ri
 
 ## 🖼️ 83 gezeichnete Wörter
 
-40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Sehr ähnliche Wörter (Hörpaare wie *Gaumen / Daumen* oder *Nagel / Nadel*) sind ohne Bild kaum auseinanderzuhalten – sie spielen nur mit, wenn man sie im Elternbereich einschaltet.
+40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Sehr ähnliche Wörter (Hörpaare wie *Gaumen / Daumen* oder *Nagel / Nadel*) sind allein gehört kaum auseinanderzuhalten – deshalb zeigt die Karte bei ihnen ein Tipp-Bild, das den Zusammenhang verrät, ohne das Wort abzubilden (beim Daumen eine Hand, beim Gaumen einen Mund). Im Elternbereich lassen sie sich auch ganz abschalten.
 
 Jedes Wort hat ein eigenes, von Hand gezeichnetes Bild – alle im gleichen Stil wie Fips: weiche Farbverläufe, farbige Umrisse, Glanzlichter und Tiere mit Fips-Augen und rosa Bäckchen.
 

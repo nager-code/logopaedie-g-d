@@ -60,7 +60,7 @@ function newGame(){
   round = 0; results = []; answered = false; streak = 0;
   if (mode === "gd"){
     let rg = recordedG(), rd = recordedD();
-    // Hörpaare (Gaumen / Daumen …) sind ohne Bild kaum auseinanderzuhalten – nur auf Wunsch der Eltern.
+    // Hörpaare (Gaumen / Daumen …) lassen sich im Elternbereich abschalten.
     // Bleiben ohne sie zu wenige Wörter übrig, spielen sie trotzdem mit, damit das Spiel nicht stehen bleibt.
     if (!opt("pairs")){
       const g2 = rg.filter(([w]) => !PAIR_WORDS.has(w)), d2 = rd.filter(([w]) => !PAIR_WORDS.has(w));
@@ -129,9 +129,10 @@ function renderRound(){
   const card = $("card");
   card.className = "card";
   card.innerHTML = `
-    <button class="speaker" id="spk" aria-label="Nochmal hören">🔊</button>
+    <button class="speaker" id="spk" aria-label="Nochmal hören">🔊</button>${hintPic()}
     <button class="peek" id="peek" aria-label="Lösung zeigen">👀</button>`;
   $("spk").addEventListener("click", e => { e.stopPropagation(); playCurrent(); });
+  card.querySelector(".hint-pic")?.addEventListener("click", e => { e.stopPropagation(); playCurrent(); });   // Tipp antippen = nochmal hören, nicht auflösen
   $("peek").addEventListener("click", e => { e.stopPropagation(); answer(undefined); });
 
   const ans = $("answers");
@@ -148,6 +149,11 @@ function renderRound(){
   later(playCurrent, 350);
 }
 
+/* Tipp-Bild für sehr ähnliche Wörter (Hörpaare) bei „G oder D?“ – zeigt, worum es geht, nicht das Wort selbst */
+function hintPic(){
+  const h = mode === "gd" && PAIR_HINTS[cur.w];
+  return h ? `<div class="hint-pic" role="img" aria-label="Tipp: ${h[1]}"><span aria-hidden="true">💡</span>${h[0]}</div>` : "";
+}
 function addBadge(el, ok){
   const b = document.createElement("span");
   b.className = "badge " + (ok ? "ok" : "no");
