@@ -32,7 +32,7 @@
 
 - ✅ **Richtig:** Fips springt vor Freude mit einer Drehung in die Luft.
 - 🤔 **Falsch:** Fips kratzt sich verlegen am Kopf, und das Spiel zeigt, welcher Buchstabe richtig gewesen wäre.
-- 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt (in den letzten beiden Runden nicht mehr, da kommt gleich das Finale).
+- 🎉 **3 richtig hintereinander:** Fips tanzt – jedes Mal mit einem anderen Tanzschritt (in den letzten beiden Runden nicht mehr, da kommt gleich das Finale). Im Elternbereich abschaltbar – dann wird ohne Unterbrechung geübt.
 - 🔊 hört das Wort nochmal, 👀 zeigt die Lösung.
 
 ### 🏁 Das große Finale
@@ -71,7 +71,7 @@ Wer Fips auf der Startseite ganz oft ohne Pause kitzelt (25-mal), landet bei sei
 
 ## 🖼️ 83 gezeichnete Wörter
 
-40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen.
+40 Wörter mit **D** und 40 mit **G** (dazu 3 Hörpaare), nach Schwierigkeit in Stufen geordnet – zum Beispiel *D am Wortanfang*, *G in der Wortmitte* oder *GR und GL am Anfang*. D und G am Wortende kommen nicht vor, weil sie dort wie t und k klingen. Sehr ähnliche Wörter (Hörpaare wie *Gaumen / Daumen* oder *Nagel / Nadel*) sind ohne Bild kaum auseinanderzuhalten – sie spielen nur mit, wenn man sie im Elternbereich einschaltet.
 
 Jedes Wort hat ein eigenes, von Hand gezeichnetes Bild – alle im gleichen Stil wie Fips: weiche Farbverläufe, farbige Umrisse, Glanzlichter und Tiere mit Fips-Augen und rosa Bäckchen.
 

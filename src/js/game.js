@@ -59,7 +59,13 @@ function startGame(m){
 function newGame(){
   round = 0; results = []; answered = false; streak = 0;
   if (mode === "gd"){
-    const rg = recordedG(), rd = recordedD();
+    let rg = recordedG(), rd = recordedD();
+    // Hörpaare (Gaumen / Daumen …) sind ohne Bild kaum auseinanderzuhalten – nur auf Wunsch der Eltern.
+    // Bleiben ohne sie zu wenige Wörter übrig, spielen sie trotzdem mit, damit das Spiel nicht stehen bleibt.
+    if (!opt("pairs")){
+      const g2 = rg.filter(([w]) => !PAIR_WORDS.has(w)), d2 = rd.filter(([w]) => !PAIR_WORDS.has(w));
+      if (g2.length + d2.length >= MIN_WORDS && (g2.length || !rg.length) && (d2.length || !rd.length)){ rg = g2; rd = d2; }
+    }
     const nG = !rd.length ? ROUNDS : !rg.length ? 0 : ROUNDS/2;
     // gezielt üben: oft verwechselte Wörter kommen häufiger, sicher gekonnte seltener (progress.js)
     const g = nG ? adaptivePick(rg, nG).map(([w,e]) => ({w,e,l:"G"})) : [];
@@ -188,7 +194,7 @@ function answer(choice){
     stars++; updateStars(); confetti();
     streak++;
     // keine Zwischen-Feier mehr kurz vor Schluss (z. B. 9 richtig hintereinander) – gleich kommt ja das große Finale
-    partyDue = streak % STREAK_EVERY === 0 && round < deck.length - 2;
+    partyDue = opt("party") && streak % STREAK_EVERY === 0 && round < deck.length - 2;
   } else if (correct === false){
     setBubble(pick(OOPS), "bad");
     dragonDo("buddyDragon", "oops", 2600);

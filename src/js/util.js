@@ -11,6 +11,10 @@ function load(k, def){ try { const v = localStorage.getItem("gd_"+k); return v =
 function save(k, v){ try { localStorage.setItem("gd_"+k, JSON.stringify(v)); } catch(e){} }
 function show(id){ $(id).classList.remove("hidden"); }
 function hide(id){ $(id).classList.add("hidden"); }
+/* Einstellungen aus dem Elternbereich (bleiben auf dem Gerät gespeichert):
+   party = Zwischen-Feier bei einer Serie · pairs = sehr ähnliche Wörter (Hörpaare) spielen mit */
+const OPT_DEFAULTS = {party: true, pairs: false};
+function opt(k){ return !!load("opt_" + k, OPT_DEFAULTS[k]); }
 
 let mode = "gd", deck = [], round = 0, results = [], stars = 0, answered = false, cur = null;
 let lastUsed = load("last", []);

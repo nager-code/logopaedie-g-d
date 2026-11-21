@@ -129,6 +129,12 @@ $("homeDragon").addEventListener("click", () => {
   }
 });
 
+/* Schalter im Elternbereich */
+document.querySelectorAll("[data-opt]").forEach(el => {
+  el.checked = opt(el.dataset.opt);
+  el.addEventListener("change", () => save("opt_" + el.dataset.opt, el.checked));
+});
+
 mountDragons();
 refreshCounts();
 renderParentProgress();
