@@ -53,6 +53,7 @@ function selectKey(k){
   setStudio("idle");
   renderRecList();
   $("studio").scrollIntoView({behavior:"smooth", block:"nearest"});
+  if (hasRec(k)) playRec(k);             // beim Durchklicken gleich anhören – so fällt eine verpatzte Aufnahme sofort auf
 }
 
 function showRecWarn(){
@@ -66,7 +67,11 @@ function showRecWarn(){
 }
 
 function renderRecList(){
-  const only = $("onlyMissing").checked;
+  // „nur fehlende“ gibt es nur, solange Wörter fehlen (die freiwilligen Sätze zählen dafür nicht)
+  const box = $("onlyMissing"), anyMissing = REC_ITEMS.some(i => i.word && !hasRec(i.k));
+  if (!anyMissing) box.checked = false;
+  box.closest("label").classList.toggle("hidden", !anyMissing);
+  const only = box.checked;
   $("recList").innerHTML = REC_SECTIONS.map(sec => {
     const rows = sec.items.filter(i => !only || !hasRec(i.k) || i.k === selKey).map(i => {
       const has = hasRec(i.k);

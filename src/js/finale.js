@@ -216,6 +216,31 @@ function finaleStars(level){
   ).join("");
 }
 
+/* Finale an den Bildschirm anpassen: beide Anordnungen ausmessen (hochkant / quer), die nehmen, die mehr Fläche
+   füllt, und den Inhalt als Ganzes so groß machen, dass er gerade ohne Scrollen passt. */
+const FIN_MAX = 1.6;      // größer wird es nicht – sonst muss das iPad pro Bild sehr viel Fips neu zeichnen
+function finaleFit(){
+  const ov = $("endOverlay"), wrap = ov.querySelector(".fin-wrap");
+  if (ov.classList.contains("hidden") || !ov.classList.contains("finale")) return;
+  const cs = getComputedStyle(ov), num = k => parseFloat(cs[k]) || 0;
+  const W = ov.clientWidth - 2 * Math.max(num("paddingLeft"), num("paddingRight")), H = ov.clientHeight - 2 * Math.max(num("paddingTop"), num("paddingBottom"));
+  if (W <= 0 || H <= 0) return;
+  wrap.style.setProperty("--fit", 1);
+  wrap.style.setProperty("--fw", Math.min(440, W) + "px");
+  let best = null;
+  for (const row of [false, true]){
+    wrap.classList.toggle("fin-row", row);
+    const w = wrap.offsetWidth, h = wrap.offsetHeight, f = Math.min(FIN_MAX, W / w, H / h);
+    // bei ähnlich viel Fläche gewinnt die Anordnung, die zur Bildschirm-Lage passt – so wechselt sie nicht je nach Ergebnis
+    const area = w * h * f * f * (row === W > H ? 1.2 : 1);
+    if (!best || area > best.area) best = {row, f, area};
+  }
+  wrap.classList.toggle("fin-row", best.row);
+  wrap.style.setProperty("--fit", (Math.floor(best.f * 200) / 200).toFixed(3));
+}
+let finFitRaf = 0;
+window.addEventListener("resize", () => { cancelAnimationFrame(finFitRaf); finFitRaf = requestAnimationFrame(finaleFit); });
+
 async function showFinale(ok, n){
   const ratio = n ? ok / n : 0;
   let level = 0; FINALE.forEach((f, i) => { if (ratio >= f.min) level = i; });
@@ -245,6 +270,7 @@ async function showFinale(ok, n){
   }
   finaleFx(f.key);
   show("endOverlay");
+  finaleFit();                               // vor dem Ausmessen des Feuerstrahls – der braucht die endgültige Anordnung
   if (f.key === "story"){
     sfxWarm("fire");                         // Rauschen fürs Fauchen jetzt schon berechnen, nicht erst beim Feuer
     const aim = storyAim(), t0 = performance.now(), strip = document.querySelector("#endDragon .st-strip");
