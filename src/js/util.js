@@ -11,6 +11,25 @@ function load(k, def){ try { const v = localStorage.getItem("gd_"+k); return v =
 function save(k, v){ try { localStorage.setItem("gd_"+k, JSON.stringify(v)); } catch(e){} }
 function show(id){ $(id).classList.remove("hidden"); }
 function hide(id){ $(id).classList.add("hidden"); }
+/* Große Antwort-Knöpfe für Kinderhände. Ein normaler „click“ kommt nur bei einem sauberen Tipp an: ein Finger,
+   kurz, ohne zu rutschen. Kinder drücken aber oft lange, rutschen dabei oder haben die andere Hand am Bildschirm –
+   dann passierte bisher nichts. Deshalb zählt hier das Loslassen: Finger war auf dem Knopf und hebt in seiner Nähe ab.
+   (Dazu gehört touch-action:none am Knopf, sonst macht der Browser aus dem Rutschen ein Wischen und bricht ab.) */
+function onPress(el, fn){
+  let id = null, t = 0;
+  el.addEventListener("pointerdown", e => { if (e.button) return; id = e.pointerId; try { el.setPointerCapture(id); } catch(err){} });
+  el.addEventListener("pointerup", e => {
+    if (e.pointerId !== id) return;
+    id = null;
+    const r = el.getBoundingClientRect(), m = 30;                // etwas über den Rand hinaus zählt noch
+    if (e.clientX < r.left - m || e.clientX > r.right + m || e.clientY < r.top - m || e.clientY > r.bottom + m) return;
+    // Bei einem sauberen Tipp folgt sofort der „click“ – der soll auslösen wie bisher (nur er gilt dem Browser als
+    // Fingertipp, der Ton starten darf). Bleibt er aus, war es eine der Berührungen oben: dann zählt das Loslassen.
+    clearTimeout(t); t = setTimeout(() => fn(e), 120);
+  });
+  el.addEventListener("pointercancel", e => { if (e.pointerId === id) id = null; });
+  el.addEventListener("click", e => { clearTimeout(t); fn(e); });   // auch Tastatur und Bedienhilfen
+}
 /* Einstellungen aus dem Elternbereich (bleiben auf dem Gerät gespeichert):
    party = Zwischen-Feier bei einer Serie · pairs = sehr ähnliche Wörter (Hörpaare) spielen mit */
 const OPT_DEFAULTS = {party: true, pairs: true};

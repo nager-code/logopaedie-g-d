@@ -140,11 +140,11 @@ function renderRound(){
     ans.innerHTML = `
       <button class="letter G" data-l="G"><b>G</b><small>${pic("Giraffe","🦒")}</small></button>
       <button class="letter D" data-l="D"><b>D</b><small>${pic("Dino","🦕")}</small></button>`;
-    ans.querySelectorAll(".letter").forEach(b => b.addEventListener("click", () => answer(b.dataset.l)));
+    ans.querySelectorAll(".letter").forEach(b => onPress(b, () => answer(b.dataset.l)));
   } else {
     ans.innerHTML = cur.pair.map((p,i) => `
       <button class="pic" data-i="${i}"><span class="e">${pic(p.w, p.e)}</span><span class="lbl"></span></button>`).join("");
-    ans.querySelectorAll(".pic").forEach(b => b.addEventListener("click", () => answer(+b.dataset.i)));
+    ans.querySelectorAll(".pic").forEach(b => onPress(b, () => answer(+b.dataset.i)));
   }
   later(playCurrent, 350);
 }
