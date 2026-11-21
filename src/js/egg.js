@@ -594,10 +594,11 @@ function eggFire(){
     const svg = f.querySelector("svg"), head = svg && svg.querySelector(".tilt");
     if (head && head.insertAdjacentHTML){
       if (!svg.querySelector("#fbOuter")) svg.insertAdjacentHTML("afterbegin", FIN_BREATH_DEFS);
-      head.insertAdjacentHTML("beforeend", finBreath(0, .25));
+      // im SVG bleiben nur Rauch und Glut im Maul – Strahl und Feuerball kommen als eigene Ebenen darüber (flüssiger)
+      head.insertAdjacentHTML("beforeend", finBreath(0, .25, true));
       const fb = head.querySelector(".fb");
-      fb.style.setProperty("--len", "560"); fb.style.setProperty("--k", "5.6"); fb.style.setProperty("--ang", "-32deg");
       if (kind !== "feuer") eggColorFlame(svg, fb, kind);
+      eggFlame(f, head, kind);
     }
     sfx("fire");
     $("eggOverlay").classList.add("lit");                 // Lichterkette blinkt
@@ -606,6 +607,7 @@ function eggFire(){
     eggT(() => {
       f.classList.remove("fire");
       head && head.querySelectorAll(".fb").forEach(g => g.remove());
+      f.querySelectorAll(".egg-flame").forEach(e => e.remove());
       eggFat = 0; eggFires++; eggFlavors = []; eggApplyFat();
       eggPlay("nom", 450);
       eggSay(pick(["Puh! Das tat gut! 😅 Noch mal?", "Uff, wieder ganz schlank! 😎", "Hihi, ein Feuerwerk für dich! 🎆"]));
@@ -614,6 +616,18 @@ function eggFire(){
       eggT(() => $("eggOverlay").classList.remove("lit"), 2600);
     }, 1700);
   }, 1300);
+}
+/* Feuerstrahl der Party als Ebenen über Fips (fireLayers in finale.js): schräg nach oben, in der Farbe der Muffin-Sorte */
+function eggFlame(f, head, kind){
+  try {
+    head.insertAdjacentHTML("beforeend", `<circle class="fb-probe" cx="200" cy="230" r="1" fill="none"/>`);   // wo ist das Maul gerade?
+    const probe = head.lastElementChild, pr = probe.getBoundingClientRect(), fr = f.getBoundingClientRect(), z = f.offsetWidth / fr.width || 1;
+    probe.remove();
+    const t = EGG_FLAMES[kind], id = "egF-" + kind;
+    const th = kind === "feuer" ? null : {grad:{o:id + "-o", m:id + "-m", c:id + "-c", bo:id + "-bo", bm:id + "-bm", bc:id + "-bc"}, puff:t.puff, spark:t.spark, stroke:t.stroke, halo:t.outer[1]};
+    const a = {x:(pr.left + pr.width / 2 - fr.left) * z, y:(pr.top + pr.height / 2 - fr.top) * z, u:f.offsetWidth / 400, ang:-32, len:560};
+    f.insertAdjacentHTML("beforeend", `<div class="egg-flame">${fireLayers(a, .25, th)}</div>`);
+  } catch(e){}
 }
 function eggFireworks(cols = FIN_COLORS){
   const sky = $("eggSky"); if (!sky) return;
@@ -857,7 +871,7 @@ function eggReset(){
   const sky = $("eggSky"); if (sky) sky.innerHTML = "";
   const f = $("eggFips");
   ["hungry","rumble","fire","nom","chew","glitter","jiggle","hic","yuck"].forEach(c => f.classList.remove(c));
-  f.querySelectorAll(".fb").forEach(g => g.remove());
+  f.querySelectorAll(".fb,.egg-flame").forEach(g => g.remove());
   $("eggOverlay").classList.remove("lit");
   $("eggTray").querySelectorAll(".egg-muffin.gone").forEach(b => { eggFill(b); b.classList.remove("gone"); });
   if (eggFat >= EGG_FULL) eggFat = 0;               // Feuerstrahl wurde unterbrochen → wieder schlank
