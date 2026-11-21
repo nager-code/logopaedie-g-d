@@ -959,7 +959,7 @@ const PICS = {
       <path d="M44 94 H70 Q90 94 92 104 V108 H44 Z" ${pf("red")}/><path d="M44 104 H92" stroke="#fff" stroke-width="4"/>
     </g>`,
   /* ---------- Tipp-Bilder für sehr ähnliche Wörter (Hörpaare, siehe PAIRS in words.js) ----------
-     Sie zeigen den Zusammenhang, nicht das Wort: Hand → Daumen, Mund → Gaumen, Hammer → Nagel …
+     Sie zeigen den Zusammenhang, nicht das Wort: Hand → Daumen, Mund → Gaumen, Hammer → Nagel, Telefon → reden …
      Klein in der Ecke der Karte zu sehen, deshalb einfach und kräftig gezeichnet. */
   Hand: `
     <rect x="40" y="98" width="42" height="18" rx="6" ${pf("blue")}/>
@@ -1014,10 +1014,18 @@ const PICS = {
     ${phi(36,32,11,4,-38,.6)}
     ${pdrop(18,86,.75)} ${pdrop(100,88,.75)} ${pdrop(84,104,.6)}`,
 
-  Sprechblase: `
-    <path d="M26 14 H94 Q110 14 110 30 V62 Q110 78 94 78 H60 L34 104 L40 78 H26 Q10 78 10 62 V30 Q10 14 26 14 Z" ${pf("white")}/>
-    <g fill="${pmd("purple")}" stroke="${pln("purple")}" stroke-width="2.4"><circle cx="38" cy="46" r="7"/><circle cx="60" cy="46" r="7"/><circle cx="82" cy="46" r="7"/></g>
-    ${phi(32,24,10,3,-12,.7)}`,
+  Telefon: `${pgr(24)}
+    <rect x="34" y="8" width="52" height="100" rx="12" ${pf("dark")}/>
+    <rect x="40" y="17" width="40" height="76" rx="5" ${pf("water")}/>
+    <circle cx="60" cy="44" r="14" ${pf("skin")}/>
+    <path d="M46 42 Q46 28 60 28 Q74 28 74 42 Q66 34 58 36 Q50 37 46 42 Z" ${pf("brown")} stroke-width="2.4"/>
+    ${peye(55,46,2.8)} ${peye(65,46,2.8)} ${psmile(60,51,7)}
+    <circle cx="60" cy="78" r="10" ${pf("leaf")} stroke-width="2.4"/>
+    <path d="M54.5 80 Q60 74 65.5 80" fill="none" stroke="#fff" stroke-width="3"/>
+    <g fill="#fff" stroke="none"><rect x="51.6" y="77.6" width="5.6" height="5.6" rx="2" transform="rotate(-38 54.4 80.4)"/><rect x="62.8" y="77.6" width="5.6" height="5.6" rx="2" transform="rotate(38 65.6 80.4)"/></g>
+    <circle cx="60" cy="101" r="2.6" fill="#fff" opacity=".7" stroke="none"/>
+    <path d="M94 34 Q101 44 94 54 M102 26 Q114 44 102 62" fill="none" stroke="${pln("yellow")}" stroke-width="3.6"/>
+    <path d="M26 34 Q19 44 26 54 M18 26 Q6 44 18 62" fill="none" stroke="${pln("yellow")}" stroke-width="3.6"/>`,
 
   Ampel: `${pgr(22)}
     <rect x="54" y="90" width="12" height="20" rx="3" ${pf("metal")}/>

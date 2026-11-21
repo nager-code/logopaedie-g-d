@@ -38,7 +38,7 @@ const G_WORDS = G_LEVELS.flatMap(l => l.words);
 const PAIRS = [
   [{w:"Nagel",e:"💅",l:"G",h:["Hammer","Hammer"]},{w:"Nadel",e:"🪡",l:"D",h:["Faden","Faden"]}],
   [{w:"Bogen",e:"🏹",l:"G",h:["Zielscheibe","Zielscheibe"]},{w:"Boden",e:"🟫",l:"D",h:["Besen","Besen"]}],
-  [{w:"Regen",e:"🌧️",l:"G",h:["Regenschirm","Regenschirm"]},{w:"reden",e:"🗣️",l:"D",h:["Sprechblase","Sprechblase"]}],
+  [{w:"Regen",e:"🌧️",l:"G",h:["Regenschirm","Regenschirm"]},{w:"reden",e:"🗣️",l:"D",h:["Telefon","Telefon"]}],
   [{w:"Wagen",e:"🚗",l:"G",h:["Ampel","Ampel"]},{w:"Waden",e:"🦵",l:"D",h:["Wade","Bein"]}],
   [{w:"Gaumen",e:"👄",l:"G",h:["Mund","Mund"]},{w:"Daumen",e:"👍",l:"D",h:["Hand","Hand"]}]
 ];
