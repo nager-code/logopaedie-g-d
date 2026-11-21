@@ -958,6 +958,74 @@ const PICS = {
       <rect x="46" y="80" width="23" height="16" rx="3" ${pf("white")}/><path d="M46 86 H69" stroke="${pln("red")}" stroke-width="3"/>
       <path d="M44 94 H70 Q90 94 92 104 V108 H44 Z" ${pf("red")}/><path d="M44 104 H92" stroke="#fff" stroke-width="4"/>
     </g>`,
+  /* ---------- Tipp-Bilder für sehr ähnliche Wörter (Hörpaare, siehe PAIRS in words.js) ----------
+     Sie zeigen den Zusammenhang, nicht das Wort: Hand → Daumen, Mund → Gaumen, Hammer → Nagel …
+     Klein in der Ecke der Karte zu sehen, deshalb einfach und kräftig gezeichnet. */
+  Hand: `
+    <rect x="40" y="98" width="42" height="18" rx="6" ${pf("blue")}/>
+    <path d="M40 80 Q22 72 15 57 Q12 48 20 47 Q27 47 31 57 L44 68 Z" ${pf("skin")}/>
+    <rect x="37" y="24" width="11.5" height="46" rx="5.7" ${pf("skin")}/>
+    <rect x="49.5" y="12" width="11.5" height="56" rx="5.7" ${pf("skin")}/>
+    <rect x="62" y="15" width="11.5" height="54" rx="5.7" ${pf("skin")}/>
+    <rect x="74.5" y="28" width="11.5" height="42" rx="5.7" ${pf("skin")}/>
+    <rect x="35" y="56" width="53" height="46" rx="17" ${pf("skin")}/>
+    <path d="M46 80 Q58 71 77 77" fill="none" stroke="${pln("skin")}" stroke-width="2.4"/>
+    ${phi(55,26,1.8,9,0,.6)} ${phi(45,70,4,7,-10,.5)}`,
+
+  Mund: `
+    <path d="M8 58 Q32 28 50 38 Q60 46 70 38 Q88 28 112 58 Q88 98 60 98 Q32 98 8 58 Z" ${pf("red")}/>
+    <path d="M22 58 Q60 48 98 58 Q60 86 22 58 Z" fill="#5A1E3A" stroke="${pln("red")}" stroke-width="2.4"/>
+    <path d="M30 57 Q60 50 90 57 Q60 67 30 57 Z" fill="#fff" stroke="${pln("white")}" stroke-width="1.6"/>
+    ${phi(36,44,9,3,-28,.65)} ${phi(48,88,10,3,6,.4)}`,
+
+  Hammer: `${pgr(34,54,110)}
+    <path d="M26 100 L66 40 L77 47 L37 107 Q28 110 26 100 Z" ${pf("wood")}/>
+    <g transform="rotate(34 74 36)">
+      <rect x="48" y="22" width="44" height="28" rx="6" ${pf("metal")}/>
+      <path d="M92 27 H104 Q109 36 104 45 H92 Z" ${pf("metal")}/>
+      ${phi(62,29,10,2.4,0,.9)}
+    </g>
+    ${phi(42,80,2,12,34,.5)}`,
+
+  Zielscheibe: `
+    <circle cx="56" cy="62" r="46" ${pf("red")}/>
+    <circle cx="56" cy="62" r="34" ${pf("white")}/>
+    <circle cx="56" cy="62" r="22" ${pf("red")}/>
+    <circle cx="56" cy="62" r="10" ${pf("yellow")}/>
+    ${phi(34,36,9,3.5,-45,.5)}
+    ${ptube("M58 60 L98 22","wood",3)}
+    <path d="M94 26 L92 10 L104 16 Z" ${pf("blue")} stroke-width="2.4"/>
+    <path d="M94 26 L110 28 L104 16 Z" ${pf("blue")} stroke-width="2.4"/>`,
+
+  Besen: `${pgr(30,48,112)}
+    <g transform="rotate(24 60 60)">
+      <rect x="56" y="0" width="8" height="70" rx="4" ${pf("wood")}/>
+      <path d="M48 76 H72 L86 110 Q60 118 34 110 Z" ${pf("yolk")}/>
+      <path d="M53 82 L46 110 M60 82 V113 M67 82 L74 110" fill="none" stroke="${pln("yolk")}" stroke-width="2.2"/>
+      <rect x="46" y="66" width="28" height="12" rx="4" ${pf("red")}/>
+      ${phi(58,30,1.4,16,0,.6)}
+    </g>`,
+
+  Regenschirm: `
+    <path d="M60 14 V6" stroke="${pln("purple")}" stroke-width="5"/>
+    ${ptube("M60 60 V98 Q60 109 50 109 Q41 109 41 100","wood",3)}
+    <path d="M10 62 Q12 18 60 14 Q108 18 110 62 Q98 52 85 62 Q72 52 60 62 Q48 52 35 62 Q22 52 10 62 Z" ${pf("purple")}/>
+    <path d="M60 14 Q44 34 35 62 M60 14 Q76 34 85 62" fill="none" stroke="${pln("purple")}" stroke-width="2.2"/>
+    ${phi(36,32,11,4,-38,.6)}
+    ${pdrop(18,86,.75)} ${pdrop(100,88,.75)} ${pdrop(84,104,.6)}`,
+
+  Sprechblase: `
+    <path d="M26 14 H94 Q110 14 110 30 V62 Q110 78 94 78 H60 L34 104 L40 78 H26 Q10 78 10 62 V30 Q10 14 26 14 Z" ${pf("white")}/>
+    <g fill="${pmd("purple")}" stroke="${pln("purple")}" stroke-width="2.4"><circle cx="38" cy="46" r="7"/><circle cx="60" cy="46" r="7"/><circle cx="82" cy="46" r="7"/></g>
+    ${phi(32,24,10,3,-12,.7)}`,
+
+  Ampel: `${pgr(22)}
+    <rect x="54" y="90" width="12" height="20" rx="3" ${pf("metal")}/>
+    <rect x="36" y="6" width="48" height="90" rx="14" ${pf("dark")}/>
+    <circle cx="60" cy="24" r="10.5" ${pf("red")}/>
+    <circle cx="60" cy="51" r="10.5" ${pf("yellow")}/>
+    <circle cx="60" cy="78" r="10.5" ${pf("leaf")}/>
+    ${phi(56,20,4,2,-25,.7)} ${phi(56,47,4,2,-25,.7)} ${phi(56,74,4,2,-25,.7)}`,
 };
 
 /* Verläufe einmal ins Dokument einfügen */

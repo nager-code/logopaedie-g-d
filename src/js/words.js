@@ -32,14 +32,15 @@ const D_WORDS = D_LEVELS.flatMap(l => l.words);
 const G_WORDS = G_LEVELS.flatMap(l => l.words);
 
 /* Hörpaare (Minimalpaare): ihre Wörter kommen zusätzlich ins G-oder-D-Spiel.
-   Allein gehört sind sie kaum auseinanderzuhalten (Gaumen oder Daumen?) – deshalb hat jedes ein Tipp-Bild (h),
-   das den Zusammenhang zeigt, ohne das Wort selbst abzubilden: beim Daumen eine Hand, beim Gaumen einen Mund. */
+   Allein gehört sind sie kaum auseinanderzuhalten (Gaumen oder Daumen?) – deshalb hat jedes ein Tipp-Bild
+   (h: [Bild in pictures.js, Bezeichnung]), das den Zusammenhang zeigt, ohne das Wort selbst abzubilden:
+   beim Daumen eine Hand, beim Gaumen einen Mund. */
 const PAIRS = [
-  [{w:"Nagel",e:"💅",l:"G",h:["🔨","Hammer"]},{w:"Nadel",e:"🪡",l:"D",h:["🧵","Faden"]}],
-  [{w:"Bogen",e:"🏹",l:"G",h:["🎯","Zielscheibe"]},{w:"Boden",e:"🟫",l:"D",h:["🧹","Besen"]}],
-  [{w:"Regen",e:"🌧️",l:"G",h:["☂️","Regenschirm"]},{w:"reden",e:"🗣️",l:"D",h:["💬","Sprechblase"]}],
-  [{w:"Wagen",e:"🚗",l:"G",h:["🚦","Ampel"]},{w:"Waden",e:"🦵",l:"D",h:["🦵","Bein"]}],
-  [{w:"Gaumen",e:"👄",l:"G",h:["👄","Mund"]},{w:"Daumen",e:"👍",l:"D",h:["✋","Hand"]}]
+  [{w:"Nagel",e:"💅",l:"G",h:["Hammer","Hammer"]},{w:"Nadel",e:"🪡",l:"D",h:["Faden","Faden"]}],
+  [{w:"Bogen",e:"🏹",l:"G",h:["Zielscheibe","Zielscheibe"]},{w:"Boden",e:"🟫",l:"D",h:["Besen","Besen"]}],
+  [{w:"Regen",e:"🌧️",l:"G",h:["Regenschirm","Regenschirm"]},{w:"reden",e:"🗣️",l:"D",h:["Sprechblase","Sprechblase"]}],
+  [{w:"Wagen",e:"🚗",l:"G",h:["Ampel","Ampel"]},{w:"Waden",e:"🦵",l:"D",h:["Wade","Bein"]}],
+  [{w:"Gaumen",e:"👄",l:"G",h:["Mund","Mund"]},{w:"Daumen",e:"👍",l:"D",h:["Hand","Hand"]}]
 ];
 const PAIR_WORDS = new Set(PAIRS.flat().map(p => p.w));
 const PAIR_HINTS = Object.fromEntries(PAIRS.flat().map(p => [p.w, p.h]));

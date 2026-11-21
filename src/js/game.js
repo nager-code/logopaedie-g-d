@@ -152,7 +152,7 @@ function renderRound(){
 /* Tipp-Bild für sehr ähnliche Wörter (Hörpaare) bei „G oder D?“ – zeigt, worum es geht, nicht das Wort selbst */
 function hintPic(){
   const h = mode === "gd" && PAIR_HINTS[cur.w];
-  return h ? `<div class="hint-pic" role="img" aria-label="Tipp: ${h[1]}"><span aria-hidden="true">💡</span>${h[0]}</div>` : "";
+  return h ? `<div class="hint-pic" role="img" aria-label="Tipp: ${h[1]}"><span aria-hidden="true">💡</span>${pic(h[0])}</div>` : "";
 }
 function addBadge(el, ok){
   const b = document.createElement("span");
