@@ -44,6 +44,12 @@ body::before{
 }
 button{font-family:inherit;color:inherit}
 .hidden{display:none !important}
+/* Was ganz verdeckt ist, ruht: Finale und Muffin-Party decken den Bildschirm komplett ab, die Fabrik die Party.
+   Ohne das zeichnet das Handy alle Animationen darunter weiter mit (Sonne, Wolken, Feuerwerk, Lichterkette …),
+   obwohl sie niemand sieht – und die sichtbaren ruckeln. */
+body:has(> #endOverlay:not(.hidden), > #eggOverlay:not(.hidden)) > .screen,
+body:has(> #eggOverlay:not(.hidden)) > #endOverlay,
+#eggOverlay:has(> #eggFactory:not(.hidden)) > :not(#eggFactory){visibility:hidden}
 
 .screen{position:relative;z-index:1;max-width:500px;margin:0 auto;min-height:100svh;display:flex;flex-direction:column;gap:16px;
   padding:calc(14px + var(--safe-t)) max(16px,var(--safe-r)) calc(120px + var(--safe-b)) max(16px,var(--safe-l))}
@@ -586,8 +592,11 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .st-tile{position:absolute;left:0;bottom:30px;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:900;line-height:1;overflow:hidden}
 /* grau → glüht → verkohlt */
 .st-tile.off{background:linear-gradient(160deg,#e9e4f4,#c9c2d9);color:#8b7fb0;box-shadow:0 5px 0 #a79cc4;animation:stHeat 2s var(--t) both}
+/* der glühende Buchstabe liegt fertig gemalt darüber und wird nur eingeblendet (Farbe/Schatten animieren hieße: jedes Bild neu malen) */
+.st-hot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#ffcf6a;text-shadow:0 0 10px #ff9a3d;opacity:0;animation:stHot 2s var(--t) both}
+@keyframes stHot{0%{opacity:0}25%,100%{opacity:1}}
 .st-char{position:absolute;inset:0;background:radial-gradient(circle at 50% 110%,#ffb13b 0 18%,#e8603c 34%,#4a2e3a 62%,#2a1f2e 100%);opacity:0;animation:stChar 2s var(--t) both}
-@keyframes stHeat{0%{color:#8b7fb0;transform:none}25%{color:#ffcf6a;text-shadow:0 0 10px #ff9a3d}40%{transform:translateX(-2px) rotate(-2deg)}50%{transform:translateX(2px) rotate(2deg)}60%{transform:translateX(-1px)}85%{color:#ffcf6a;opacity:1;transform:none}100%{color:#ffcf6a;opacity:0}}
+@keyframes stHeat{0%{transform:none}40%{transform:translateX(-2px) rotate(-2deg)}50%{transform:translateX(2px) rotate(2deg)}60%{transform:translateX(-1px)}85%{opacity:1;transform:none}100%{opacity:0}}
 @keyframes stChar{0%{opacity:0}35%{opacity:.95}100%{opacity:.95}}
 .st-tile.off{isolation:isolate} .st-tile.off .st-char{z-index:-1}
 /* Flammen, die den Buchstaben erfassen und an ihm hochklettern */
@@ -606,7 +615,7 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .st-bits{position:absolute;left:0;bottom:30px;width:64px;height:64px;pointer-events:none}
 .st-bits i{position:absolute;width:16px;height:16px;border-radius:4px;background:radial-gradient(circle at 40% 40%,#6b4a52,#2a1f2e);box-shadow:inset 0 0 4px 1px rgba(255,140,60,.9);opacity:0;
   animation:stBit 1.3s calc(var(--t) + 1.95s + var(--d)) cubic-bezier(.5,0,.8,.6) forwards}
-@keyframes stBit{0%{opacity:1;transform:none}15%{opacity:1;transform:translate(calc(var(--x) * .15),-6px) rotate(calc(var(--r) * .1))}75%{opacity:1;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.7);box-shadow:inset 0 0 2px 0 rgba(255,140,60,.3)}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 4px)) rotate(var(--r)) scale(.2)}}
+@keyframes stBit{0%{opacity:1;transform:none}15%{opacity:1;transform:translate(calc(var(--x) * .15),-6px) rotate(calc(var(--r) * .1))}75%{opacity:1;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.7)}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 4px)) rotate(var(--r)) scale(.2)}}
 .st-tile.off{animation:stHeat 2s var(--t) both}
 .st-post{animation:stPost 1.2s calc(var(--t) + 1.6s) ease-in forwards}
 @keyframes stPost{0%{filter:none;transform:none}35%{filter:brightness(.35) sepia(1) hue-rotate(-30deg);transform:none}100%{filter:brightness(.25);transform:scaleY(0);opacity:.6}}
@@ -642,6 +651,40 @@ button:focus-visible,.rbtn:focus-within,input:focus-visible{outline:3px solid va
 .fin-svg .fb-ring2{animation:fbSpin .35s linear infinite reverse}
 @keyframes fbSpin{from{transform:rotate(-6deg) scale(1,1)}50%{transform:rotate(6deg) scale(1.07,.95)}to{transform:rotate(-6deg) scale(1,1)}}
 .fin-svg .fb-halo{animation:fbFlick .15s linear infinite alternate}
+/* Im Finale kommen Strahl, Feuerbälle, Funken und Feuerball als eigene Ebenen über die Szene (storyFire in finale.js):
+   es ändern sich nur transform und opacity – das läuft auf der Grafikkarte und bleibt flüssig.
+   Gezeichnet in Fips' SVG-Einheiten (Nullpunkt = Maul), --u rechnet in Pixel um, --bt = Sekunden bis zum Feuer. */
+.st-fire{position:absolute;width:0;height:0;z-index:3;pointer-events:none;transform:scale(var(--u))}
+.st-fire div,.st-fire i,.st-fire svg{position:absolute;left:0;top:0;display:block}
+.sf-jet{width:0;height:0;transform:rotate(var(--ang))}
+.sf-cone{width:0;height:0;transform-origin:0 0;transform:scale(0,.4);will-change:transform,opacity;animation:sfCone 1.1s var(--bt) cubic-bezier(.2,.8,.3,1) forwards}
+.st-fire .sf-cone svg{top:-54px;width:120px;height:108px;overflow:visible;transform-origin:0 50%}
+.sf-outer{will-change:transform;animation:sfFlick .09s linear var(--bt) 13 alternate}
+.sf-mid{will-change:transform;animation:sfFlick .07s linear var(--bt) 17 alternate-reverse}
+@keyframes sfCone{0%{transform:scale(0,.4);opacity:1}28%{transform:scale(var(--k),1);opacity:1}85%{transform:scale(calc(var(--k) * 1.03),1.18);opacity:1}100%{transform:scale(calc(var(--k) * 1.06),1.35);opacity:0}}
+@keyframes sfFlick{from{transform:scaleY(.86) skewX(-2deg)}to{transform:scaleY(1.12) skewX(2deg)}}
+/* Feuerbälle: orange, darüber ein heller Kern, der unterwegs verblasst – so wandert die Farbe von hellgelb nach orange */
+.sf-puff,.sf-spark{border-radius:50%;opacity:0;will-change:transform,opacity}
+.sf-puff{background:#FF8A3D;animation:sfPuff .42s calc(var(--bt) + var(--j) * .03s) linear 2}
+.sf-puff::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#FFF6C0 0 30%,#FFD54A 80%);will-change:opacity;animation:sfHot .42s calc(var(--bt) + var(--j) * .03s) linear 2}
+.sf-spark{background:#FFF3A0;animation:sfSpark .5s calc(var(--bt) + .1s + var(--j) * .06s) ease-out 2}
+@keyframes sfPuff{0%{transform:translate(4px,0) scale(.3);opacity:1}70%{opacity:.95}100%{transform:translate(calc(var(--len) * 1px),calc(var(--oy) * 1px)) scale(1.9);opacity:0}}
+@keyframes sfHot{0%,20%{opacity:1}80%,100%{opacity:0}}
+@keyframes sfSpark{0%{transform:translate(10px,0);opacity:1}100%{transform:translate(calc(var(--len) * .9px),calc(var(--oy) * 1px));opacity:0}}
+/* Feuerball am Maul (2 Einheiten unter dem Strahl-Ansatz, wie im SVG) */
+.st-fire .sf-ball{top:2px;width:0;height:0;transform:scale(0);will-change:transform;animation:sfBall 1.25s calc(var(--bt) - .1s) cubic-bezier(.2,.9,.3,1.2) forwards}
+.st-fire .sf-ball svg{left:-64px;top:-48px;width:128px;height:96px;overflow:visible}
+.st-fire .sf-halo{left:-58px;top:-58px;width:116px;height:116px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,177,59,.55) 40%,rgba(255,138,61,0));will-change:transform;animation:sfFlick .15s linear calc(var(--bt) - .1s) 9 alternate}
+.sf-ring{will-change:transform;animation:sfSpin .5s linear calc(var(--bt) - .1s) 3}
+.sf-ring2{will-change:transform;animation:sfSpin .35s linear calc(var(--bt) - .1s) 4 reverse}
+@keyframes sfBall{0%{transform:scale(0)}14%{transform:scale(1.2)}24%,82%{transform:scale(1)}100%{transform:scale(0)}}
+@keyframes sfSpin{from{transform:rotate(-6deg) scale(1,1)}50%{transform:rotate(6deg) scale(1.07,.95)}to{transform:rotate(-6deg) scale(1,1)}}
+/* Zum Ausmessen (storyAim): Fips und Landschaft stehen kurz so, wie sie beim Feuer stehen */
+.story.aim .st-fips,.story.aim .st-lean,.story.aim .st-walk,.story.aim .st-strip,.story.aim .fin-svg .tilt{animation:none!important}
+.story.aim .st-lean{transform:rotate(8deg) translateX(6px)}
+.story.aim .fin-svg .tilt{transform:rotate(9deg) translateX(8px)}
+.story.aim1 .st-strip{transform:translateX(-30%)}
+.story.aim2 .st-strip{transform:translateX(-60%)}
 /* Kopf dreht sich zum Buchstaben, solange Fips Feuer speit */
 .st-walk .fin-svg .tilt{animation:stHead 10.3s ease-in-out both}
 @keyframes stHead{0%,22.3%{transform:none}26.2%,37.9%{transform:rotate(9deg) translateX(8px)}41.3%,71.8%{transform:none}75.7%,87.4%{transform:rotate(9deg) translateX(8px)}90.8%,100%{transform:none}}

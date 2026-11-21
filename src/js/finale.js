@@ -39,38 +39,47 @@ const STORY_BREATH = [2.75, 7.85]; // Beginn des Feueratems (dauert 1,1 s)
 
 /* Feueratem – sitzt in Fips' Kopf (Mund bei 200/228), bewegt sich also mit, wenn er sich vorbeugt.
    Richtung und Länge werden kurz vor dem Feuer auf den Buchstaben ausgerichtet (finAim). */
-function finBreath(i, bt){
+/* Feuerball am Maul: Flammenkranz aus Zungen – runde, lodernde Feuerwolke:
+   Bögen nach außen, nach rechts (zum Strahl hin) etwas länger gezogen */
+function finTongues(n, r1, r2, rot = 0){
+  let d = "";
+  const p = (a, rr) => { const st = 1 + .28 * Math.max(0, Math.cos(a)); return `${(Math.cos(a) * rr * st).toFixed(1)} ${(Math.sin(a) * rr).toFixed(1)}`; };
+  for (let k = 0; k < n; k++){
+    const a0 = (k / n) * Math.PI * 2 + rot, a2 = ((k + 1) / n) * Math.PI * 2 + rot, w = (a2 - a0) * .45;
+    d += (k ? "" : "M" + p(a0, r1)) + ` C${p(a0 + w * .2, r2 * 1.05)} ${p(a2 - w * .2, r2 * 1.05)} ${p(a2, r1)}`;
+  }
+  return d + " Z";
+}
+const FB_CONE = ["M0 -26 C14 -28 26 -32 40 -34 C46 -40 56 -44 62 -40 C72 -50 88 -50 96 -42 C108 -38 114 -22 110 -8 C116 0 116 6 110 10 C114 26 106 42 94 44 C84 52 68 50 60 42 C50 46 40 40 38 32 C24 32 14 28 0 26 Z",
+  "M0 -18 C24 -20 48 -26 76 -28 C94 -29 104 -16 102 0 C104 16 94 29 76 28 C48 26 24 20 0 18 Z",
+  "M0 -11 C24 -12 46 -14 66 -14 C76 -13 80 -6 80 0 C80 6 76 13 66 14 C46 14 24 12 0 11 Z"];
+/* smokeOnly: nur Rauch und Glut im Maul – Strahl und Feuerball kommen dann als eigene Ebenen (storyFire) */
+function finBreath(i, bt, smokeOnly){
   const r = (a, b) => (a + rnd() * (b - a)).toFixed(1);
+  const smoke = (cls, pts) => pts.map(([x,y], k) => `<circle class="${cls}" cx="${x}" cy="${y}" r="7" style="--j:${k}"/>`).join("");
+  const nose = `<g class="fb-nose">${smoke("fb-smoke", [[193,204],[207,204],[193,204],[207,204]])}</g>
+    <g class="fb-mouth"><ellipse cx="200" cy="232" rx="28" ry="24" fill="url(#fbGlow)"/></g>`;
+  const after = `<g class="fb-after">${smoke("fb-smoke2", [[214,226],[220,222],[226,226]])}</g>`;
+  if (smokeOnly) return `<g class="fb" style="--bt:${bt}s">${nose}${after}</g>`;
   const puffs = Array.from({length:14}, (_, k) => `<circle class="fb-puff" r="${r(12,19)}" style="--j:${k};--oy:${r(-34,34)}"/>`).join("");
   const sparks = Array.from({length:10}, (_, k) => `<circle class="fb-spark" r="${r(2.5,4)}" style="--j:${k};--oy:${r(-60,60)}"/>`).join("");
-  // Feuerball am Maul: Flammenkranz aus Zungen, darin heller Kern
-  // runde, lodernde Feuerwolke: Bögen nach außen, nach rechts (zum Strahl hin) etwas länger gezogen
-  const tongues = (n, r1, r2, rot = 0) => { let d = "";
-    const p = (a, rr) => { const st = 1 + .28 * Math.max(0, Math.cos(a)); return `${(Math.cos(a) * rr * st).toFixed(1)} ${(Math.sin(a) * rr).toFixed(1)}`; };
-    for (let k = 0; k < n; k++){
-      const a0 = (k / n) * Math.PI * 2 + rot, a2 = ((k + 1) / n) * Math.PI * 2 + rot, w = (a2 - a0) * .45;
-      d += (k ? "" : "M" + p(a0, r1)) + ` C${p(a0 + w * .2, r2 * 1.05)} ${p(a2 - w * .2, r2 * 1.05)} ${p(a2, r1)}`;
-    }
-    return d + " Z"; };
-  const smoke = (cls, pts) => pts.map(([x,y], k) => `<circle class="${cls}" cx="${x}" cy="${y}" r="7" style="--j:${k}"/>`).join("");
   return `<g class="fb" style="--bt:${bt}s;--k:3.3;--len:330;--ang:10deg">
-    <g class="fb-nose">${smoke("fb-smoke", [[193,204],[207,204],[193,204],[207,204]])}</g>
-    <g class="fb-mouth"><ellipse cx="200" cy="232" rx="28" ry="24" fill="url(#fbGlow)"/></g>
+    ${nose}
     <g class="fb-jet">
       <g class="fb-cone">
-        <path class="fb-outer" d="M0 -26 C14 -28 26 -32 40 -34 C46 -40 56 -44 62 -40 C72 -50 88 -50 96 -42 C108 -38 114 -22 110 -8 C116 0 116 6 110 10 C114 26 106 42 94 44 C84 52 68 50 60 42 C50 46 40 40 38 32 C24 32 14 28 0 26 Z"/>
-        <path class="fb-mid" d="M0 -18 C24 -20 48 -26 76 -28 C94 -29 104 -16 102 0 C104 16 94 29 76 28 C48 26 24 20 0 18 Z"/>
-        <path class="fb-core" d="M0 -11 C24 -12 46 -14 66 -14 C76 -13 80 -6 80 0 C80 6 76 13 66 14 C46 14 24 12 0 11 Z"/>
+        <path class="fb-outer" d="${FB_CONE[0]}"/>
+        <path class="fb-mid" d="${FB_CONE[1]}"/>
+        <path class="fb-core" d="${FB_CONE[2]}"/>
       </g>
       ${puffs}${sparks}
     </g>
     <g class="fb-ball">
       <circle class="fb-halo" r="58" fill="url(#fbHalo)"/>
-      <path class="fb-ring" d="${tongues(8, 31, 41)}" fill="url(#fbBallOut)" stroke="#F06A3A" stroke-width="2" stroke-linejoin="round"/>
-      <path class="fb-ring2" d="${tongues(7, 21, 29, .4)}" fill="url(#fbBallMid)"/>
+      <path class="fb-ring" d="${finTongues(8, 31, 41)}" fill="url(#fbBallOut)" stroke="#F06A3A" stroke-width="2" stroke-linejoin="round"/>
+      <path class="fb-ring2" d="${finTongues(7, 21, 29, .4)}" fill="url(#fbBallMid)"/>
       <ellipse rx="17" ry="14" fill="url(#fbBallCore)"/>
     </g>
-    <g class="fb-after">${smoke("fb-smoke2", [[214,226],[220,222],[226,226]])}</g>
+    ${after}
   </g>`;
 }
 const FIN_BREATH_DEFS = `<defs>
@@ -83,19 +92,53 @@ const FIN_BREATH_DEFS = `<defs>
   <radialGradient id="fbBallCore" cx=".45" cy=".45" r=".55"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#FFFBE0"/><stop offset="1" stop-color="#FFE45C"/></radialGradient>
   <radialGradient id="fbGlow" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#FFFBE0"/><stop offset=".45" stop-color="#FFD54A"/><stop offset="1" stop-color="#FF7A3D"/></radialGradient>
 </defs>`;
-/* Feuer genau auf den Buchstaben richten: Zielpunkt in Fips' Kopf-Koordinaten umrechnen */
-function finAim(i){
-  const svg = document.querySelector("#storyFips svg"), fb = svg && svg.querySelectorAll(".fb")[i];
-  const tile = document.querySelectorAll(".story .st-tile.off")[i];
-  if (!fb || !tile) return;
+/* ---------- Feuerstrahl im Finale: eigene Ebenen über der Szene ----------
+   Strahl, Feuerbälle, Funken und der Feuerball am Maul sind hier HTML-Elemente, bei denen sich nur
+   transform und opacity ändern – das bewegt die Grafikkarte, ohne dass etwas neu gezeichnet wird.
+   (Als Teil von Fips' SVG müsste das Handy Fips samt Strahl für jedes Bild neu malen → es ruckelt.)
+   Gezeichnet wird in SVG-Einheiten von Fips (Maul = Nullpunkt), --u rechnet in Pixel um. */
+/* Wo liegt Fips' Maul, wo der Buchstabe? Dafür stehen Fips und Landschaft für einen Moment in der Feuer-Pose
+   (Klasse „aim“, style.css) – gleich beim Öffnen, also bevor die Animation sichtbar anläuft. */
+function storyAim(){
+  const story = document.querySelector("#endDragon .story"), walk = $("storyFips"), head = walk && walk.querySelector("svg .tilt");
+  if (!story || !head) return [];
+  const out = [];
+  head.insertAdjacentHTML("beforeend", `<circle class="fb-probe" cx="200" cy="230" r="1" fill="none"/>`);
+  const probe = head.lastElementChild;
+  story.classList.add("aim");
   try {
-    const head = svg.querySelector(".tilt"), rc = tile.getBoundingClientRect();
-    const p = new DOMPoint(rc.left + rc.width * .3, rc.top + rc.height * .55).matrixTransform(head.getScreenCTM().inverse());
-    const dx = p.x - 200, dy = p.y - 230, len = Math.hypot(dx, dy);
-    fb.style.setProperty("--len", len.toFixed(1));
-    fb.style.setProperty("--k", (len / 100).toFixed(3));
-    fb.style.setProperty("--ang", (Math.atan2(dy, dx) * 180 / Math.PI).toFixed(1) + "deg");
-  } catch(e){}
+    const mid = (el, fx, fy) => { const r = el.getBoundingClientRect(); return [r.left + r.width * fx, r.top + r.height * fy]; };
+    for (let i = 0; i < STORY_BREATH.length; i++){
+      story.classList.add("aim" + (i + 1));
+      const sr = story.getBoundingClientRect(), z = story.offsetWidth / sr.width || 1;      // z: falls die Szene gerade skaliert ist
+      const loc = ([x, y]) => [(x - sr.left) * z - story.clientLeft, (y - sr.top) * z - story.clientTop];
+      const [mx, my] = loc(mid(probe, .5, .5)), [tx, ty] = loc(mid(story.querySelectorAll(".st-tile.off")[i], .3, .55));
+      const u = walk.offsetWidth / 400;                                                    // Fips' SVG ist 400 Einheiten breit
+      out.push({x: mx, y: my, u, len: Math.hypot(tx - mx, ty - my) / u, ang: Math.atan2(ty - my, tx - mx) * 180 / Math.PI});
+      story.classList.remove("aim" + (i + 1));
+    }
+  } catch(e){ out.length = 0; }
+  story.classList.remove("aim", "aim1", "aim2"); probe.remove();
+  return out;
+}
+/* Ein Feueratem als Ebenen; bt = Sekunden bis der Strahl losgeht */
+function storyFire(a, bt){
+  const story = document.querySelector("#endDragon .story"); if (!story || !a) return;
+  const r = (x, y) => +(x + rnd() * (y - x)).toFixed(1);
+  const dot = (cls, k, s, oy) => `<i class="${cls}" style="--j:${k};--oy:${oy};width:${2 * s}px;height:${2 * s}px;margin:${-s}px"></i>`;
+  const puffs = Array.from({length:14}, (_, k) => dot("sf-puff", k, r(12,19), r(-34,34))).join("");
+  const sparks = Array.from({length:10}, (_, k) => dot("sf-spark", k, r(2.5,4), r(-60,60))).join("");
+  const cone = (cls, k, grad) => `<svg class="${cls}" viewBox="0 -54 120 108"><path d="${FB_CONE[k]}" fill="url(#${grad})"/></svg>`;
+  const ring = (cls, inner) => `<svg class="${cls}" viewBox="-64 -48 128 96">${inner}</svg>`;
+  story.insertAdjacentHTML("beforeend", `<div class="st-fire" style="left:${a.x.toFixed(1)}px;top:${a.y.toFixed(1)}px;--u:${a.u.toFixed(4)};--ang:${a.ang.toFixed(1)}deg;--len:${a.len.toFixed(1)};--k:${(a.len / 100).toFixed(3)};--bt:${bt.toFixed(3)}s">
+    <div class="sf-jet"><div class="sf-cone">${cone("sf-outer", 0, "fbOuter")}${cone("sf-mid", 1, "fbMid")}${cone("sf-core", 2, "fbCore")}</div>${puffs}${sparks}</div>
+    <div class="sf-ball"><i class="sf-halo"></i>
+      ${ring("sf-ring", `<path d="${finTongues(8, 31, 41)}" fill="url(#fbBallOut)" stroke="#F06A3A" stroke-width="2" stroke-linejoin="round"/>`)}
+      ${ring("sf-ring2", `<path d="${finTongues(7, 21, 29, .4)}" fill="url(#fbBallMid)"/>`)}
+      ${ring("sf-kern", `<ellipse rx="17" ry="14" fill="url(#fbBallCore)"/>`)}</div>
+  </div>`);
+  const el = story.lastElementChild;
+  later(() => el.remove(), (bt + 1.5) * 1000);
 }
 const FIN_TREE = c => `<svg viewBox="0 0 60 90"><rect x="25" y="50" width="10" height="38" rx="3" fill="url(#pg-brown)" stroke="#6E4429" stroke-width="3"/>
   <circle cx="30" cy="34" r="24" fill="url(#pg-${c})" stroke="${PIC_PAL[c][3]}" stroke-width="3"/><ellipse cx="22" cy="24" rx="8" ry="4" fill="#fff" opacity=".5"/></svg>`;
@@ -119,10 +162,10 @@ function storyScene(){
     return `<i style="left:${cx * 16}px;top:${cy * 16}px;--x:${r(-26,26).toFixed(0)}px;--y:${(70 - cy * 16 + r(-6,10)).toFixed(0)}px;--r:${r(-200,200).toFixed(0)}deg;--d:${(r(0,.25) + (3 - cy) * .05).toFixed(2)}s"></i>`;
   }).join("");
   const letter = (l, cls) => `<div class="st-letter ${cls}"><div class="st-ash"></div><div class="st-post"></div>
-    <div class="st-tile off">${l}<div class="st-char"></div></div><div class="st-bits">${bits}</div>
+    <div class="st-tile off">${l}<div class="st-char"></div><b class="st-hot">${l}</b></div><div class="st-bits">${bits}</div>
     <div class="st-smoke">${smoke}</div><div class="st-burn">${burn}</div><div class="st-embers">${embers}</div></div>`;
   return `<div class="story">
-    <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="finFire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF6A3D"/><stop offset=".55" stop-color="#FFB13B"/><stop offset="1" stop-color="#FFE45C"/></linearGradient></defs></svg>
+    <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="finFire" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF6A3D"/><stop offset=".55" stop-color="#FFB13B"/><stop offset="1" stop-color="#FFE45C"/></linearGradient></defs>${FIN_BREATH_DEFS}</svg>
     <div class="st-sun"></div><div class="st-cloud c1"></div><div class="st-cloud c2"></div>
     <div class="st-hills"></div>
     <div class="st-strip">${trees}<div class="st-path"></div>${flowers}${letter("G","lg")}${letter("D","ld")}</div>
@@ -194,16 +237,24 @@ async function showFinale(ok, n){
     el.removeAttribute("width"); el.removeAttribute("height");
     el.setAttribute("aria-label", "Fips"); el.classList.add("fin-svg");
     if (f.key === "story"){
-      el.insertAdjacentHTML("afterbegin", FIN_BREATH_DEFS);
-      el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", STORY_BREATH.map((t, i) => finBreath(i, t)).join("") + FIN_CROWN);
+      // die Farbverläufe fürs Feuer stehen schon in der Szene (storyScene)
+      el.querySelector(".tilt")?.insertAdjacentHTML("beforeend", STORY_BREATH.map((t, i) => finBreath(i, t, true)).join("") + FIN_CROWN);
     }
   } else {
     stage.innerHTML = `<img class="fin-svg" src="img/fips-tanz.svg?v=${APP_VERSION}" alt="Fips">`;
   }
   finaleFx(f.key);
-  if (f.key === "story"){
-    STORY_BREATH.forEach((t, i) => { finAim(i); later(() => finAim(i), t * 1000 - 40); later(() => sfx("fire"), t * 1000); });
-  }
   show("endOverlay");
+  if (f.key === "story"){
+    sfxWarm("fire");                         // Rauschen fürs Fauchen jetzt schon berechnen, nicht erst beim Feuer
+    const aim = storyAim(), t0 = performance.now(), strip = document.querySelector("#endDragon .st-strip");
+    // Wie weit ist die Geschichte? Am genauesten weiß das die Animation selbst (Zeitgeber können sich verspäten)
+    const now = () => { try { const t = strip.getAnimations()[0].currentTime; if (t != null) return t / 1000; } catch(e){} return (performance.now() - t0) / 1000; };
+    STORY_BREATH.forEach((t, i) => {
+      // die Ebenen kommen kurz vor dem Feuer dazu und danach wieder weg – so sind nie unnötig viele da
+      later(() => storyFire(aim[i], Math.max(0, t - now())), t * 1000 - 600);
+      later(() => sfx("fire"), t * 1000);
+    });
+  }
   sfx(level >= 2 ? "fanfare" : "right");
 }
